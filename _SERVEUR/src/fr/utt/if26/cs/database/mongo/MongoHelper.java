@@ -3,9 +3,7 @@ package fr.utt.if26.cs.database.mongo;
 import java.util.ArrayList;
 
 import org.bson.BSONObject;
-import org.bson.BasicBSONObject;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -43,15 +41,21 @@ public class MongoHelper implements DatabaseHelper {
 	
 	@Override
 	public Object[] insert(BSONObject... BSONObjects) {
-		// TODO Auto-generated method stub
 		/*BSONObject BSONQueryObject = (BasicBSONObject) filterQuery;
 		BasicDBList collections = (BasicDBList) BSONQueryObject.get("collections");*/
+		for(BSONObject obj : BSONObjects){
+			this.collection.insert((DBObject) obj);
+		}
 		return null;
 	}
 
 	@Override
 	public Object[] insert(String... JSONStrings) {
-		// TODO Auto-generated method stub
+		BSONObject[] objects = new BSONObject[JSONStrings.length];
+		for(int i=0;i<JSONStrings.length; i++){
+			objects[i] = (BSONObject) JSON.parse(JSONStrings[i]);
+		}
+		this.insert(objects);
 		return null;
 	}
 
@@ -67,7 +71,6 @@ public class MongoHelper implements DatabaseHelper {
 	public boolean remove(String... JSONStrings) {
 		BSONObject[] objects = new BSONObject[JSONStrings.length];
 		for(int i=0;i<JSONStrings.length; i++){
-			//this.collection.remove((DBObject) JSON.parse(str));
 			objects[i] = (BSONObject) JSON.parse(JSONStrings[i]);
 		}
 		return this.remove(objects);
@@ -75,19 +78,24 @@ public class MongoHelper implements DatabaseHelper {
 
 	@Override
 	public ArrayList<Object> find(Object query) {
+		return find((BSONObject) JSON.parse((String) query));
+	}
+
+	
+	@Override
+	public ArrayList<Object> find(BSONObject query) {
 		ArrayList<Object> liste = new ArrayList<Object>();
-		DBCursor cursor = this.collection.find((DBObject) JSON.parse((String) query));
+		DBCursor cursor = this.collection.find((DBObject) query);
 		while(cursor.hasNext()){
 			liste.add(cursor.next());
 		}
 		cursor.close();
 		return liste;
 	}
-
+	
 	@Override
 	public String getObjectIDKey() {
 		// TODO Auto-generated method stub
 		return objectIDKey;
 	}
-
 }

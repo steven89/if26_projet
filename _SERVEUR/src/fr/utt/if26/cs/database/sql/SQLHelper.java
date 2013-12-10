@@ -44,4 +44,10 @@ public class SQLHelper implements DatabaseHelper {
 		return null;
 	}
 
+	@Override
+	public ArrayList<Object> find(BSONObject query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
