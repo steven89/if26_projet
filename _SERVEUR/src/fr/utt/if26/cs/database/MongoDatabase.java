@@ -2,7 +2,6 @@ package fr.utt.if26.cs.database;
 
 import java.net.UnknownHostException;
 
-import org.bson.BSON;
 import org.bson.BSONObject;
 
 import com.mongodb.DB;
@@ -12,8 +11,10 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.util.JSON;
 
+import fr.utt.if26.cs.model.Transaction;
 
-public class MongoDatabase implements Database {
+
+public class MongoDatabase extends Database {
 	
 	private static MongoDatabase db=null;
 	
@@ -36,7 +37,7 @@ public class MongoDatabase implements Database {
 		}
 	}
 	
-	public MongoDatabase getInstance(){
+	public static MongoDatabase getInstance(){
 		return (MongoDatabase.db!=null)?MongoDatabase.db:new MongoDatabase();
 	}
 	
@@ -44,10 +45,16 @@ public class MongoDatabase implements Database {
 		
 		DBCursor cursor = mongoCollections[currentCollection].find((DBObject) JSON.parse("{id : "+id+"}"));
 		while(cursor.hasNext()){
-			//out.print(cursor.next());
+			
 		}
 		cursor.close();
 		return null;
+	}
+
+	@Override
+	public boolean insertTransaction(Transaction transaction) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

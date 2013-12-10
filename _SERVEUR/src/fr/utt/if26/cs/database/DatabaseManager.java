@@ -1,18 +1,11 @@
 package fr.utt.if26.cs.database;
 
-import java.net.UnknownHostException;
-import java.util.Set;
-
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
 
 public class DatabaseManager {
 	
 	private static DatabaseManager db = null;
-	
-	
-	
+	private SQLDatabase sqlDb;
+	private MongoDatabase mongoDb;
 	
 	private DatabaseManager(){
 		this.initBases();
@@ -23,9 +16,17 @@ public class DatabaseManager {
 	}
 	
 	private void initBases(){
-		
+		this.sqlDb = SQLDatabase.getInstance();
+		this.mongoDb = MongoDatabase.getInstance();
+	}
+	
+	public Database getMongoDatabase(){
+		return this.mongoDb;
+	}
+	
+	public Database getSqlDatabase(){
+		return this.sqlDb;
 	}
 	
 	
-
 }
