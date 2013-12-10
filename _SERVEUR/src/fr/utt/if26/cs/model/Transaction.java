@@ -17,8 +17,8 @@ public class Transaction implements DBPersistentObject{
 	protected String crediteur;
 	protected String destinataire;
 	protected Date date;
-	//l'id est stocké sous un wrapper Long >> autorise les test conditionnels (id!=null)
-	protected Long id;
+	//l'id est stockï¿½ sous un wrapper Long >> autorise les test conditionnels (id!=null)
+	protected String id;
 	protected static DatabaseHelper defaultDBManager;
 	
 	
@@ -28,12 +28,16 @@ public class Transaction implements DBPersistentObject{
 		this.destinataire = destinatairePseudo;
 	}
 	
-	public Transaction(long dbID, int somme, String crediteurPseudo, String destinatairePseudo){
+	public Transaction(String dbID, int somme, String crediteurPseudo, String destinatairePseudo){
 		this.montant = somme;
 		this.crediteur = crediteurPseudo;
 		this.destinataire = destinatairePseudo;
 		this.id = dbID;
-		//la date sera instanciée à l'appel de la méthode this.save()
+		//la date sera instanciï¿½e ï¿½ l'appel de la mï¿½thode this.save()
+	}
+	
+	public String getId(){
+		return this.id;
 	}
 	
 	@Override

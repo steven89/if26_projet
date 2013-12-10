@@ -41,8 +41,6 @@ public class MongoHelper implements DatabaseHelper {
 	
 	@Override
 	public Object[] insert(BSONObject... BSONObjects) {
-		/*BSONObject BSONQueryObject = (BasicBSONObject) filterQuery;
-		BasicDBList collections = (BasicDBList) BSONQueryObject.get("collections");*/
 		for(BSONObject obj : BSONObjects){
 			this.collection.insert((DBObject) obj);
 		}

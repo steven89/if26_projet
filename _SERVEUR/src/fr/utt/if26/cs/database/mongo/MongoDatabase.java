@@ -14,6 +14,7 @@ import com.mongodb.util.JSON;
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseHelper;
 import fr.utt.if26.cs.model.Transaction;
+import fr.utt.if26.cs.model.User;
 
 
 public class MongoDatabase extends Database {
@@ -58,6 +59,18 @@ public class MongoDatabase extends Database {
 
 	@Override
 	public boolean insertTransaction(Transaction transaction) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean insertUser(User user) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean updateUser(User user) {
 		// TODO Auto-generated method stub
 		return false;
 	}
