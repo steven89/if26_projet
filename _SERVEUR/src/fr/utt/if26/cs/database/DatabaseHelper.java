@@ -10,7 +10,7 @@ import org.bson.BSONObject;
  * a database should implement </p>
  * 
  */
-public interface DBManager {
+public interface DatabaseHelper {
 	/*** 
 	 * Save objects in a database
 	 * 

@@ -1,4 +1,4 @@
-package fr.utt.if26.cs.database.mongohandler;
+package fr.utt.if26.cs.database.mongo;
 
 import java.util.Iterator;
 
@@ -8,21 +8,21 @@ import org.bson.BasicBSONObject;
 import com.mongodb.BasicDBList;
 import com.mongodb.MongoClient;
 
-import fr.utt.if26.cs.database.DBManager;
+import fr.utt.if26.cs.database.DatabaseHelper;
 
-public class MongoDBManager implements DBManager {
+public class MongoHelper implements DatabaseHelper {
 	
 	protected String objectIDKey = "_id";
 	protected static MongoClient client;
 	protected static String[] collections;
 	
-	private static MongoDBManager mongoDBManagerInstance;
+	private static MongoHelper mongoDBManagerInstance;
 	
-	private MongoDBManager(){
+	private MongoHelper(){
 	}
 	
-	public MongoDBManager getInstance(){
-		return mongoDBManagerInstance = (mongoDBManagerInstance != null) ? mongoDBManagerInstance : new MongoDBManager();
+	public MongoHelper getInstance(){
+		return mongoDBManagerInstance = (mongoDBManagerInstance != null) ? mongoDBManagerInstance : new MongoHelper();
 	}
 	
 	public static void setClient(MongoClient mongoClient){

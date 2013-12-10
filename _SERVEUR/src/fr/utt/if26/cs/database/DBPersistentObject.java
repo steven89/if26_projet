@@ -11,7 +11,7 @@ import fr.utt.if26.cs.ServiceManager;
  * <p>No direct database Manipulation should be used here, 
  * instead use a wrapper, for instance an implementation of DBManager.</p>
  * 
- * @see DBManager
+ * @see DatabaseHelper
  *
  */
 public interface DBPersistentObject {
@@ -20,7 +20,7 @@ public interface DBPersistentObject {
 	 * delegating database manipulation to the DBPersistentObject's current DBManager.
 	 * </p>
 	 * 
-	 * @see DBManager#insert(Object...)
+	 * @see DatabaseHelper#insert(Object...)
 	 */
 	public void save();
 	
@@ -32,12 +32,12 @@ public interface DBPersistentObject {
 	 * @param DBManagers
 	 * 					An array of DBManager objects.
 	 * 
-	 * @see DBManager#insert(Object...)
+	 * @see DatabaseHelper#insert(Object...)
 	 * @see ServiceManager#registerService(String, Object)
 	 * @see ServiceManager#getServices(String...)
 	 * 
 	 */
-	public void save(DBManager... DBManagers);
+	public void save(DatabaseHelper... DBManagers);
 	
 	/***
 	 * <p>Synchronized the current DBPersistentObject with its counterpart in the database :

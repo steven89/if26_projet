@@ -8,7 +8,7 @@ import org.bson.BasicBSONObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.util.JSON;
 
-import fr.utt.if26.cs.database.DBManager;
+import fr.utt.if26.cs.database.DatabaseHelper;
 import fr.utt.if26.cs.database.DBPersistentObject;
 
 public class Transaction implements DBPersistentObject{
@@ -19,7 +19,7 @@ public class Transaction implements DBPersistentObject{
 	protected Date date;
 	//l'id est stocké sous un wrapper Long >> autorise les test conditionnels (id!=null)
 	protected Long id;
-	protected static DBManager defaultDBManager;
+	protected static DatabaseHelper defaultDBManager;
 	
 	
 	public Transaction(int somme, String crediteurPseudo, String destinatairePseudo){
@@ -42,11 +42,11 @@ public class Transaction implements DBPersistentObject{
 	}
 	
 	@Override
-	public void save(DBManager... DBManagers) {
+	public void save(DatabaseHelper... DBManagers) {
 		// TODO Auto-generated method stub
 		BasicDBObject data = (BasicDBObject) this.getBSONRepresentation();
 		this.date = new Date();
-		for(DBManager _dbManager : DBManagers){
+		for(DatabaseHelper _dbManager : DBManagers){
 			if(this.id == null){
 				data.put("insertion_date", this.date);
 			}else{
@@ -63,7 +63,7 @@ public class Transaction implements DBPersistentObject{
 		
 	}
 	
-	public static void setDefaultDBManager(DBManager dbManager){
+	public static void setDefaultDBManager(DatabaseHelper dbManager){
 		defaultDBManager = dbManager;
 	}
 	

@@ -1,4 +1,4 @@
-package fr.utt.if26.cs.database;
+package fr.utt.if26.cs.database.mongo;
 
 import java.net.UnknownHostException;
 
@@ -11,6 +11,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.util.JSON;
 
+import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.model.Transaction;
 
 

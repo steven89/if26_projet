@@ -3,7 +3,7 @@ package fr.utt.if26.cs.database;
 import sun.security.jca.GetInstance;
 import fr.utt.if26.cs.model.Transaction;
 
-abstract class Database {
+public abstract class Database {
 	
 	private static Database db;
 	
@@ -12,4 +12,6 @@ abstract class Database {
 	public static Database getInstance(){
 		return null;
 	}
+	
+	
 }
