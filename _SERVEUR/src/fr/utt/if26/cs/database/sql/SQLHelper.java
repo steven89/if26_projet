@@ -1,43 +1,13 @@
-package fr.utt.if26.cs.database.mongo;
+package fr.utt.if26.cs.database.sql;
 
 import java.util.Iterator;
 
 import org.bson.BSONObject;
-import org.bson.BasicBSONObject;
-
-import com.mongodb.BasicDBList;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
 
 import fr.utt.if26.cs.database.DatabaseHelper;
 
-public class MongoHelper implements DatabaseHelper {
-	
-	protected String objectIDKey = "_id";
-	private MongoClient client;
-	private DBCollection collection;
-	
-	public MongoHelper(MongoClient c, DBCollection coll){
-		this.client = c;
-		this.collection = coll;
-	}
-	
-	public void setClient(MongoClient c){
-		this.client = c;
-	}
-	
-	public void setCollection(DBCollection coll){
-		this.collection = coll;
-	}
-	
-	public MongoClient getClient(){
-		return this.client;
-	}
-	
-	public DBCollection getCollection(){
-		return this.collection;
-	}
-	
+public class SQLHelper implements DatabaseHelper {
+
 	@Override
 	public Object[] insert(BSONObject... BSONObjects) {
 		// TODO Auto-generated method stub
@@ -71,7 +41,7 @@ public class MongoHelper implements DatabaseHelper {
 	@Override
 	public String getObjectIDKey() {
 		// TODO Auto-generated method stub
-		return objectIDKey;
+		return null;
 	}
 
 }

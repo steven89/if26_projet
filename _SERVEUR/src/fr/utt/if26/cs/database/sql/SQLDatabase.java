@@ -1,5 +1,6 @@
-package fr.utt.if26.cs.database;
+package fr.utt.if26.cs.database.sql;
 
+import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.model.Transaction;
 
 public class SQLDatabase extends Database {

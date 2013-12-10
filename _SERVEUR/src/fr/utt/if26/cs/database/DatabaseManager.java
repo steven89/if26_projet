@@ -1,6 +1,7 @@
 package fr.utt.if26.cs.database;
 
 import fr.utt.if26.cs.database.mongo.MongoDatabase;
+import fr.utt.if26.cs.database.sql.SQLDatabase;
 
 
 public class DatabaseManager {

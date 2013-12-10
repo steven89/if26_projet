@@ -20,27 +20,23 @@ public interface DatabaseHelper {
 	 *             		Array of documents to save, in a BSON representation
 	 * @return an array of objects after insertion, useful when objects are modified during insertion (ie : updating the id)
 	 */
-	public Object[] insert(Object filterQuery, BSONObject... BSONObjects);
+	public Object[] insert(BSONObject... BSONObjects);
 	
 	/*** 
 	 * Save objects in a database
-	 * @param filterQuery
-	 * 					An Object used to specify where and how to insert the data on the database
 	 * @param JSONStrings
 	 *              	Array of documents to save, in a JSON string representation
 	 * @return an array of objects after insertion, useful when objects are modified during insertion (ie : updating the id)
 	 */
-	public Object[] insert(Object filterQuery, String... JSONStrings);
+	public Object[] insert(String... JSONStrings);
 	
 	/***
 	 * Remove objects from a database
-	 * @param filterQuery
-	 * 					An Object used to specify where and how to insert the data on the database
 	 * @param BSONObjects
 	 * 					Array of documents to remove, in a BSON representation
 	 * @return true or false depending on the removal of the objects
 	 */
-	public boolean remove(Object filterQuery, BSONObject... BSONObjects);
+	public boolean remove(BSONObject... BSONObjects);
 	
 	/***
 	 * Remove objects from a database
@@ -50,7 +46,7 @@ public interface DatabaseHelper {
 	 * 				Array of documents to remove, in a JSON string representation
 	 * @return true or false depending on the removal of the objects
 	 */
-	public boolean remove(Object filterQuery, String... JSONStrings);
+	public boolean remove(String... JSONStrings);
 	
 	/***
 	 * 

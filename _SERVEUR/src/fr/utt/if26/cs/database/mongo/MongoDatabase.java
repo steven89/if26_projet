@@ -12,6 +12,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.util.JSON;
 
 import fr.utt.if26.cs.database.Database;
+import fr.utt.if26.cs.database.DatabaseHelper;
 import fr.utt.if26.cs.model.Transaction;
 
 
@@ -25,6 +26,7 @@ public class MongoDatabase extends Database {
 	private MongoClient mongoClient;
 	private DB mongoDB;
 	private DBCollection[] mongoCollections = new DBCollection[collections.length];
+	private DatabaseHelper mongoHelper;
 	
 	private MongoDatabase(){
 		try {
@@ -36,14 +38,20 @@ public class MongoDatabase extends Database {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+		mongoHelper = new MongoHelper(this.mongoClient, mongoCollections[this.currentCollection]);
 	}
 	
 	public static MongoDatabase getInstance(){
 		return (MongoDatabase.db!=null)?MongoDatabase.db:new MongoDatabase();
 	}
 	
+	public void shiftCollection(){
+		this.currentCollection++;
+		if(this.currentCollection>this.collections.length)
+			this.currentCollection=0;
+	}
+	
 	public BSONObject getItemById(String id){
-		
 		DBCursor cursor = mongoCollections[currentCollection].find((DBObject) JSON.parse("{id : "+id+"}"));
 		while(cursor.hasNext()){
 			
