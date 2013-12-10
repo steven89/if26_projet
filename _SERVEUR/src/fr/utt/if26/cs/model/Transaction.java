@@ -43,7 +43,6 @@ public class Transaction implements DBPersistentObject{
 	
 	@Override
 	public void save(DatabaseHelper... DBManagers) {
-		// TODO Auto-generated method stub
 		BasicDBObject data = (BasicDBObject) this.getBSONRepresentation();
 		this.date = new Date();
 		for(DatabaseHelper _dbManager : DBManagers){
@@ -53,7 +52,7 @@ public class Transaction implements DBPersistentObject{
 				data.put("update_date", this.date);
 				data.put(_dbManager.getObjectIDKey(), this.id);
 			}
-			_dbManager.insert("TODO", data);
+			_dbManager.insert(data);
 		}
 	}
 	
@@ -69,7 +68,6 @@ public class Transaction implements DBPersistentObject{
 	
 	@Override
 	public BSONObject getBSONRepresentation() {
-		// TODO Auto-generated method stub
 		BasicBSONObject BSONData = new BasicBSONObject();
 		BSONData.put("montant", this.montant);
 		BSONData.put("crediteur", this.crediteur);
@@ -79,7 +77,6 @@ public class Transaction implements DBPersistentObject{
 
 	@Override
 	public String getJSONStringRepresentation() {
-		// TODO Auto-generated method stub
 		return JSON.serialize(this.getBSONRepresentation());
 	}
 }

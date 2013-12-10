@@ -52,11 +52,7 @@ public class MongoDatabase extends Database {
 	}
 	
 	public BSONObject getItemById(String id){
-		DBCursor cursor = mongoCollections[currentCollection].find((DBObject) JSON.parse("{id : "+id+"}"));
-		while(cursor.hasNext()){
-			
-		}
-		cursor.close();
+		
 		return null;
 	}
 

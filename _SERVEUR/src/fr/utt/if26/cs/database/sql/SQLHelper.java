@@ -1,6 +1,6 @@
 package fr.utt.if26.cs.database.sql;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 
 import org.bson.BSONObject;
 
@@ -33,7 +33,7 @@ public class SQLHelper implements DatabaseHelper {
 	}
 
 	@Override
-	public Iterator<Object> find(Object query) {
+	public ArrayList<Object> find(Object query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

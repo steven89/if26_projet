@@ -1,6 +1,6 @@
 package fr.utt.if26.cs.database;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 
 import org.bson.BSONObject;
 
@@ -54,7 +54,7 @@ public interface DatabaseHelper {
 	 * 				An object which represent a query to perform against the database
 	 * @return an implementation of Iterator to fetch results
 	 */
-	public Iterator<Object> find(Object query);
+	public ArrayList<Object> find(Object query);
 	
 	/***
 	 * 
