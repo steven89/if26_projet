@@ -31,7 +31,7 @@ public class LoginActivity extends ActionBarActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		// get references on views
-		this.loginInput = (EditText) findViewById(R.id.login_input);
+		this.loginInput = (EditText) findViewById(R.id.account_email_input);
 		this.passwordInput = (EditText) findViewById(R.id.password_input);
 		this.forgottenAccountLink = (TextView) findViewById(R.id.forgotten_account_link);
 		this.connexionBtn = (Button) findViewById(R.id.connexion_btn);
