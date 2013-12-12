@@ -10,4 +10,5 @@
     <item type="id" name="account_email_input" />
     <item type="id" name="account_password_input" />
     <item type="id" name="account_password_confirmation_input" />
+    <item type="id" name="form_next_button" />
 </resources>

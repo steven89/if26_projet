@@ -50,6 +50,9 @@ public class LoginActivity extends ActionBarActivity{
 								Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
 								loadWallet.putExtra("token", jsonResponse.getString("token"));
 								startActivity(loadWallet);
+							}else{
+								Log.e("REQUEST", jsonResponse.toString());
+								connexionBtn.setText("ERROR");
 							}
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
@@ -59,6 +62,7 @@ public class LoginActivity extends ActionBarActivity{
 					}
 				});
 				Log.i("ACTION","CLICKED");
+				connexionBtn.setText("WAITING");
 				request.execute("GET", "http://train.sandbox.eutech-ssii.com/messenger/login.php?email="+loginInput.getText().toString()+"&password="+passwordInput.getText().toString());
 			}
 		});

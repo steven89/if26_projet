@@ -16,4 +16,5 @@
 	<string name="user_name_input_placeholder" >Nom d\'utilisateur</string>
 	<string name="account_email_input_placeholder">Email du compte</string>
 	<string name="account_password_confirmation_input_placeholder" >Confirmer le mot de passe</string>
+	<string name="form_next_button_text" >Suivant</string>
 </resources>

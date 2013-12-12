@@ -19,11 +19,13 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class JsonHttpRequest extends AsyncTask<String, Integer, Object> {
+public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 
 //	private class test{
 //		private Map<String, Class<?>> map = new HashMap<String, Class<?>>();
@@ -33,11 +35,13 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, Object> {
 //		}
 //	}
 	private BasicHttpParams params;
+	private JsonCallback jsonCallback;
 	// wildcard utilisé : map vérouillée en lecture seule
 	private static HashMap<String, Class<? extends HttpRequestBase>> methodClasses; 
 	
 	public JsonHttpRequest(JsonCallback callback){
 		this.params = new BasicHttpParams();
+		this.jsonCallback = callback;
 		this.initMethodClasses();
 	}
 	
@@ -52,7 +56,7 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, Object> {
 	}
 	
 	@Override
-	protected Object doInBackground(String... args){
+	protected JSONObject doInBackground(String... args){
 		// Juste pour les appels task.execute(method, url) ET task.execute(url)
 		String method, url;
 		HttpRequestBase request;
@@ -82,9 +86,9 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, Object> {
 	}
 	
 	@Override
-	protected void onPostExecute(Object result){
-		result = (result==null) ? "null message" : result;
-		Log.i("DONE", (String) result);
+	protected void onPostExecute(JSONObject result){
+		if(this.jsonCallback != null) 
+			this.jsonCallback.call(result);
 	}
 	
 	public void setParams(Map<String, Object> paramMap){
@@ -98,7 +102,7 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, Object> {
 		this.params = (BasicHttpParams) httpParams;
 	}
 	
-	private String readResponse(InputStream stream){
+	private JSONObject readResponse(InputStream stream){
 		String lineRead = "";
 		StringBuilder stringResponse = new StringBuilder();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -110,7 +114,17 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, Object> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return stringResponse.toString();
+		return this.JSONParse(stringResponse.toString());
+	}
+	
+	private JSONObject JSONParse(String jsonString){
+		JSONObject jsonResponse = new JSONObject();
+		try {
+			jsonResponse = new JSONObject(jsonString);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return jsonResponse;
 	}
 
 }
