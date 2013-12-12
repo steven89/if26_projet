@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:compat="http://schemas.android.com/apk/res-auto" >
+
+	<item
+        android:id="@id/signup_action"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        compat:showAsAction="ifRoom"
+        android:title="@string/signup_action_title"/>
+    <item
+        android:id="@id/setting_action"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        compat:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_settings"
+        android:title="@string/setting_action_title">
+    </item>
+
+</menu>

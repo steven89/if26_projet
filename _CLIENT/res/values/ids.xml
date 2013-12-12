@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="login_input" />
+    <item type="id" name="password_input" />
+    <item type="id" name="forgotten_account_link" />
+    <item type="id" name="connexion_btn" />
+    <item type="id" name="signup_action" />
+    <item type="id" name="setting_action" />
+    <item type="id" name="user_name_input"/>
+    <item type="id" name="account_email_input" />
+    <item type="id" name="account_password_input" />
+    <item type="id" name="account_password_confirmation_input" />
+</resources>
