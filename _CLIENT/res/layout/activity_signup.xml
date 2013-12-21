@@ -26,7 +26,7 @@
 		        android:inputType="text"
 		        />
 		    <EditText  
-		        android:id="@id/account_email_input"
+		        android:id="@id/email_input"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:hint="@string/account_email_input_placeholder"
@@ -34,19 +34,19 @@
 		        android:layout_marginTop="30dp"
 		        android:inputType="textEmailAddress"/>
 		    <EditText 
-		        android:id="@id/account_password_input"
+		        android:id="@id/password_input"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:hint="@string/password_placeholder"
-		        android:layout_below="@id/account_email_input"
+		        android:layout_below="@id/email_input"
 		        android:layout_marginTop="30dp"
 		        android:inputType="textPassword"/>
 		   	<EditText 
-		        android:id="@id/account_password_confirmation_input"
+		        android:id="@id/password_confirmation_input"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:hint="@string/account_password_confirmation_input_placeholder"
-		        android:layout_below="@id/account_password_input"
+		        android:hint="@string/password_confirmation_input_placeholder"
+		        android:layout_below="@id/password_input"
 		        android:layout_marginTop="0dp"
 		        android:inputType="textPassword"/>
 		   	<Button
@@ -54,7 +54,7 @@
 		   	    android:layout_width="match_parent"
 		   	    android:layout_height="wrap_content"
 		   	    android:hint="@string/form_next_button_text"
-		   	    android:layout_below="@id/account_password_confirmation_input"
+		   	    android:layout_below="@id/password_confirmation_input"
 		   	    android:layout_marginTop="30dp"/>
 		   
 		</RelativeLayout>
@@ -83,7 +83,7 @@
 		        android:inputType="text"
 		        />
 		    <EditText  
-		        android:id="@id/account_email_input"
+		        android:id="@id/email_input"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:hint="@string/account_email_input_placeholder"
@@ -95,7 +95,7 @@
 		   	    android:layout_width="match_parent"
 		   	    android:layout_height="wrap_content"
 		   	    android:hint="@string/form_next_button_text"
-		   	    android:layout_below="@id/account_email_input"
+		   	    android:layout_below="@id/email_input"
 		   	    android:layout_marginTop="30dp"/>
 		</RelativeLayout>
 	</ScrollView>

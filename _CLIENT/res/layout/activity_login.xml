@@ -1,58 +1,46 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".LoginActivity" >
-
-    <EditText
-        android:id="@id/account_email_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:ems="10"
-        android:hint="@string/account_email_input_placeholder"
-        android:inputType="textEmailAddress" >
-
-        <requestFocus />
-    </EditText>
-
-    <EditText
-        android:id="@id/password_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"       
-	    android:layout_below="@id/account_email_input"
-	    android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:ems="10"
-        android:hint="@string/password_placeholder"
-        android:inputType="textPassword" />
-	
-	<TextView
-	    android:id="@id/forgotten_account_link"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	    xmlns:tools="http://schemas.android.com/tools"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_alignLeft="@id/password_input"
-	    android:layout_alignRight="@id/password_input"
-	    android:layout_below="@id/password_input"
-	    android:layout_marginTop="30dp"
-	    android:ems="10"
-	    android:textColor="@color/link_clickable"
-	    android:text="@string/forgotten_account_text" />
-
-    <Button
-        android:id="@id/connexion_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" 
-        android:layout_below="@id/forgotten_account_link"
-        android:layout_marginTop="60dp"
-        android:ems="10"
-        android:text="@string/connexion_btn_text" />
-
-</RelativeLayout>
+	    >
+	    
+	<RelativeLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingBottom="@dimen/activity_vertical_margin"
+	    android:paddingLeft="@dimen/activity_horizontal_margin"
+	    android:paddingRight="@dimen/activity_horizontal_margin"
+	    android:paddingTop="@dimen/activity_vertical_margin"
+	    tools:context=".LoginActivity" >
+	
+		<fragment
+		    android:id="@id/fragment_userLogin_input"
+		    android:name="fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentTop="true"
+		    android:layout_centerHorizontal="true"
+		    tools:layout="@layout/fragment_form_email" />
+	
+		<fragment
+		    android:id="@id/fragment_userPassword_input"
+		    android:name="fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@id/fragment_userLogin_input"
+		    android:layout_centerHorizontal="true"
+		    tools:layout="@layout/fragment_form_password" />
+	
+		<fragment
+		    android:id="@+id/fragment1"
+		    android:name="fr.utt.if26.uttcoins.fragment.formulaire.FormButtonFragment"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@id/fragment_userPassword_input"
+		    android:layout_marginTop="30dp"
+		   	android:layout_centerHorizontal="true"
+		    tools:layout="@layout/fragment_form_button" />
+	"
+	
+	</RelativeLayout>
+</ScrollView>
