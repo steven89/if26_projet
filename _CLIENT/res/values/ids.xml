@@ -17,4 +17,7 @@
     <item type="id" name="fragment_userPassword_input" />
     <item type="id" name="form_submit_btn" />
     <item type="id" name="form_submit_loader" />
+    <item type="id" name="iconCategory" />
+    <item type="id" name="categoryName" />
+    
 </resources>
