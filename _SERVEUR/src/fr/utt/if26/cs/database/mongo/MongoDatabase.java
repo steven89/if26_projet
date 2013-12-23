@@ -13,6 +13,7 @@ import com.mongodb.util.JSON;
 
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseHelper;
+import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.Transaction;
 import fr.utt.if26.cs.model.User;
 
@@ -58,21 +59,35 @@ public class MongoDatabase extends Database {
 	}
 
 	@Override
-	public boolean insertTransaction(Transaction transaction) {
+	public boolean insertBean(DataBean bean) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean insertUser(User user) {
+	public boolean updateBean(DataBean bean) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean updateUser(User user) {
+	public boolean removeBean(DataBean bean) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public void open() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 
 }

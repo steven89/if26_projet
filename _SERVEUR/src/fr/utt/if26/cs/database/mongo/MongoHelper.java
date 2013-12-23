@@ -1,6 +1,7 @@
 package fr.utt.if26.cs.database.mongo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bson.BSONObject;
 
@@ -95,5 +96,11 @@ public class MongoHelper implements DatabaseHelper {
 	public String getObjectIDKey() {
 		// TODO Auto-generated method stub
 		return objectIDKey;
+	}
+
+	@Override
+	public Object[] insert(HashMap<String, String>... maps) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

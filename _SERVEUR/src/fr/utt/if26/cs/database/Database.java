@@ -1,17 +1,17 @@
 package fr.utt.if26.cs.database;
 
-import sun.security.jca.GetInstance;
-import fr.utt.if26.cs.model.Transaction;
-import fr.utt.if26.cs.model.User;
+import fr.utt.if26.cs.model.DataBean;
 
 public abstract class Database {
 	
 	private static Database db;
 	
-	public abstract boolean insertTransaction(Transaction transaction);
+	public abstract boolean insertBean(DataBean bean);
+	public abstract boolean updateBean(DataBean bean);
+	public abstract boolean removeBean(DataBean bean);
 	
-	public abstract boolean insertUser(User user);
-	public abstract boolean updateUser(User user);
+	public abstract void open();
+	public abstract void close();
 	
 	public static Database getInstance(){
 		return null;

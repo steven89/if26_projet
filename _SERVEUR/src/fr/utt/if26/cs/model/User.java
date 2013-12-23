@@ -2,27 +2,36 @@ package fr.utt.if26.cs.model;
 
 import java.util.HashMap;
 
-import org.bson.BSONObject;
-
-import fr.utt.if26.cs.database.DBPersistentObject;
-import fr.utt.if26.cs.database.DatabaseHelper;
 import fr.utt.if26.cs.utils.Crypt;
 
 
-public class User implements DBPersistentObject {
-	String id=null, email, pass, token;
-	int uttCoins;
-	HashMap<String, Transaction> transactions;
+public class User extends DataBean /*implements DBPersistentObject*/ {
 	
-	public User(String id, String email, String pass, int coins){
+	private String id=null, email, pass, prenom, nom, token, tag;
+	private int wallet=0;
+	private final static int defaultWallet = 50;
+	private HashMap<String, Transaction> transactions;
+	
+	public User(String id, String email, String pass, String prenom, String nom, String tag, int coins){
 		this.setId(id);
 		this.setEmail(email);
 		this.setPass(pass);
-		this.setUttCoins(coins);
+		this.setPrenom(prenom);
+		this.setNom(nom);
+		this.setTag(tag);
+		this.setWallet(coins);
+		this.export = new String[]{"id","email","pass","prenom","nom","token","wallet","tag"};
 	}
 	
-	public User(String email, String pass){
-		
+	public User(String email, String pass, String prenom, String nom, String tag, Boolean useDefaultWallet){
+		this.setEmail(email);
+		this.setPass(pass);
+		this.setPrenom(prenom);
+		this.setNom(nom);
+		this.setTag(tag);
+		if(useDefaultWallet)
+			this.setWallet(User.defaultWallet);
+		this.export = new String[]{"email","pass","prenom","nom","tag","wallet"};
 	}
 	
 	public void setId(String id){
@@ -35,17 +44,41 @@ public class User implements DBPersistentObject {
 		this.email = email;
 	}
 	
+	/**
+	 * Set user password using non-crypted pass
+	 * @param pass password
+	 */
 	public void setPass(String pass){
-		// TODO : saler le pass
-		this.pass = Crypt.sha1(pass);
+		this.setPass(pass, false);
+	}
+	
+	/**
+	 * Set user password
+	 * @param pass password
+	 * @param isCrypted whether or not the pass is already crypted or needs to be
+	 */
+	public void setPass(String pass, boolean isCrypted){
+		this.pass = (isCrypted)?pass:Crypt.crypt(pass);
+	}
+	
+	public void setPrenom(String prenom){
+		this.prenom = prenom;
+	}
+	
+	public void setNom(String nom){
+		this.nom = nom;
 	}
 	
 	public void setToken(String token){
 		this.token = token;
 	}
 	
-	public void setUttCoins(int coins){
-		this.uttCoins = coins;
+	public void setTag(String tag){
+		this.tag = tag;
+	}
+	
+	public void setWallet(int coins){
+		this.wallet = coins;
 	}
 	
 	public void setTransactions(HashMap<String, Transaction> t){
@@ -72,42 +105,24 @@ public class User implements DBPersistentObject {
 		return this.pass;
 	}
 	
+	public String getPrenom(){
+		return this.prenom;
+	}
+	
+	public String getNom(){
+		return this.nom;
+	}
+	
 	public String getToken(){
 		return this.token;
 	}
 	
-	public int getUttCoins(){
-		return this.uttCoins;
+	public String getTag(){
+		return this.tag;
 	}
-
-	@Override
-	public void save() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void save(DatabaseHelper... DBManagers) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void sync() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public BSONObject getBSONRepresentation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getJSONStringRepresentation() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public int getWallet(){
+		return this.wallet;
 	}
 	
 }

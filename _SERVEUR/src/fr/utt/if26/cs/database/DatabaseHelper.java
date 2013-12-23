@@ -1,6 +1,7 @@
 package fr.utt.if26.cs.database;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bson.BSONObject;
 
@@ -27,6 +28,8 @@ public interface DatabaseHelper {
 	 * @return an array of objects after insertion, useful when objects are modified during insertion (ie : updating the id)
 	 */
 	public Object[] insert(String... JSONStrings);
+	
+	public Object[] insert(HashMap<String, String>... maps);
 	
 	/***
 	 * Remove objects from a database

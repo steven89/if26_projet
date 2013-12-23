@@ -1,5 +1,7 @@
 package fr.utt.if26.cs.database;
 
+import java.util.HashMap;
+
 import fr.utt.if26.cs.database.mongo.MongoDatabase;
 import fr.utt.if26.cs.database.sql.SQLDatabase;
 
@@ -9,18 +11,22 @@ public class DatabaseManager {
 	private static DatabaseManager db = null;
 	private SQLDatabase sqlDb;
 	private MongoDatabase mongoDb;
+	private HashMap<String, Database> bases;
 	
 	private DatabaseManager(){
 		this.initBases();
 	}
 	
-	public DatabaseManager getInstance(){
+	public static DatabaseManager getInstance(){
 		return (DatabaseManager.db!=null)?DatabaseManager.db:new DatabaseManager();
 	}
 	
 	private void initBases(){
 		this.sqlDb = SQLDatabase.getInstance();
 		this.mongoDb = MongoDatabase.getInstance();
+		this.bases = new HashMap<>();
+		this.bases.put("users", this.sqlDb);
+		this.bases.put("transactions", this.mongoDb);
 	}
 	
 	public Database getMongoDatabase(){
@@ -29,6 +35,10 @@ public class DatabaseManager {
 	
 	public Database getSqlDatabase(){
 		return this.sqlDb;
+	}
+	
+	public Database getBase(String base){
+		return this.bases.get(base);
 	}
 	
 	
