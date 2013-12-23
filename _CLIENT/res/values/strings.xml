@@ -22,4 +22,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="generic_submit_btn_text" >Submit</string>
     <string name="loading_text" >Loading&#8230;</string>
+    <string name="drawer_open" >expend navigation</string>
+    <string name="drawer_close" >collapse navigation</string>
+    <string name="logout_action_title">logout</string>
 </resources>
