@@ -3,6 +3,7 @@ package fr.utt.if26.uttcoins;
 import org.json.JSONObject;
 
 import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
+import fr.utt.if26.uttcoins.fragment.formulaire.FormButtonFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment;
 import fr.utt.if26.uttcoins.utils.JsonCallback;
@@ -29,11 +30,10 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 
 	
 	private TextView forgottenAccountLink;
-	private Button connexionBtn;
 	private ActionBar actionBar;
+	private FormButtonFragment connexionBtnFragment;
 	private FormEmailFragment loginInputFragment;
 	private FormPasswordFragment passwordInputFragment;
-	private ProgressBar loader;
 	
 	private static final String emailPattern = "[a-zA-Z0-9]*@[a-zA-Z0-9]\\.[a-z]{0,5}";
 	
@@ -43,8 +43,7 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 		setContentView(R.layout.activity_login);
 		// setup references on views
 		this.forgottenAccountLink = (TextView) findViewById(R.id.forgotten_account_link);
-		this.connexionBtn = (Button) findViewById(R.id.form_submit_btn);
-		this.loader = (ProgressBar) findViewById(R.id.form_submit_loader);
+		this.connexionBtnFragment = (FormButtonFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_connexion_button);
 		this.loginInputFragment = (FormEmailFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_userLogin_input);
 		this.passwordInputFragment = (FormPasswordFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_userPassword_input);
 	}
@@ -85,15 +84,14 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 	}
 	
 	private void login(){
-		boolean error = false;
-		this.connexionBtn.setVisibility(View.GONE);
-		this.loader.setVisibility(View.VISIBLE);
-		if(!error){
+		boolean isInputsValide = (this.loginInputFragment.isInputValide() && this.passwordInputFragment.isInputValide());
+		if(isInputsValide){
 			JsonHttpRequest request = new JsonHttpRequest(new JsonCallback() {
 				@Override
 				public JSONObject call(JSONObject jsonResponse) {
 					// TODO Auto-generated method stub
 					try {
+						connexionBtnFragment.hideLoader();
 						if(!jsonResponse.getBoolean("error")){
 							Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
 							loadWallet.putExtra("token", jsonResponse.getString("token"));
@@ -110,6 +108,7 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 			});
 			Log.i("ACTION","CLICKED");
 			String url = "http://train.sandbox.eutech-ssii.com/messenger/login.php?email="+loginInputFragment.getValue()+"&password="+passwordInputFragment.getValue();
+			this.connexionBtnFragment.displayLoader();
 			request.execute("GET", url);
 		}
 	}

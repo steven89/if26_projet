@@ -92,7 +92,7 @@ public class FormEmailFragment extends Fragment implements FormInputFragment{
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
 				if(!hasFocus){
-					checkInputEmail();
+					isInputValide();
 				}
 			}
 		});		
@@ -122,13 +122,16 @@ public class FormEmailFragment extends Fragment implements FormInputFragment{
 		mListener = null;
 	}
 	
-	private void checkInputEmail(){
-		if(!this.email_input.getText().toString().matches(emailPattern)){
+	@Override
+	public boolean isInputValide(){
+		boolean isValide = this.email_input.getText().toString().matches(emailPattern);
+		if(!isValide){
 			this.email_error.setText(R.string.email_format_error_text);
 			this.email_error.setVisibility(View.VISIBLE);
 		}else{
 			this.email_error.setVisibility(View.GONE);
 		}
+		return isValide;
 	}
 	
 	public String getValue(){

@@ -32,7 +32,7 @@
 		    tools:layout="@layout/fragment_form_password" />
 	
 		<fragment
-		    android:id="@+id/fragment1"
+		    android:id="@id/fragment_connexion_button"
 		    android:name="fr.utt.if26.uttcoins.fragment.formulaire.FormButtonFragment"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"

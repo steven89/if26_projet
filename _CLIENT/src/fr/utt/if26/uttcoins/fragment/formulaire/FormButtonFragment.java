@@ -106,4 +106,20 @@ public class FormButtonFragment extends Fragment implements FormInputFragment{
 			}
 		});
 	}
+
+	@Override
+	public boolean isInputValide() {
+		// TODO Auto-generated method stub
+		return this.submitBtn.isEnabled();
+	}
+	
+	public void displayLoader(){
+		this.submitBtn.setVisibility(View.GONE);
+		this.loader.setVisibility(View.VISIBLE);
+	}
+	
+	public void hideLoader(){
+		this.submitBtn.setVisibility(View.VISIBLE);
+		this.loader.setVisibility(View.GONE);
+	}
 }

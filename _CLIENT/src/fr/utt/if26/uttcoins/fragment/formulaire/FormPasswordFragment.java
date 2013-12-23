@@ -115,19 +115,22 @@ public class FormPasswordFragment extends Fragment implements FormInputFragment{
 			public void onFocusChange(View v, boolean hasFocus) {
 				// TODO Auto-generated method stub
 				if(!hasFocus){
-					checkPasswordInput();
+					isInputValide();
 				}
 			}
 		});
 	}
 	
-	private void checkPasswordInput(){
-		if(this.password_input.getText().toString().length() == 0){
+	@Override
+	public boolean isInputValide(){
+		boolean isValide = this.password_input.getText().toString().length() > 0;
+		if(!isValide){
 			this.password_error.setText(R.string.password_required_error_text);
 			this.password_error.setVisibility(View.VISIBLE);
 		}else{
 			this.password_error.setVisibility(View.GONE);
 		}
+		return isValide;
 	}
 	
 	private void attachPasswordConfirmation(ViewGroup containerView){
