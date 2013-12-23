@@ -69,8 +69,8 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 			method = args[0];
 			url = args[1];	
 		}
-		Log.i("REQUEST", "PREPARING with method = " + method);
-		Log.i("REQUEST",  "MedthodClass : " + methodClasses.toString());
+		Log.i("REQUEST", "PREPARING with method = " + method+" and url = "+url);
+		Log.i("REQUEST",  "MedthodClass : " + methodClasses.get(method).toString());
 		try {
 			request = methodClasses.get(method).getConstructor(String.class).newInstance(url);
 			request.setParams(this.params);
