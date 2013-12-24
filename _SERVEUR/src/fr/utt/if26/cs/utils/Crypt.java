@@ -31,11 +31,8 @@ public class Crypt {
 	 * @return true if passwords match
 	 */
 	public static Boolean match(String pass, String crypt){
-		System.out.println(pass+" ? "+crypt);
 		String salt = Crypt.extractSalt(crypt);
-		System.out.println(salt);
 		String passwd = Crypt.crypt(pass, salt);
-		System.out.println(passwd);
 		return (passwd.equals(crypt));
 	}
 	
