@@ -106,11 +106,11 @@ public class SQLHelper implements DatabaseHelper {
 		System.out.println(query);
 		try {
 			ResultSet result = this.statement.executeQuery(query);
-			result.first();
-			System.out.println(result.getMetaData().getColumnCount());
-			for(int i=1; i<= result.getMetaData().getColumnCount(); i++){
-				map.put(result.getMetaData().getColumnLabel(i), result.getString(i));
-			}
+			if(result.first())
+				for(int i=1; i<= result.getMetaData().getColumnCount(); i++){
+					map.put(result.getMetaData().getColumnLabel(i), result.getString(i));
+				}
+			else return null;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

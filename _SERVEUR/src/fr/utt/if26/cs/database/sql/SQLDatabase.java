@@ -83,11 +83,11 @@ public class SQLDatabase extends Database {
 	public DataBean getBean(String key, String value) {
 		DataBean bean;
 		BSONObject datas = sqlHelper.findByKey(key, value);
-		if(datas.containsField("id"))
+		if(datas!=null && datas.containsField("id"))
 			bean = new User(
 					(String) datas.get("id"), 
 					(String) datas.get("email"),
-					(String) datas.get("passs"), 
+					(String) datas.get("pass"), 
 					(String) datas.get("prenom"), 
 					(String) datas.get("nom"),
 					(String) datas.get("tag"), 

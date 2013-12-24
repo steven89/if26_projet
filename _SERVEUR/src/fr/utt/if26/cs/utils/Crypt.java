@@ -24,10 +24,19 @@ public class Crypt {
 		return pass+"@"+s;
 	}
 	
+	/**
+	 * Compare a clear pass to a crypted pass
+	 * @param pass : the clear pass to test
+	 * @param crypt : the crypted pass to compare
+	 * @return true if passwords match
+	 */
 	public static Boolean match(String pass, String crypt){
+		System.out.println(pass+" ? "+crypt);
 		String salt = Crypt.extractSalt(crypt);
+		System.out.println(salt);
 		String passwd = Crypt.crypt(pass, salt);
-		return (passwd==crypt);
+		System.out.println(passwd);
+		return (passwd.equals(crypt));
 	}
 	
 	private static String sha1(String password){

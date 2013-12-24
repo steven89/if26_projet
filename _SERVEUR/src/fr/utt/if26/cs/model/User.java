@@ -15,7 +15,7 @@ public class User extends DataBean /*implements DBPersistentObject*/ {
 	public User(String id, String email, String pass, String prenom, String nom, String tag, int coins){
 		this.setId(id);
 		this.setEmail(email);
-		this.setPass(pass);
+		this.setPass(pass, true);
 		this.setPrenom(prenom);
 		this.setNom(nom);
 		this.setTag(tag);
@@ -23,7 +23,7 @@ public class User extends DataBean /*implements DBPersistentObject*/ {
 		this.export = new String[]{"id","email","pass","prenom","nom","token","wallet","tag"};
 	}
 	
-	public User(String email, String pass, String prenom, String nom, String tag, Boolean useDefaultWallet){
+	public User(String email, String pass, String prenom, String nom, String tag, boolean useDefaultWallet){
 		this.setEmail(email);
 		this.setPass(pass);
 		this.setPrenom(prenom);
@@ -32,6 +32,12 @@ public class User extends DataBean /*implements DBPersistentObject*/ {
 		if(useDefaultWallet)
 			this.setWallet(User.defaultWallet);
 		this.export = new String[]{"email","pass","prenom","nom","tag","wallet"};
+	}
+	
+	public User(String email, String pass){
+		this.setEmail(email);
+		this.setPass(pass, true);
+		this.export = new String[]{"email","pass"};
 	}
 	
 	public void setId(String id){
@@ -59,6 +65,10 @@ public class User extends DataBean /*implements DBPersistentObject*/ {
 	 */
 	public void setPass(String pass, boolean isCrypted){
 		this.pass = (isCrypted)?pass:Crypt.crypt(pass);
+	}
+	
+	public void setPass(String pass, String salt){
+		this.pass = Crypt.crypt(pass, salt);
 	}
 	
 	public void setPrenom(String prenom){
