@@ -34,16 +34,14 @@ public class UserServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
-		out.println(request.getQueryString());
+		DataBean bean=null;
 		try{
 			int id = Integer.parseInt(request.getQueryString());
 			Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
 			db.open();
-			DataBean bean = db.getBean("id", Integer.toString(id));
+			bean = db.getBean("id", Integer.toString(id));
 			db.close();
-			out.println(bean.getJSONStringRepresentation());
 		} catch (NumberFormatException e){
-			DataBean bean;
 			Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
 			db.open();
 			if(request.getQueryString().indexOf("@")!=-1){
@@ -53,8 +51,12 @@ public class UserServlet extends HttpServlet {
 				bean = db.getBean("tag", request.getQueryString());
 			}
 			db.close();	
-			out.println(bean.getJSONStringRepresentation());
 		}
+		if(bean==null)
+			//out.println("{'error':'404'}");
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		else
+			out.println(bean.getJSONStringRepresentation());
 		//BasicBSONObject bson =  (BasicBSONObject) JSON.parse("{'test': 'aaeaze', 't':'a'}");
 		//byte[] bte = BSON.encode(bson);	
 		/*OutputStream os = response.getOutputStream();
