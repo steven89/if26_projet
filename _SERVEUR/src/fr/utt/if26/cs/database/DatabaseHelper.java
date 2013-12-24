@@ -14,22 +14,17 @@ import org.bson.BSONObject;
 public interface DatabaseHelper {
 	/*** 
 	 * Save objects in a database
-	 * 
-	 * @param BSONObjects
-	 *             		Array of documents to save, in a BSON representation
-	 * @return an array of objects after insertion, useful when objects are modified during insertion (ie : updating the id)
+	 * @param BSONObject TODO
 	 */
-	public Object[] insert(BSONObject... BSONObjects);
+	public void insert(BSONObject BSONObject);
 	
 	/*** 
 	 * Save objects in a database
-	 * @param JSONStrings
-	 *              	Array of documents to save, in a JSON string representation
-	 * @return an array of objects after insertion, useful when objects are modified during insertion (ie : updating the id)
+	 * @param JSONString TODO
 	 */
-	public Object[] insert(String... JSONStrings);
+	public void insert(String JSONString);
 	
-	public Object[] insert(HashMap<String, String>... maps);
+	public void insert(HashMap<String, String> map);
 	
 	/***
 	 * Remove objects from a database
@@ -53,7 +48,7 @@ public interface DatabaseHelper {
 	 * 				An object which represent a query to perform against the database
 	 * @return an implementation of Iterator to fetch results
 	 */
-	public ArrayList<Object> find(Object query);
+	public ArrayList<BSONObject> find(Object query);
 	
 	/***
 	 * 
@@ -61,7 +56,15 @@ public interface DatabaseHelper {
 	 * 				An object which represent a query to perform against the database
 	 * @return an implementation of Iterator to fetch results
 	 */
-	public ArrayList<Object> find(BSONObject query);
+	public ArrayList<BSONObject> find(BSONObject query);
+	
+	/**
+	 * Find one entry (use only with 'unique' fields)
+	 * @param key : field to search in
+	 * @param value : value to search for
+	 * @return entry corresponding to requestd value
+	 */
+	public BSONObject findByKey(String key, String value);
 	
 	/***
 	 * 

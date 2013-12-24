@@ -1,12 +1,16 @@
 package fr.utt.if26.cs.database.sql;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
+
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import fr.utt.if26.cs.database.DatabaseHelper;
 
@@ -27,33 +31,32 @@ public class SQLHelper implements DatabaseHelper {
 	}
 
 	@Override
-	public Object[] insert(BSONObject... BSONObjects) {
+	public void insert(BSONObject BSONObject) {
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
-	public Object[] insert(HashMap<String, String>... maps) {
-		for(HashMap<String, String> map : maps){
-			String keys = "";
-			String values = "";
-			for(String key : map.keySet()){
-				if(!key.equals("id")){
-					keys += key+", ";
-					values += "'"+map.get(key)+"', ";
-				}
-			}
-			keys = keys.substring(0, keys.length()-2);
-			values = values.substring(0, values.length()-2);
-			String query = "INSERT INTO "+this.table+"("+keys+") VALUES ("+values+") ;";
-			System.out.println(query);
-			try {
-				this.statement.executeUpdate(query);
-			} catch (SQLException e) {
-				e.printStackTrace();
+	public void insert(HashMap<String, String> map) {
+		String keys = "";
+		String values = "";
+		for(String key : map.keySet()){
+			if(!key.equals("id")){
+				keys += key+", ";
+				values += "'"+map.get(key)+"', ";
 			}
 		}
-		return null;
+		keys = keys.substring(0, keys.length()-2);
+		values = values.substring(0, values.length()-2);
+		String query = "INSERT INTO "+this.table+"("+keys+") VALUES ("+values+") ;";
+		try {
+			this.statement.executeUpdate(query);
+		} catch (MySQLIntegrityConstraintViolationException e){
+			//TODO : entry already exists
+			System.out.println(e.getMessage());
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -69,7 +72,7 @@ public class SQLHelper implements DatabaseHelper {
 	}
 
 	@Override
-	public ArrayList<Object> find(Object query) {
+	public ArrayList<BSONObject> find(Object query) {
 		// TODO Auto-generated method stub
 		try {
 			this.statement.executeQuery("");
@@ -86,15 +89,32 @@ public class SQLHelper implements DatabaseHelper {
 	}
 
 	@Override
-	public ArrayList<Object> find(BSONObject query) {
+	public ArrayList<BSONObject> find(BSONObject query) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Object[] insert(String... JSONStrings) {
+	public void insert(String JSONString) {
 		// TODO Auto-generated method stub
-		return null;
+	}
+
+	@Override
+	public BSONObject findByKey(String key, String value) {
+		BSONObject map = new BasicBSONObject();
+		String query = "SELECT * FROM "+this.table+" WHERE "+key+"='"+value+"'";
+		System.out.println(query);
+		try {
+			ResultSet result = this.statement.executeQuery(query);
+			result.first();
+			System.out.println(result.getMetaData().getColumnCount());
+			for(int i=1; i<= result.getMetaData().getColumnCount(); i++){
+				map.put(result.getMetaData().getColumnLabel(i), result.getString(i));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return map;
 	}
 
 }

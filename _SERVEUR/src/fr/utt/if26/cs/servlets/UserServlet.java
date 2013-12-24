@@ -1,12 +1,8 @@
 package fr.utt.if26.cs.servlets;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.Writer;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,6 +19,7 @@ import com.mongodb.util.JSON;
 
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
+import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.User;
 
 /**
@@ -36,9 +33,30 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().print("HELLO");
-		BasicBSONObject bson =  (BasicBSONObject) JSON.parse("{'test': 'aaeaze', 't':'a'}");
-		byte[] bte = BSON.encode(bson);	
+		PrintWriter out = response.getWriter();
+		out.println(request.getQueryString());
+		try{
+			int id = Integer.parseInt(request.getQueryString());
+			Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
+			db.open();
+			DataBean bean = db.getBean("id", Integer.toString(id));
+			db.close();
+			out.println(bean.getJSONStringRepresentation());
+		} catch (NumberFormatException e){
+			DataBean bean;
+			Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
+			db.open();
+			if(request.getQueryString().indexOf("@")!=-1){
+				bean = db.getBean("email", request.getQueryString());
+			}
+			else{
+				bean = db.getBean("tag", request.getQueryString());
+			}
+			db.close();	
+			out.println(bean.getJSONStringRepresentation());
+		}
+		//BasicBSONObject bson =  (BasicBSONObject) JSON.parse("{'test': 'aaeaze', 't':'a'}");
+		//byte[] bte = BSON.encode(bson);	
 		/*OutputStream os = response.getOutputStream();
 		os.write(bte);
 		os.flush();*/
@@ -73,24 +91,37 @@ public class UserServlet extends HttpServlet {
 		while((line = request.getReader().readLine()) != null){
 			params += line;
 		}
-		BasicBSONObject jsonParams = (BasicBSONObject) JSON.parse(params);		
-		
-		String email = jsonParams.getString("email");
-		String pass = jsonParams.getString("pass");
-		String prenom = jsonParams.getString("prenom");
-		String nom = jsonParams.getString("nom");
-		String tag = jsonParams.getString("tag");
-		User user = new User(email, pass, prenom, nom, tag, true);
-		
-		Database db = DatabaseManager.getInstance().getBase(this.base);
-		db.open();
-		db.insertBean(user);
-		db.close();
-		out.println(user.getJSONStringRepresentation());
-//		out.println(params);
-//		for(String key : jsonParams.keySet()){
-//			out.println(key+" : "+jsonParams.get(key));
-//		}
+		BasicBSONObject jsonParams = (BasicBSONObject) JSON.parse(params);
+		Boolean hasRequiredFields = true;
+		String requiredFields[] = {"email", "pass", "prenom", "nom", "nom", "tag"};
+		for(String field : requiredFields){
+			if(!jsonParams.containsField(field))
+				hasRequiredFields = false;
+		}
+		if(hasRequiredFields){
+			DataBean user = new User(
+					jsonParams.getString("email"),
+					jsonParams.getString("pass"),
+					jsonParams.getString("prenom"),
+					jsonParams.getString("nom"),
+					jsonParams.getString("tag"), true
+			);
+			
+			
+			Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
+			db.open();
+			db.insertBean(user);
+			db.close();
+			out.println(user.getJSONStringRepresentation());
+//			out.println(params);
+//			for(String key : jsonParams.keySet()){
+//				out.println(key+" : "+jsonParams.get(key));
+//			}
+		}
+		else{
+			out.println("{'error':'field_missing'}");
+		}
+
 	}
 
 	/**

@@ -35,7 +35,7 @@ public class User extends DataBean /*implements DBPersistentObject*/ {
 	}
 	
 	public void setId(String id){
-		if(this.id!=null)
+		if(this.id==null)
 			this.id = id;
 	}
 	

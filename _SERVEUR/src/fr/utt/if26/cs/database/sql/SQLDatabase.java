@@ -4,8 +4,11 @@ import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.bson.BSONObject;
+
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.model.DataBean;
+import fr.utt.if26.cs.model.User;
 
 public class SQLDatabase extends Database {
 	
@@ -68,5 +71,27 @@ public class SQLDatabase extends Database {
 	public boolean removeBean(DataBean bean) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public DataBean getBean(BSONObject datas) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DataBean getBean(String key, String value) {
+		DataBean bean;
+		BSONObject datas = sqlHelper.findByKey(key, value);
+		bean = new User(
+				(String) datas.get("id"), 
+				(String) datas.get("email"),
+				(String) datas.get("passs"), 
+				(String) datas.get("prenom"), 
+				(String) datas.get("nom"),
+				(String) datas.get("tag"), 
+				Integer.parseInt((String) datas.get("wallet"))
+		);
+		return bean;
 	}
 }

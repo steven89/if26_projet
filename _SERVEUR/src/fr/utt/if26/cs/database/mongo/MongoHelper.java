@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -41,21 +42,15 @@ public class MongoHelper implements DatabaseHelper {
 	}
 	
 	@Override
-	public Object[] insert(BSONObject... BSONObjects) {
-		for(BSONObject obj : BSONObjects){
-			this.collection.insert((DBObject) obj);
-		}
-		return null;
+	public void insert(BSONObject BSONObject) {
+		this.collection.insert((DBObject) BSONObject);
 	}
 
 	@Override
-	public Object[] insert(String... JSONStrings) {
-		BSONObject[] objects = new BSONObject[JSONStrings.length];
-		for(int i=0;i<JSONStrings.length; i++){
-			objects[i] = (BSONObject) JSON.parse(JSONStrings[i]);
-		}
-		this.insert(objects);
-		return null;
+	public void insert(String JSONString) {
+		BSONObject object = new BasicBSONObject();
+		object = (BSONObject) JSON.parse(JSONString);
+		this.insert(object);
 	}
 
 	@Override
@@ -76,14 +71,14 @@ public class MongoHelper implements DatabaseHelper {
 	}
 
 	@Override
-	public ArrayList<Object> find(Object query) {
+	public ArrayList<BSONObject> find(Object query) {
 		return find((BSONObject) JSON.parse((String) query));
 	}
 
 	
 	@Override
-	public ArrayList<Object> find(BSONObject query) {
-		ArrayList<Object> liste = new ArrayList<Object>();
+	public ArrayList<BSONObject> find(BSONObject query) {
+		ArrayList<BSONObject> liste = new ArrayList<BSONObject>();
 		DBCursor cursor = this.collection.find((DBObject) query);
 		while(cursor.hasNext()){
 			liste.add(cursor.next());
@@ -99,7 +94,12 @@ public class MongoHelper implements DatabaseHelper {
 	}
 
 	@Override
-	public Object[] insert(HashMap<String, String>... maps) {
+	public void insert(HashMap<String, String> map) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public BSONObject findByKey(String key, String value) {
 		// TODO Auto-generated method stub
 		return null;
 	}
