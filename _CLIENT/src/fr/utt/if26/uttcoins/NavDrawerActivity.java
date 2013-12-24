@@ -7,12 +7,15 @@ import org.json.JSONObject;
 
 import fr.utt.if26.uttcoins.utils.NavDrawerContentListAdapter;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,8 +74,10 @@ public class NavDrawerActivity extends ActionBarActivity implements AdapterView.
             	getSupportActionBar().setTitle(title);
             	supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
+            
 		};
 		this.drawerLayout.setDrawerListener(this.drawerToggler);
+		this.drawerLayout.setFocusableInTouchMode(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 	}
@@ -121,5 +126,42 @@ public class NavDrawerActivity extends ActionBarActivity implements AdapterView.
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		//TODO que faire au click sur une categorie ? nouveau fragment ? nouvelle activity ?
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if(!this.drawerLayout.isDrawerOpen(Gravity.LEFT)){
+			this.drawerLayout.openDrawer(Gravity.LEFT);
+		}else{
+			this.showExitMessage();
+		}
+	}
+	
+	public void showExitMessage(){
+		new AlertDialog.Builder(this)
+		.setIcon(android.R.drawable.ic_dialog_alert)
+		.setTitle("Exiting the application")
+		.setMessage("Do you really want to quit this application (this will disconnect you) ?")
+		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				exitApplication();
+			}
+		})
+		.setNegativeButton("No", null)
+		.show();
+	}
+	
+	private void exitApplication(){
+		//TODO : déconnexion de l'utilisateur
+		this.finish();
+	}
+	
+	@Override
+	protected void onPause(){
+		super.onPause();
+		this.exitApplication();
 	}
 }
