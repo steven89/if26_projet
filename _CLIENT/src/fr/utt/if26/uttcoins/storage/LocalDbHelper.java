@@ -13,7 +13,7 @@ public class LocalDbHelper {
 	private LocalDbOpenHelper dbHelper;
 	private SQLiteDatabase db;
 	
-	public final static int LOGIN_INFOS = 0;
+	public final static int LOGIN_INFOS = 1;
 	public final static int EMAIL = 0;
 	public final static int TOKEN = 1;
 	
