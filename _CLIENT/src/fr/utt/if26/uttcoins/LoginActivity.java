@@ -11,6 +11,9 @@ import fr.utt.if26.uttcoins.utils.JsonHttpRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -98,6 +101,7 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 							startActivity(loadWallet);
 						}else{
 							Log.e("REQUEST", jsonResponse.toString());
+							showErrorMessage("Erreur", "Mot de passe ou identifiant invalide.");
 						}
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -111,5 +115,19 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 			this.connexionBtnFragment.displayLoader();
 			request.execute("GET", url);
 		}
+	}
+	
+	private void showErrorMessage(String Title, String Message){
+		new AlertDialog.Builder(this)
+		.setTitle(Title)
+		.setMessage(Message)
+		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		})
+		.show();
 	}
 }
