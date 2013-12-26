@@ -1,21 +1,29 @@
 package fr.utt.if26.uttcoins;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.utt.if26.uttcoins.utils.NavDrawerContentListAdapter;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,11 +44,20 @@ public class NavDrawerActivity extends ActionBarActivity implements AdapterView.
 			"Nouveau paiement"
 			};
 	protected final int[] icons = {
-			R.drawable.test_icon, // icone de test
-			R.drawable.test_icon, // icone de test
-			R.drawable.test_icon, // icone de test
-			R.drawable.test_icon, // icone de test
+			R.drawable.test_icon, // icone de test pour "Activités"
+			R.drawable.test_icon, // icone de test pour "Mon argent"
+			R.drawable.test_icon, // icone de test pour "Mes transactions"
+			R.drawable.test_icon, // icone de test pour "Nouveau paiement"
 	};
+	
+	public final static int positionInDrawer = 0;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_wallet);
+		this.onCreateNavigationDrawer();
+	}
 	
 	protected void onCreateNavigationDrawer() {
 		this.drawerListItem = new ArrayList<JSONObject>();
@@ -119,15 +136,71 @@ public class NavDrawerActivity extends ActionBarActivity implements AdapterView.
           return true;
         }
         // Handle your other action bar items...
-
+    	switch(item.getItemId()){
+			case R.id.setting_action :
+				return true;
+			case R.id.logout_action :
+				this.logout();
+				Intent loadLogin = new Intent(getApplicationContext(), LoginActivity.class);
+				loadLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(loadLogin);
+				return true;
+    	}
         return super.onOptionsItemSelected(item);
     }
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		//TODO que faire au click sur une categorie ? nouveau fragment ? nouvelle activity ?
+		this.drawerList.setItemChecked(position, true);
+		int refPositionInDrawer = -1;
+		try {
+			//récupérer la véritable valeur de "positionInDrawer", réecrite dans les classes filles
+			refPositionInDrawer = this.getClass().getField("positionInDrawer").getInt(null);
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(this.drawerList.getCheckedItemPosition()!=refPositionInDrawer){
+			Log.v("positionInDrawer", Integer.toString(refPositionInDrawer));
+			this.loadActivity(position);
+		}
 	}
 	
+	private void loadActivity(int position){
+		//Traitement quelconque sur la BD ?
+		Intent newActivity;
+		Log.v("POSITION", Integer.toString(position));
+		switch(position){
+			case 0:
+				newActivity = new Intent(getApplicationContext(), ActivitiesActivity.class);
+				break;
+			case 1:
+				newActivity = new Intent(getApplicationContext(), WalletActivity.class);
+				break;
+			case 2:
+				newActivity = new Intent(getApplicationContext(), TransactionsActivity.class);
+				break;
+			case 3:
+				newActivity = new Intent(getApplicationContext(), PaiementActivity.class);
+				break;
+			default :
+				//cas imprévu ? screw you
+				newActivity = null;
+				break;
+		}
+		if(newActivity != null)
+			newActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			this.startActivity(newActivity);
+			
+	}
+
 	@Override
 	public void onBackPressed() {
 		if(!this.drawerLayout.isDrawerOpen(Gravity.LEFT)){
@@ -147,7 +220,7 @@ public class NavDrawerActivity extends ActionBarActivity implements AdapterView.
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-				exitApplication();
+				finish();
 			}
 		})
 		.setNegativeButton("No", null)
@@ -155,13 +228,46 @@ public class NavDrawerActivity extends ActionBarActivity implements AdapterView.
 	}
 	
 	private void exitApplication(){
-		//TODO : déconnexion de l'utilisateur
-		this.finish();
+		this.logout();
+		//autres trucs ?
+	}
+	
+	private void logout(){
+		Log.i("USER", "USER DISCONNECTED");
 	}
 	
 	@Override
 	protected void onPause(){
 		super.onPause();
-		this.exitApplication();
+	}
+	
+	@Override
+	protected void onStop(){
+		super.onStop();
+	}
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		Log.i("DATA", "REFRESH");
+	}
+	
+	@Override
+	protected void onDestroy(){
+		super.onDestroy();
+//		//need un moyen plus directe et sécure de récupérer le nombre d'activité
+//		ActivityManager m = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE );
+//		//récupère les 10 dernière running task (fonctionne à 99%, mais aucun moyen d'être
+//		//certain que notre app soit dans les 10 dernières lancés)
+//		List<RunningTaskInfo> runningTaskInfoList =  m.getRunningTasks(10);
+//		Iterator<RunningTaskInfo> itr = runningTaskInfoList.iterator();
+//		while(itr.hasNext()){
+//			RunningTaskInfo runningTaskInfo = (RunningTaskInfo)itr.next();
+//			int id = runningTaskInfo.id;
+//			if(id==getTaskId() && runningTaskInfo.numActivities <= 2){
+//				this.exitApplication();
+//			}
+//		}
+//		this.exitApplication();
 	}
 }

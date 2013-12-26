@@ -1,11 +1,12 @@
 package fr.utt.if26.uttcoins;
 
 import android.os.Bundle;
+import android.app.Activity;
 import android.view.Menu;
 
-public class WalletActivity extends NavDrawerActivity {
+public class ActivitiesActivity extends NavDrawerActivity {
 
-	public final static int positionInDrawer = 1;
+	public final static int positionInDrawer = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
