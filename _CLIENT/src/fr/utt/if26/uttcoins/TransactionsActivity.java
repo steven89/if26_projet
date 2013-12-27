@@ -3,9 +3,10 @@ package fr.utt.if26.uttcoins;
 import android.os.Bundle;
 import android.view.Menu;
 
-public class WalletActivity extends NavDrawerActivity {
 
-	public final static int positionInDrawer = 1;
+public class TransactionsActivity extends NavDrawerActivity {
+
+	public final static int positionInDrawer = 2;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -19,5 +20,15 @@ public class WalletActivity extends NavDrawerActivity {
 		super.onCreateOptionsMenu(menu);
 		return true;
 	}
+
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		switch (item.getItemId()) {
+//			case android.R.id.home:
+//				NavUtils.navigateUpFromSameTask(this);
+//				return true;
+//		}
+//		return super.onOptionsItemSelected(item);
+//	}
 
 }
