@@ -103,4 +103,10 @@ public class MongoHelper implements DatabaseHelper {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void update(BSONObject datas) {
+		// TODO Auto-generated method stub
+		
+	}
 }

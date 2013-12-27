@@ -71,4 +71,6 @@ public interface DatabaseHelper {
 	 * @return The name of the key that uses the database the current DBManager represent (ie : "_id")
 	 */
 	public String getObjectIDKey();
+	
+	public void update(BSONObject datas);
 }

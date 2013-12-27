@@ -63,7 +63,7 @@ public class SQLDatabase extends Database {
 
 	@Override
 	public boolean updateBean(DataBean bean) {
-		// TODO Auto-generated method stub
+		sqlHelper.update(bean.getBSONRepresentation());
 		return false;
 	}
 

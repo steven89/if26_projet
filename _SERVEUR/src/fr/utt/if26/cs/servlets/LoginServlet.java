@@ -18,6 +18,7 @@ import org.bson.BasicBSONObject;
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.model.DataBean;
+import fr.utt.if26.cs.model.LoginManager;
 import fr.utt.if26.cs.model.User;
 import fr.utt.if26.cs.utils.Crypt;
 
@@ -44,7 +45,6 @@ public class LoginServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		BSONObject params = new BasicBSONObject();
 		for(String key : request.getParameterMap().keySet()){
-			//out.println(key+" : "+request.getParameter(key));
 			params.put(key, request.getParameter(key));
 		}
 		boolean hasRequiredFields = true;
@@ -62,7 +62,11 @@ public class LoginServlet extends HttpServlet {
 			db.close();
 			if(bean!=null)
 				if(Crypt.match(user.getPass(), ((User) bean).getPass())){
-					out.println("auth_ok");
+					((User) bean).setToken(LoginManager.generateToken());
+					db.open();
+					db.updateBean(bean);
+					db.close();
+					out.println("{'email': '"+((User) bean).getEmail()+"', 'token' : '"+((User) bean).getToken()+"'}");
 				}
 				else{
 					out.println("{'error':'auth_error'}");

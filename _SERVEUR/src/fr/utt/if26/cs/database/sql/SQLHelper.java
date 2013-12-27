@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
+import com.mongodb.util.JSON;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import fr.utt.if26.cs.database.DatabaseHelper;
@@ -32,7 +33,16 @@ public class SQLHelper implements DatabaseHelper {
 
 	@Override
 	public void insert(BSONObject BSONObject) {
-		// TODO Auto-generated method stub
+		HashMap<String, String> map = new HashMap<>();
+		for(String key : BSONObject.keySet()){
+			map.put(key, (String) BSONObject.get(key));
+		}
+		this.insert(map);
+	}
+	
+	@Override
+	public void insert(String JSONString) {
+		this.insert((BSONObject) JSON.parse(JSONString));
 	}
 
 	@Override
@@ -84,8 +94,7 @@ public class SQLHelper implements DatabaseHelper {
 
 	@Override
 	public String getObjectIDKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return "id";
 	}
 
 	@Override
@@ -95,15 +104,9 @@ public class SQLHelper implements DatabaseHelper {
 	}
 
 	@Override
-	public void insert(String JSONString) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public BSONObject findByKey(String key, String value) {
 		BSONObject map = new BasicBSONObject();
 		String query = "SELECT * FROM "+this.table+" WHERE "+key+"='"+value+"'";
-		System.out.println(query);
 		try {
 			ResultSet result = this.statement.executeQuery(query);
 			if(result.first())
@@ -115,6 +118,27 @@ public class SQLHelper implements DatabaseHelper {
 			e.printStackTrace();
 		}
 		return map;
+	}
+
+	@Override
+	public void update(BSONObject datas) {
+		String id = (String) datas.get(this.getObjectIDKey());
+		String query = "UPDATE "+this.table+" SET ";
+		for(String key : datas.keySet()){
+			if(!key.equals(this.getObjectIDKey()))
+				query += key+" = '"+datas.get(key)+"', ";
+		}
+		query = query.substring(0, query.length()-2);
+		query += " WHERE "+this.getObjectIDKey()+" = '"+id+"';";
+		try {
+			this.statement.executeUpdate(query);
+		} catch (MySQLIntegrityConstraintViolationException e){
+			//TODO : entry already exists
+			System.out.println(e.getMessage());
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
