@@ -83,7 +83,7 @@ public class SQLDatabase extends Database {
 	public DataBean getBean(String key, String value) {
 		DataBean bean;
 		BSONObject datas = sqlHelper.findByKey(key, value);
-		if(datas!=null && datas.containsField("id"))
+		if(datas!=null && datas.containsField("id")){
 			bean = new User(
 					(String) datas.get("id"), 
 					(String) datas.get("email"),
@@ -93,6 +93,10 @@ public class SQLDatabase extends Database {
 					(String) datas.get("tag"), 
 					Integer.parseInt((String) datas.get("wallet"))
 			);
+			if(datas.containsField("token")){
+				((User) bean).setToken((String) datas.get("token"));
+			}
+		}
 		else
 			bean = null;
 		return bean;
