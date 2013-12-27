@@ -7,6 +7,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
 import fr.utt.if26.uttcoins.utils.NavDrawerContentListAdapter;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -19,6 +20,9 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -30,7 +34,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-public class NavDrawerActivity extends ActionBarActivity implements AdapterView.OnItemClickListener{
+public abstract class NavDrawerActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, OnFragmentInteractionListener{
 	
 	protected ArrayList<JSONObject> drawerListItem;
 	protected DrawerLayout drawerLayout;
@@ -210,7 +214,7 @@ public class NavDrawerActivity extends ActionBarActivity implements AdapterView.
 		}
 	}
 	
-	public void showExitMessage(){
+	protected void showExitMessage(){
 		new AlertDialog.Builder(this)
 		.setIcon(android.R.drawable.ic_dialog_alert)
 		.setTitle("Exiting the application")
@@ -227,13 +231,39 @@ public class NavDrawerActivity extends ActionBarActivity implements AdapterView.
 		.show();
 	}
 	
-	private void exitApplication(){
+	protected void exitApplication(){
 		this.logout();
 		//autres trucs ?
 	}
 	
-	private void logout(){
+	protected void logout(){
 		Log.i("USER", "USER DISCONNECTED");
+	}
+	
+	protected abstract void initFragments();
+	
+	protected int showFragment(int containerID, final Fragment fragment){
+		if(fragment == null){
+			return 0;
+		}
+		final FragmentManager fragManager = getSupportFragmentManager();
+		final FragmentTransaction fragTransaction = fragManager.beginTransaction();
+		fragTransaction.replace(containerID, fragment);
+		/*if(this.currentFrag!=null)
+			fragTransaction.detach(this.currentFrag);
+		this.currentFrag = fragment;
+		fragTransaction.attach(this.currentFrag);*/
+		return fragTransaction.commit();
+	}
+	
+	protected int removeFragment(final Fragment fragment){
+		if(fragment == null){
+			return 0;
+		}
+		final FragmentManager fragManager = getSupportFragmentManager();
+		final FragmentTransaction fragTransaction = fragManager.beginTransaction();
+		fragTransaction.remove(fragment);
+		return fragTransaction.commit();
 	}
 	
 	@Override

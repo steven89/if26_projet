@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+   	<ImageView
+   	    android:id="@id/person_icon"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:src="@drawable/ic_action_person" />
+
+   	<TextView
+   	    android:id="@id/person_name"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_centerVertical="true"
+   	    android:layout_toRightOf="@id/person_icon"
+   	    android:text="" />
+
+   	<TextView
+   	    android:id="@id/solde_credit"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_centerHorizontal="true"
+   	    android:layout_centerVertical="true"
+   	    android:textColor="@color/green_credit"
+   	    android:text="" />
+
+   	<TextView
+   	    android:id="@id/solde_debit"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_alignBaseline="@id/solde_credit"
+   	    android:layout_marginLeft="35dp"
+   	    android:layout_centerVertical="true"
+   	    android:layout_toRightOf="@id/solde_credit"
+   	    android:textColor="@color/red_debit"
+   	    android:text="" />
+
+</RelativeLayout>
