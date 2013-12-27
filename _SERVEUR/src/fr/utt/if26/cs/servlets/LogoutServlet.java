@@ -22,27 +22,30 @@ import fr.utt.if26.cs.model.User;
 import fr.utt.if26.cs.utils.Crypt;
 
 /**
- * Servlet implementation class Login
+ * Servlet implementation class Logout
  */
-@WebServlet("/Login")
-public class LoginServlet extends HttpServlet {
+@WebServlet("/Logout")
+public class LogoutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public LoginServlet() {
+    public LogoutServlet() {
         super();
+        // TODO Auto-generated constructor stub
     }
 
 	/**
-	 * GET /Login not allowed : return 404
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.sendError(HttpServletResponse.SC_NOT_FOUND);
 	}
 
+	/**
+	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
+	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
 		String paramStr = "";
@@ -51,6 +54,7 @@ public class LoginServlet extends HttpServlet {
 			paramStr += line;
 		}
 		BSONObject params = (BasicBSONObject) JSON.parse(paramStr);
-		out.println(LoginManager.logIn(params));
+		out.println(LoginManager.logOut(params));
 	}
+
 }

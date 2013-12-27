@@ -21,6 +21,4 @@ public abstract class Database {
 	public static Database getInstance(){
 		return null;
 	}
-	
-	
 }

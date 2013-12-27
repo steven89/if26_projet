@@ -5,13 +5,24 @@ import java.util.HashMap;
 import fr.utt.if26.cs.utils.Crypt;
 
 
-public class User extends DataBean /*implements DBPersistentObject*/ {
+public class User extends DataBean {
 	
 	private String id=null, email, pass, prenom, nom, token, tag;
 	private int wallet=0;
 	private final static int defaultWallet = 50;
 	private HashMap<String, Transaction> transactions;
 	
+	
+	/**
+	 * Constructeur pour la recupération d'un utilisateur en DB
+	 * @param id
+	 * @param email
+	 * @param pass : crypté
+	 * @param prenom
+	 * @param nom
+	 * @param tag
+	 * @param coins
+	 */
 	public User(String id, String email, String pass, String prenom, String nom, String tag, int coins){
 		this.setId(id);
 		this.setEmail(email);
@@ -23,6 +34,15 @@ public class User extends DataBean /*implements DBPersistentObject*/ {
 		this.export = new String[]{"id","email","pass","prenom","nom","token","wallet","tag"};
 	}
 	
+	/**
+	 * Constructeur pour la création d'un nouvel utilisateur
+	 * @param email
+	 * @param pass : non-crypté + stocké crypté dans l'objet
+	 * @param prenom
+	 * @param nom
+	 * @param tag
+	 * @param useDefaultWallet : le nouvel utilisateur aura un solde par défault
+	 */
 	public User(String email, String pass, String prenom, String nom, String tag, boolean useDefaultWallet){
 		this.setEmail(email);
 		this.setPass(pass);
@@ -34,6 +54,11 @@ public class User extends DataBean /*implements DBPersistentObject*/ {
 		this.export = new String[]{"email","pass","prenom","nom","tag","wallet"};
 	}
 	
+	/**
+	 * Constructeur pour une tentative de login
+	 * @param email
+	 * @param pass : non crypté + stocké en clair dans l'objet (pour comparaison via {@link Crypt#match(String, String)})
+	 */
 	public User(String email, String pass){
 		this.setEmail(email);
 		this.setPass(pass, true);
