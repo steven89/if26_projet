@@ -53,8 +53,8 @@ public class UserServlet extends HttpServlet {
 			db.close();	
 		}
 		if(bean==null)
-			//out.println("{'error':'404'}");
-			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			out.println("{'error':'404'}");
+			//response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		else
 			out.println(bean.getJSONStringRepresentation());
 		//BasicBSONObject bson =  (BasicBSONObject) JSON.parse("{'test': 'aaeaze', 't':'a'}");

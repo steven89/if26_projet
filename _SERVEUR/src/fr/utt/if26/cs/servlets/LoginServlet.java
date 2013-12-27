@@ -2,9 +2,6 @@ package fr.utt.if26.cs.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
+
+import com.mongodb.util.JSON;
 
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
@@ -42,11 +41,17 @@ public class LoginServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.sendError(HttpServletResponse.SC_NOT_FOUND);
+	}
+
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
-		BSONObject params = new BasicBSONObject();
-		for(String key : request.getParameterMap().keySet()){
-			params.put(key, request.getParameter(key));
+		String paramStr = "";
+		String line = "";
+		while((line = request.getReader().readLine()) != null){
+			paramStr += line;
 		}
+		BSONObject params = (BasicBSONObject) JSON.parse(paramStr);
 		boolean hasRequiredFields = true;
 		String requiredFields[] = {"email", "pass"};
 		for(String field : requiredFields){
@@ -78,5 +83,4 @@ public class LoginServlet extends HttpServlet {
 			out.println("{'error':'field_missing'}");
 		}
 	}
-
 }
