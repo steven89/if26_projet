@@ -8,6 +8,15 @@
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
+        <RelativeLayout 
+            android:id="@+id/content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            	<FrameLayout 
+            	    android:id="@id/transaction_list_container"
+            	    android:layout_width="match_parent"
+            	    android:layout_height="match_parent"></FrameLayout>
+        </RelativeLayout>
     </FrameLayout>
     <!-- The navigation drawer -->
     <ListView android:id="@+id/left_drawer"
