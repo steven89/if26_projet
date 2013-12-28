@@ -95,7 +95,7 @@ public class UserServlet extends HttpServlet {
 		}
 		BasicBSONObject jsonParams = (BasicBSONObject) JSON.parse(params);
 		Boolean hasRequiredFields = true;
-		String requiredFields[] = {"email", "pass", "prenom", "nom", "nom", "tag"};
+		String requiredFields[] = {"email", "pass", "prenom", "nom", "tag"};
 		for(String field : requiredFields){
 			if(!jsonParams.containsField(field))
 				hasRequiredFields = false;
