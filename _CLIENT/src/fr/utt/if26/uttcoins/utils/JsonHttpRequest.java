@@ -91,6 +91,12 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 			this.jsonCallback.call(result);
 	}
 	
+	public void putParam(String key, Object value){
+		if(this.params == null)
+			this.params = new BasicHttpParams();
+		this.params.setParameter(key, value);
+	}
+	
 	public void setParams(Map<String, Object> paramMap){
 		this.params.clear();
 		for(String key : paramMap.keySet()){

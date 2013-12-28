@@ -95,7 +95,7 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 					// TODO Auto-generated method stub
 					try {
 						connexionBtnFragment.hideLoader();
-						if(!jsonResponse.getBoolean("error")){
+						if(!jsonResponse.has("error")){
 							Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
 							loadWallet.putExtra("token", jsonResponse.getString("token"));
 							startActivity(loadWallet);
@@ -111,9 +111,12 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 				}
 			});
 			Log.i("ACTION","CLICKED");
-			String url = "http://train.sandbox.eutech-ssii.com/messenger/login.php?email="+loginInputFragment.getValue()+"&password="+passwordInputFragment.getValue();
 			this.connexionBtnFragment.displayLoader();
-			request.execute("GET", url);
+			//String url = "http://train.sandbox.eutech-ssii.com/messenger/login.php?email="+loginInputFragment.getValue()+"&password="+passwordInputFragment.getValue();
+			String url = "http://localhost:8080/_SERVEUR/Login";
+			request.putParam("email", loginInputFragment.getValue());
+			request.putParam("pass", passwordInputFragment.getValue());
+			request.execute("PUT", url);
 		}
 	}
 	
