@@ -37,6 +37,7 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 	private FormButtonFragment connexionBtnFragment;
 	private FormEmailFragment loginInputFragment;
 	private FormPasswordFragment passwordInputFragment;
+	private JsonCallback loginCallback;
 	
 	private static final String emailPattern = "[a-zA-Z0-9]*@[a-zA-Z0-9]\\.[a-z]{0,5}";
 	
@@ -49,6 +50,7 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 		this.connexionBtnFragment = (FormButtonFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_connexion_button);
 		this.loginInputFragment = (FormEmailFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_userLogin_input);
 		this.passwordInputFragment = (FormPasswordFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_userPassword_input);
+		this.loginCallback = this.getLoginCallback();
 	}
 
 	@Override
@@ -89,34 +91,14 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 	private void login(){
 		boolean isInputsValide = (this.loginInputFragment.isInputValide() && this.passwordInputFragment.isInputValide());
 		if(isInputsValide){
-			JsonHttpRequest request = new JsonHttpRequest(new JsonCallback() {
-				@Override
-				public JSONObject call(JSONObject jsonResponse) {
-					// TODO Auto-generated method stub
-					try {
-						connexionBtnFragment.hideLoader();
-						if(!jsonResponse.has("error")){
-							Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
-							loadWallet.putExtra("token", jsonResponse.getString("token"));
-							startActivity(loadWallet);
-						}else{
-							Log.e("REQUEST", jsonResponse.toString());
-							showErrorMessage("Erreur", "Mot de passe ou identifiant invalide.");
-						}
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					return null;
-				}
-			});
+			String url = "http://10.0.2.2:8080/_SERVEUR/Login";
+			JsonHttpRequest request = new JsonHttpRequest("PUT", url, this.loginCallback);
 			Log.i("ACTION","CLICKED");
 			this.connexionBtnFragment.displayLoader();
 			//String url = "http://train.sandbox.eutech-ssii.com/messenger/login.php?email="+loginInputFragment.getValue()+"&password="+passwordInputFragment.getValue();
-			String url = "http://10.0.2.2:8080/_SERVEUR/Login";
 			request.putParam("email", loginInputFragment.getValue());
 			request.putParam("pass", passwordInputFragment.getValue());
-			request.execute("PUT", url);
+			request.execute();
 		}
 	}
 	
@@ -132,5 +114,29 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 			}
 		})
 		.show();
+	}
+	
+	private JsonCallback getLoginCallback(){
+		return new JsonCallback() {
+			@Override
+			public JSONObject call(JSONObject jsonResponse) {
+				// TODO Auto-generated method stub
+				try {
+					connexionBtnFragment.hideLoader();
+					if(!jsonResponse.has("error")){
+						Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
+						loadWallet.putExtra("token", jsonResponse.getString("token"));
+						startActivity(loadWallet);
+					}else{
+						Log.e("REQUEST", jsonResponse.toString());
+						showErrorMessage("Erreur", "Mot de passe ou identifiant invalide.");
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			}
+		};
 	}
 }
