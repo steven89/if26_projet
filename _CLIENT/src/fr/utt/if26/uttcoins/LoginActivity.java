@@ -39,8 +39,6 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 	private FormPasswordFragment passwordInputFragment;
 	private JsonCallback loginCallback;
 	
-	private static final String emailPattern = "[a-zA-Z0-9]*@[a-zA-Z0-9]\\.[a-z]{0,5}";
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -102,10 +100,10 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 		}
 	}
 	
-	private void showErrorMessage(String Title, String Message){
+	private void showErrorMessage(String title, String message){
 		new AlertDialog.Builder(this)
-		.setTitle(Title)
-		.setMessage(Message)
+		.setTitle(title)
+		.setMessage(message)
 		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

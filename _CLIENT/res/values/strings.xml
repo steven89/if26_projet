@@ -18,7 +18,10 @@
     <string name="password_confirmation_input_placeholder">Confirmer le mot de passe</string>
     <string name="form_next_button_text">Suivant</string>
     <string name="email_format_error_text">Format d\'email invalide</string>
+    <string name="email_confirmation_error_text">Les emails ne correspondent pas</string>
     <string name="password_required_error_text">Mot de passe requis</string>
+    <string name="password_confirmation_error_text">Les mots de passe ne correspondent pas</string>
+    <string name="email_confirmation_input_placeholder" >Entrez à nouveau votre adresse email</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="generic_submit_btn_text">Submit</string>
     <string name="loading_text">Loading&#8230;</string>
@@ -29,5 +32,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_paiement">My paiements</string>
     <string name="title_activity_activities">My activities</string>
-
+	<string name="input_require_error_text">Ce champ est requis</string>
+	<string name="first_name_input_placeholder">Prénom</string>
+	<string name="name_input_placeholder">Nom</string>
+	<string name="first_name_input_placeholder">Prénom</string>
 </resources>

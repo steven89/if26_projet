@@ -9,6 +9,7 @@ import android.location.Address;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,11 +32,13 @@ import android.widget.TextView;
 public class FormPasswordFragment extends Fragment implements FormInputFragment{
 	
 	public static final String NEED_CONFIRMATION = "needConfirmation"; 
+	public static final String TAG = "FormPasswordFragment";
 	
 	private TextView password_error;
 	private EditText password_input;
 	private TextView passwordConfirmation_error;
 	private EditText passwordConfirmation_input;
+	private TextView password_forgotten;
 	private boolean needConfirmation;
 	
 	private OnFragmentInteractionListener mListener;
@@ -78,7 +82,9 @@ public class FormPasswordFragment extends Fragment implements FormInputFragment{
 				false);
 		this.password_error = (TextView) rootView.findViewById(R.id.password_error);
 		this.password_input = (EditText) rootView.findViewById(R.id.password_input);
-		this.attachPasswordConfirmation(container);
+		this.password_forgotten = (TextView) rootView.findViewById(R.id.forgotten_account_link);
+		RelativeLayout fragmentInnerContainer = (RelativeLayout) rootView.findViewById(R.id.fragment_form_password_container);
+		this.attachPasswordConfirmation(fragmentInnerContainer);
 		this.initListeners();
 		return rootView;
 	}
@@ -124,15 +130,27 @@ public class FormPasswordFragment extends Fragment implements FormInputFragment{
 	@Override
 	public boolean isInputValide(){
 		boolean isValide = this.password_input.getText().toString().length() > 0;
-		if(!isValide){
-			this.password_error.setText(R.string.password_required_error_text);
-			this.password_error.setVisibility(View.VISIBLE);
+		if(this.needConfirmation){
+			isValide = (isValide && 
+					(this.password_input.getText().toString().equals(this.passwordConfirmation_input.getText().toString())));
+			if(!isValide){
+				this.passwordConfirmation_error.setText(R.string.password_confirmation_error_text);
+				this.passwordConfirmation_error.setVisibility(View.VISIBLE);
+			}else{
+				this.passwordConfirmation_error.setVisibility(View.GONE);
+			}
 		}else{
-			this.password_error.setVisibility(View.GONE);
+			if(!isValide){
+				this.password_error.setText(R.string.password_required_error_text);
+				this.password_error.setVisibility(View.VISIBLE);
+			}else{
+				this.password_error.setVisibility(View.GONE);
+			}
 		}
 		return isValide;
 	}
 	
+	//pourrait être fait en XML -_-'
 	private void attachPasswordConfirmation(ViewGroup containerView){
 		if(this.needConfirmation){
 			Context ctx = getActivity();
@@ -140,10 +158,16 @@ public class FormPasswordFragment extends Fragment implements FormInputFragment{
 			this.passwordConfirmation_error = new TextView(ctx);
 			this.passwordConfirmation_input = new EditText(ctx);
 			
+//			LinearLayout containerLayout = new LinearLayout(getActivity());
+//			containerLayout.setOrientation(LinearLayout.VERTICAL);
+			
 			RelativeLayout.LayoutParams lp_error = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, 
 					RelativeLayout.LayoutParams.WRAP_CONTENT);
-			lp_error.addRule(RelativeLayout.ABOVE, R.id.password_input);
+			lp_error.addRule(RelativeLayout.BELOW, R.id.password_input);
 			lp_error.addRule(RelativeLayout.CENTER_HORIZONTAL);
+			
+//			LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
+//					LinearLayout.LayoutParams.WRAP_CONTENT);
 			
 			this.passwordConfirmation_error.setLayoutParams(lp_error);
 			this.passwordConfirmation_error.setId(R.id.password_confirmation_error);
@@ -153,17 +177,19 @@ public class FormPasswordFragment extends Fragment implements FormInputFragment{
 			
 			RelativeLayout.LayoutParams lp_input = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, 
 					RelativeLayout.LayoutParams.WRAP_CONTENT);
-			lp_input.addRule(RelativeLayout.ABOVE, R.id.password_confirmation_error);
+			lp_input.addRule(RelativeLayout.BELOW, R.id.password_confirmation_error);
 			lp_input.addRule(RelativeLayout.CENTER_HORIZONTAL);
-			
+				
 			this.passwordConfirmation_input.setLayoutParams(lp_input);
 			this.passwordConfirmation_input.setId(R.id.password_confirmation_input);
 			this.passwordConfirmation_input.setHint(R.string.password_confirmation_input_placeholder);
 			this.passwordConfirmation_input.setVisibility(View.VISIBLE);
+			this.passwordConfirmation_input.setTransformationMethod(PasswordTransformationMethod.getInstance());
 			
+			containerView.removeView(this.password_forgotten);
 			containerView.addView(this.passwordConfirmation_error);
 			containerView.addView(this.passwordConfirmation_input);
-			
+			//containerView.addView(containerLayout);
 		}
 	}
 	
