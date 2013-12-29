@@ -113,7 +113,7 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 			Log.i("ACTION","CLICKED");
 			this.connexionBtnFragment.displayLoader();
 			//String url = "http://train.sandbox.eutech-ssii.com/messenger/login.php?email="+loginInputFragment.getValue()+"&password="+passwordInputFragment.getValue();
-			String url = "http://localhost:8080/_SERVEUR/Login";
+			String url = "http://10.0.2.2:8080/_SERVEUR/Login";
 			request.putParam("email", loginInputFragment.getValue());
 			request.putParam("pass", passwordInputFragment.getValue());
 			request.execute("PUT", url);
