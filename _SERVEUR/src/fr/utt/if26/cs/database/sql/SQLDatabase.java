@@ -3,6 +3,7 @@ package fr.utt.if26.cs.database.sql;
 import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.bson.BSONObject;
 
@@ -100,5 +101,11 @@ public class SQLDatabase extends Database {
 		else
 			bean = null;
 		return bean;
+	}
+
+	@Override
+	public ArrayList<DataBean> findBeans(BSONObject datas) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

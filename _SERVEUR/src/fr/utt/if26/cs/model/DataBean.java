@@ -3,6 +3,7 @@ package fr.utt.if26.cs.model;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.bson.BSONObject;
@@ -54,15 +55,30 @@ public abstract class DataBean {
 	}
 	
 	public BSONObject getBSONRepresentation(){
+		return getBSONRepresentation(null);
+	}
+	
+	public BSONObject getBSONRepresentation(String[] filters){
 		BasicBSONObject BSONData = new BasicBSONObject();
 		for(String f : this.export){
-			BSONData.put(f, this.getParam(f));
+			if(filters!=null){
+				if(in_array(f, filters)){
+					BSONData.put(f, this.getParam(f));
+				}
+			}
+			else {
+				BSONData.put(f, this.getParam(f));
+			}
 		}
 		return BSONData;
 	}
 	
 	public String getJSONStringRepresentation(){
 		return JSON.serialize(this.getBSONRepresentation());
+	}
+	
+	public String getJSONStringRepresentation(String[] filters){
+		return JSON.serialize(this.getBSONRepresentation(filters));
 	}
 	
 	public HashMap<String, String> getHashRepresentation(){
@@ -73,4 +89,16 @@ public abstract class DataBean {
 		return map;
 	}
 	
+	/***
+	 * Teste si un élément est contenu dans un tableau
+	 * @param needle : l'élément à rechercher
+	 * @param haystack : le tableau
+	 * @return true si présent, sinon false
+	 */
+	private static boolean in_array(Object needle, String[] array) {
+		for(String s : array)
+			if(s.equals(needle))
+				return true;
+		return false;
+	}
 }

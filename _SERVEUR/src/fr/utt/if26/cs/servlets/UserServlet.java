@@ -3,6 +3,7 @@ package fr.utt.if26.cs.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bson.BSON;
 import org.bson.BSONDecoder;
+import org.bson.BSONObject;
 import org.bson.BasicBSONDecoder;
 import org.bson.BasicBSONObject;
 
@@ -21,6 +23,8 @@ import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.User;
+import fr.utt.if26.cs.utils.ServletUtils;
+import fr.utt.if26.cs.utils.TransactionsUtils;
 
 /**
  * Servlet implementation class User
@@ -28,7 +32,7 @@ import fr.utt.if26.cs.model.User;
 @WebServlet("/User")
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String base = "users";
+	private static final int base = DatabaseManager.USERS;
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -55,8 +59,10 @@ public class UserServlet extends HttpServlet {
 		if(bean==null)
 			out.println("{'error':'404'}");
 			//response.sendError(HttpServletResponse.SC_NOT_FOUND);
-		else
-			out.println(bean.getJSONStringRepresentation());
+		else {
+			TransactionsUtils.applyTransactionsOnUser(bean);
+			out.println(bean.getJSONStringRepresentation(new String[] {"email","tag","prenom","nom","wallet"}));
+		}
 		//BasicBSONObject bson =  (BasicBSONObject) JSON.parse("{'test': 'aaeaze', 't':'a'}");
 		//byte[] bte = BSON.encode(bson);	
 		/*OutputStream os = response.getOutputStream();
@@ -88,37 +94,20 @@ public class UserServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
-		String params = "";
-		String line = "";
-		while((line = request.getReader().readLine()) != null){
-			params += line;
-		}
-		BasicBSONObject jsonParams = (BasicBSONObject) JSON.parse(params);
-		Boolean hasRequiredFields = true;
-		String requiredFields[] = {"email", "pass", "prenom", "nom", "tag"};
-		for(String field : requiredFields){
-			if(!jsonParams.containsField(field))
-				hasRequiredFields = false;
-		}
-		if(hasRequiredFields){
+		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.POST, request);
+		if(ServletUtils.checkRequiredFields(new String[] {"email", "pass", "prenom", "nom", "tag"}, params)){
 			DataBean user = new User(
-					jsonParams.getString("email"),
-					jsonParams.getString("pass"),
-					jsonParams.getString("prenom"),
-					jsonParams.getString("nom"),
-					jsonParams.getString("tag"), true
+					params.getString("email"),
+					params.getString("pass"),
+					params.getString("prenom"),
+					params.getString("nom"),
+					params.getString("tag"), true
 			);
-			
-			
 			Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
 			db.open();
 			db.insertBean(user);
 			db.close();
 			out.println(user.getJSONStringRepresentation());
-//			out.println(params);
-//			for(String key : jsonParams.keySet()){
-//				out.println(key+" : "+jsonParams.get(key));
-//			}
 		}
 		else{
 			out.println("{'error':'field_missing'}");

@@ -13,7 +13,7 @@ public class LoginManager {
 	private final static int tokenSize = 30;
 	private final static String requiredLogin[] = {"email", "pass"};
 	private final static String requiredLogout[] = {"email", "token"};
-	private final static String base = "users";
+	private final static int base = DatabaseManager.USERS;
 	
 	private static final int LOGIN = 0;
 	private static final int LOGOUT = 1;

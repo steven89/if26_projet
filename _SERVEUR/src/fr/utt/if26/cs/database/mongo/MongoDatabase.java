@@ -1,8 +1,11 @@
 package fr.utt.if26.cs.database.mongo;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
+import org.bson.types.ObjectId;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -31,16 +34,7 @@ public class MongoDatabase extends Database {
 	private DatabaseHelper mongoHelper;
 	
 	private MongoDatabase(){
-		try {
-			mongoClient = new MongoClient();
-			mongoDB = mongoClient.getDB(this.base);
-			for(int i=0; i<collections.length; i++){
-				mongoCollections[i] = mongoDB.getCollection(collections[i]);
-			}
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		mongoHelper = new MongoHelper(this.mongoClient, mongoCollections[this.currentCollection]);
+		
 	}
 	
 	public static MongoDatabase getInstance(){
@@ -78,14 +72,22 @@ public class MongoDatabase extends Database {
 
 	@Override
 	public void open() {
-		// TODO Auto-generated method stub
-		
+		try {
+			mongoClient = new MongoClient();
+			mongoDB = mongoClient.getDB(this.base);
+			for(int i=0; i<collections.length; i++){
+				mongoCollections[i] = mongoDB.getCollection(collections[i]);
+			}
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		mongoHelper = new MongoHelper(this.mongoClient, mongoCollections[this.currentCollection]);
 	}
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
-		
+		this.mongoClient.close();
+		this.mongoHelper = null;
 	}
 
 	@Override
@@ -96,8 +98,27 @@ public class MongoDatabase extends Database {
 
 	@Override
 	public DataBean getBean(String key, String value) {
-		// TODO Auto-generated method stub
-		return null;
+		BSONObject datas = mongoHelper.findByKey(key, value);
+		return new Transaction(
+				((ObjectId) datas.get("_id")).toString(),
+				Integer.parseInt((String) datas.get("amount")),
+				(String) datas.get("from"), 
+				(String) datas.get("to"));
+	}
+
+	@Override
+	public ArrayList<DataBean> findBeans(BSONObject datas) {
+		ArrayList<BSONObject> dbResult = mongoHelper.find(datas);
+		ArrayList<DataBean> result = new ArrayList<>();
+		for(BSONObject obj : dbResult){
+			result.add(new Transaction(
+					((ObjectId) obj.get("_id")).toString(),
+					Integer.parseInt((String) obj.get("amount")),
+					(String) obj.get("from"), 
+					(String) obj.get("to"))
+			);
+		}
+		return result;
 	}
 	
 	

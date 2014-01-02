@@ -5,7 +5,9 @@ import java.util.HashMap;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
+import org.bson.types.ObjectId;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -79,7 +81,7 @@ public class MongoHelper implements DatabaseHelper {
 	@Override
 	public ArrayList<BSONObject> find(BSONObject query) {
 		ArrayList<BSONObject> liste = new ArrayList<BSONObject>();
-		DBCursor cursor = this.collection.find((DBObject) query);
+		DBCursor cursor = this.collection.find((DBObject) JSON.parse(query.toString()));
 		while(cursor.hasNext()){
 			liste.add(cursor.next());
 		}
@@ -89,7 +91,6 @@ public class MongoHelper implements DatabaseHelper {
 	
 	@Override
 	public String getObjectIDKey() {
-		// TODO Auto-generated method stub
 		return objectIDKey;
 	}
 
@@ -100,8 +101,16 @@ public class MongoHelper implements DatabaseHelper {
 
 	@Override
 	public BSONObject findByKey(String key, String value) {
-		// TODO Auto-generated method stub
-		return null;
+		DBObject obj = new BasicDBObject();
+		if(key.equals("id"))
+			obj.put("_id", new ObjectId(value));
+		else
+			obj.put(key, value);
+		DBCursor cursor = this.collection.find(obj);
+		if(cursor.hasNext())
+			return (BSONObject) cursor.next();
+		else
+			return null;
 	}
 
 	@Override

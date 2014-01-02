@@ -13,6 +13,9 @@ public class DatabaseManager {
 	private MongoDatabase mongoDb;
 	private HashMap<String, Database> bases;
 	
+	public final static int USERS = 0;
+	public final static int TRANSACTIONS = 1;
+	
 	private DatabaseManager(){
 		this.initBases();
 	}
@@ -37,8 +40,20 @@ public class DatabaseManager {
 		return this.sqlDb;
 	}
 	
-	public Database getBase(String base){
+	/*public Database getBase(String base){
 		return this.bases.get(base);
+	}*/
+	
+	public Database getBase(int base){
+		switch(base){
+		case DatabaseManager.USERS:
+			return this.bases.get("users");
+		case DatabaseManager.TRANSACTIONS:
+			return this.bases.get("transactions");
+		default:
+			return null;
+		}
+		
 	}
 	
 	
