@@ -29,7 +29,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class LoginActivity extends ActionBarActivity implements OnFragmentInteractionListener{
+public class LoginActivity extends ActionBarActivity implements OnFragmentInteractionListener, JsonCallback{
 
 	
 	private TextView forgottenAccountLink;
@@ -37,7 +37,6 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 	private FormButtonFragment connexionBtnFragment;
 	private FormEmailFragment loginInputFragment;
 	private FormPasswordFragment passwordInputFragment;
-	private JsonCallback loginCallback;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +47,6 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 		this.connexionBtnFragment = (FormButtonFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_connexion_button);
 		this.loginInputFragment = (FormEmailFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_userLogin_input);
 		this.passwordInputFragment = (FormPasswordFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_userPassword_input);
-		this.loginCallback = this.getLoginCallback();
 	}
 
 	@Override
@@ -90,7 +88,7 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 		boolean isInputsValide = (this.loginInputFragment.isInputValide() && this.passwordInputFragment.isInputValide());
 		if(isInputsValide){
 			String url = "http://10.0.2.2:8080/_SERVEUR/Login";
-			JsonHttpRequest request = new JsonHttpRequest("PUT", url, this.loginCallback);
+			JsonHttpRequest request = new JsonHttpRequest("PUT", url, this);
 			Log.i("ACTION","CLICKED");
 			this.connexionBtnFragment.displayLoader();
 			//String url = "http://train.sandbox.eutech-ssii.com/messenger/login.php?email="+loginInputFragment.getValue()+"&password="+passwordInputFragment.getValue();
@@ -114,27 +112,22 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 		.show();
 	}
 	
-	private JsonCallback getLoginCallback(){
-		return new JsonCallback() {
-			@Override
-			public JSONObject call(JSONObject jsonResponse) {
-				// TODO Auto-generated method stub
-				try {
-					connexionBtnFragment.hideLoader();
-					if(!jsonResponse.has("error")){
-						Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
-						loadWallet.putExtra("token", jsonResponse.getString("token"));
-						startActivity(loadWallet);
-					}else{
-						Log.e("REQUEST", jsonResponse.toString());
-						showErrorMessage("Erreur", "Mot de passe ou identifiant invalide.");
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return null;
+	@Override
+	public JSONObject call(JSONObject jsonResponse) {
+		try {
+			this.connexionBtnFragment.hideLoader();
+			if(!jsonResponse.has("error")){
+				Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
+				loadWallet.putExtra("token", jsonResponse.getString("token"));
+				startActivity(loadWallet);
+			}else{
+				Log.e("REQUEST", jsonResponse.toString());
+				showErrorMessage("Erreur", "Mot de passe ou identifiant invalide.");
 			}
-		};
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
