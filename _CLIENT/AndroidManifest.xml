@@ -29,10 +29,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="fr.utt.if26.uttcoins.WalletActivity"
-            android:label="@string/title_activity_wallet" >
-        </activity>
-        <activity
             android:name="fr.utt.if26.uttcoins.SignupActivity"
             android:label="@string/title_activity_signup"
             android:parentActivityName="fr.utt.if26.uttcoins.LoginActivity"
@@ -42,16 +38,24 @@
                 android:value="fr.utt.if26.uttcoins.LoginActivity" />
         </activity>
         <activity
+            android:name="fr.utt.if26.uttcoins.WalletActivity"
+            android:label="@string/title_activity_wallet"
+            android:noHistory="true" >
+        </activity>
+        <activity
             android:name="fr.utt.if26.uttcoins.TransactionsActivity"
-            android:label="@string/title_activity_transactions">
+            android:label="@string/title_activity_transactions"
+            android:noHistory="true">
         </activity>
         <activity
             android:name="fr.utt.if26.uttcoins.PaiementActivity"
-            android:label="@string/title_activity_paiement" >
+            android:label="@string/title_activity_paiement"
+            android:noHistory="true" >
         </activity>
         <activity
             android:name="fr.utt.if26.uttcoins.ActivitiesActivity"
-            android:label="@string/title_activity_activities" >
+            android:label="@string/title_activity_activities"
+            android:noHistory="true" >
         </activity>
     </application>
 
