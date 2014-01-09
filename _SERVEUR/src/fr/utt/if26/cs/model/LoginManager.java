@@ -4,6 +4,7 @@ import org.bson.BSONObject;
 
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
+import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.utils.Crypt;
 
 public class LoginManager {
@@ -47,7 +48,7 @@ public class LoginManager {
 		return true;
 	}
 	
-	public static String logIn(BSONObject params){
+	public static String logIn(BSONObject params) throws BeanException{
 		if(LoginManager.hasRequiredFields(params, LOGIN)){
 			User user = new User((String) params.get("email"), (String) params.get("pass"));
 			DataBean bean=null;
@@ -73,7 +74,7 @@ public class LoginManager {
 			return "{'error':'field_missing'}";
 	}
 	
-	public static String logOut(BSONObject params){
+	public static String logOut(BSONObject params) throws BeanException{
 		if(LoginManager.hasRequiredFields(params, LOGOUT)){
 			DataBean bean = null;
 			Database db = DatabaseManager.getInstance().getBase(LoginManager.base);

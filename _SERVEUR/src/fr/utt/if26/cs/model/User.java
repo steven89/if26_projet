@@ -2,6 +2,7 @@ package fr.utt.if26.cs.model;
 
 import java.util.HashMap;
 
+import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.utils.Crypt;
 
 
@@ -21,8 +22,9 @@ public class User extends DataBean {
 	 * @param nom
 	 * @param tag
 	 * @param coins
+	 * @throws BeanException 
 	 */
-	public User(String id, String email, String pass, String prenom, String nom, String tag){
+	public User(String id, String email, String pass, String prenom, String nom, String tag) throws BeanException{
 		this.setId(id);
 		this.setEmail(email);
 		this.setPass(pass, true);
@@ -40,8 +42,9 @@ public class User extends DataBean {
 	 * @param nom
 	 * @param tag
 	 * @param useDefaultWallet : le nouvel utilisateur aura un solde par d�fault
+	 * @throws BeanException 
 	 */
-	public User(String email, String pass, String prenom, String nom, String tag){
+	public User(String email, String pass, String prenom, String nom, String tag) throws BeanException{
 		this.setEmail(email);
 		this.setPass(pass);
 		this.setPrenom(prenom);
@@ -54,8 +57,9 @@ public class User extends DataBean {
 	 * Constructeur pour une tentative de login
 	 * @param email
 	 * @param pass : non crypt� + stock� en clair dans l'objet (pour comparaison via {@link Crypt#match(String, String)})
+	 * @throws BeanException 
 	 */
-	public User(String email, String pass){
+	public User(String email, String pass) throws BeanException{
 		this.setEmail(email);
 		this.setPass(pass, true);
 		this.export = new String[]{"email","pass"};
@@ -66,9 +70,11 @@ public class User extends DataBean {
 			this.id = id;
 	}
 	
-	public void setEmail(String email){
-		// TODO : regex verification du mail
-		this.email = email;
+	public void setEmail(String email) throws BeanException{
+		if(email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$"))
+			this.email = email;
+		else
+			throw new BeanException("invalid email");
 	}
 	
 	/**
@@ -92,24 +98,36 @@ public class User extends DataBean {
 		this.pass = Crypt.crypt(pass, salt);
 	}
 	
-	public void setPrenom(String prenom){
-		this.prenom = prenom;
+	public void setPrenom(String prenom) throws BeanException{
+		if(prenom.matches("^[a-zA-Z]{2,}$"))
+			this.prenom = prenom;
+		else
+			throw new BeanException("invalid prenom");
 	}
 	
-	public void setNom(String nom){
-		this.nom = nom;
+	public void setNom(String nom) throws BeanException{
+		if(nom.matches("^[a-zA-Z]{2,}$"))
+			this.nom = nom;
+		else
+			throw new BeanException("invalid nom");
 	}
 	
 	public void setToken(String token){
 		this.token = token;
 	}
 	
-	public void setTag(String tag){
-		this.tag = tag;
+	public void setTag(String tag) throws BeanException{
+		if(tag.matches("^[a-zA-Z0-9_-]{3,}$"))
+			this.tag = tag;
+		else
+			throw new BeanException("invalid tag");
 	}
 	
-	public void setWallet(int coins){
-		this.wallet = coins;
+	public void setWallet(int coins) throws BeanException{
+		if(coins>=0)
+			this.wallet = coins;
+		else
+			throw new BeanException("invalid wallet");
 	}
 	
 	public void setTransactions(HashMap<String, Transaction> t){

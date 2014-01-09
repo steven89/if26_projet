@@ -20,6 +20,7 @@ import com.mongodb.util.JSON;
 
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
+import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.Transaction;
 import fr.utt.if26.cs.model.User;
@@ -46,21 +47,31 @@ public class UserServlet extends HttpServlet {
 			bean = db.getBean("id", Integer.toString(id));
 			db.close();
 		} catch (NumberFormatException e){
-			Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
-			db.open();
-			if(request.getQueryString().indexOf("@")!=-1){
-				bean = db.getBean("email", request.getQueryString());
+			try {
+				Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
+				db.open();
+				if(request.getQueryString().indexOf("@")!=-1)
+					bean = db.getBean("email", request.getQueryString());
+				else{
+					bean = db.getBean("tag", request.getQueryString());
+				}
+				db.close();	
+			} catch (BeanException e1) {
+				e1.printStackTrace();
 			}
-			else{
-				bean = db.getBean("tag", request.getQueryString());
-			}
-			db.close();	
+		} catch (BeanException e){
+			e.printStackTrace();
 		}
 		if(bean==null)
 			out.println("{'error':'404'}");
 			//response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		else {
-			TransactionsUtils.applyTransactionsOnUser(bean);
+			try {
+				TransactionsUtils.applyTransactionsOnUser(bean);
+			} catch (BeanException e) {
+				out.println(e.getMessage());
+				e.printStackTrace();
+			}
 			out.println(bean.getJSONStringRepresentation(new String[] {"email","tag","prenom","nom","wallet"}));
 		}
 		//BasicBSONObject bson =  (BasicBSONObject) JSON.parse("{'test': 'aaeaze', 't':'a'}");
@@ -96,40 +107,29 @@ public class UserServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.POST, request);
 		if(ServletUtils.checkRequiredFields(new String[] {"email", "pass", "prenom", "nom", "tag"}, params)){
-			DataBean user = new User(
+			DataBean user=null;
+			try {
+				user = new User(
 					params.getString("email"),
 					params.getString("pass"),
 					params.getString("prenom"),
 					params.getString("nom"),
-					params.getString("tag"));
-			TransactionsUtils.doBaseTransaction(((User) user).getTag());
-			Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
-			db.open();
-			db.insertBean(user);
-			db.close();
+					params.getString("tag")
+				);
+				TransactionsUtils.doBaseTransaction(((User) user).getTag());
+				Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
+				db.open();
+				db.insertBean(user);
+				db.close();
+				out.println(user.getJSONStringRepresentation());
+			} catch (BeanException e) {
+				out.println(e.getMessage());
+				e.printStackTrace();
+			}
 			
-			// ajout de la transaction de depart
-			
-			out.println(user.getJSONStringRepresentation());
 		}
 		else{
 			out.println("{'error':'field_missing'}");
 		}
-
 	}
-
-	/**
-	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
-	 */
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-	}
-
-	/**
-	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
-	 */
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-	}
-
 }

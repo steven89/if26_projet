@@ -2,6 +2,7 @@ package fr.utt.if26.cs.model;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bson.BSONObject;
@@ -87,10 +88,10 @@ public abstract class DataBean {
 	}
 	
 	/***
-	 * Teste si un élément est contenu dans un tableau
-	 * @param needle : l'élément à rechercher
+	 * Teste si un ï¿½lï¿½ment est contenu dans un tableau
+	 * @param needle : l'ï¿½lï¿½ment ï¿½ rechercher
 	 * @param haystack : le tableau
-	 * @return true si présent, sinon false
+	 * @return true si prï¿½sent, sinon false
 	 */
 	private static boolean inArray(String needle, String[] array) {
 		for(String s : array)

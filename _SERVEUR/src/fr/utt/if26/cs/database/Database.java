@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bson.BSONObject;
 
+import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.model.DataBean;
 
 public abstract class Database {
@@ -21,8 +22,9 @@ public abstract class Database {
 	 * @param key
 	 * @param value
 	 * @return
+	 * @throws BeanException 
 	 */
-	public abstract DataBean getBean(String key, String value);
+	public abstract DataBean getBean(String key, String value) throws BeanException;
 	
 	/**
 	 * find some beans un the DB

@@ -16,6 +16,7 @@ import org.bson.types.ObjectId;
 
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
+import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.Transaction;
 import fr.utt.if26.cs.utils.ServletUtils;
@@ -39,7 +40,13 @@ public class TransactionServlet extends HttpServlet {
 		if(params.containsField("id")){
 			if(ObjectId.isValid(params.getString("id"))){
 				dbTransactions.open();
-				Transaction transaction = (Transaction) dbTransactions.getBean("id", params.getString("id"));
+				Transaction transaction=null;
+				try {
+					transaction = (Transaction) dbTransactions.getBean("id", params.getString("id"));
+				} catch (BeanException e) {
+					out.println(e.getMessage());
+					e.printStackTrace();
+				}
 				dbTransactions.close();
 				out.println(transaction.getJSONStringRepresentation());
 			}
@@ -90,19 +97,4 @@ public class TransactionServlet extends HttpServlet {
 			
 		}
 	}
-
-	/**
-	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
-	 */
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-	}
-
-	/**
-	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
-	 */
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-	}
-
 }

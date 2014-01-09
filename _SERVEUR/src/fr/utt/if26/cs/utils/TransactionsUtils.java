@@ -9,6 +9,7 @@ import org.bson.BasicBSONObject;
 
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
+import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.Transaction;
 import fr.utt.if26.cs.model.User;
@@ -48,7 +49,7 @@ public class TransactionsUtils {
 		return transactions;
 	}
 	
-	public static void applyTransactionsOnUser(DataBean user){
+	public static void applyTransactionsOnUser(DataBean user) throws BeanException{
 		((User) user).setWallet(
 			TransactionsUtils.computeTransactions(
 					TransactionsUtils.getUserTransactions(((User) user).getTag())

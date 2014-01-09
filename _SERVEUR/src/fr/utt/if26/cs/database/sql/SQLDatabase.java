@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import org.bson.BSONObject;
 
 import fr.utt.if26.cs.database.Database;
+import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.User;
 import fr.utt.if26.cs.utils.TransactionsUtils;
@@ -82,7 +83,7 @@ public class SQLDatabase extends Database {
 	}
 
 	@Override
-	public DataBean getBean(String key, String value) {
+	public DataBean getBean(String key, String value) throws BeanException {
 		DataBean bean;
 		BSONObject datas = sqlHelper.findByKey(key, value);
 		if(datas!=null && datas.containsField("id")){

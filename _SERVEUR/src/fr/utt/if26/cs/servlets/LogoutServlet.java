@@ -14,6 +14,7 @@ import org.bson.BasicBSONObject;
 
 import com.mongodb.util.JSON;
 
+import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.model.LoginManager;
 
 /**
@@ -49,7 +50,12 @@ public class LogoutServlet extends HttpServlet {
 			paramStr += line;
 		}
 		BSONObject params = (BasicBSONObject) JSON.parse(paramStr);
-		out.println(LoginManager.logOut(params));
+		try {
+			out.println(LoginManager.logOut(params));
+		} catch (BeanException e) {
+			out.println(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 }
