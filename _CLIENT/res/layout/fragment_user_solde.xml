@@ -1,0 +1,38 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserSoldeFragment" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/solde_main_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/solde_main_title_text"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+        
+         <TextView
+            android:id="@+id/solde_sub_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/solde_main_title"
+            android:text="@string/solde_sub_title_text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+         
+         <TextView
+            android:id="@+id/user_solde_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/user_solde_default_text"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+                
+    </RelativeLayout>
+
+</FrameLayout>
