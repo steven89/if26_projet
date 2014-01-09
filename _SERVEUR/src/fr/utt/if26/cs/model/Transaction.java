@@ -1,30 +1,33 @@
 package fr.utt.if26.cs.model;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 public class Transaction extends DataBean {
 
-	protected int montant;
-	protected String crediteur;
-	protected String destinataire;
-	protected Date date;
+	protected int amount;
+	protected String from;
+	protected String to;
+	protected String date;
 	protected String id;
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyy");
 	
 	
 	public Transaction(int somme, String crediteurPseudo, String destinatairePseudo){
-		this.montant = somme;
-		this.crediteur = crediteurPseudo;
-		this.destinataire = destinatairePseudo;
-		this.export = new String[] {"montant", "crediteur", "destinataire"};
+		this.amount = somme;
+		this.from = crediteurPseudo;
+		this.to = destinatairePseudo;
+		this.date = dateFormat.format(Calendar.getInstance().getTime());
+		this.export = new String[] {"amount", "from", "to", "date"};
 	}
 	
-	public Transaction(String dbID, int somme, String crediteurPseudo, String destinatairePseudo){
-		this.montant = somme;
-		this.crediteur = crediteurPseudo;
-		this.destinataire = destinatairePseudo;
+	public Transaction(String dbID, int somme, String crediteurPseudo, String destinatairePseudo, String date){
+		this.amount = somme;
+		this.from = crediteurPseudo;
+		this.to = destinatairePseudo;
 		this.id = dbID;
-		this.export = new String[] {"id", "montant", "crediteur", "destinataire",};
+		this.export = new String[] {"id", "amount", "from", "to","date"};
 		//la date sera instanci�e � l'appel de la m�thode this.save()
 	}
 	
@@ -32,15 +35,19 @@ public class Transaction extends DataBean {
 		return this.id;
 	}
 	
-	public int getMontant(){
-		return this.montant;
+	public int getAmount(){
+		return this.amount;
 	}
 	
-	public String getCrediteur(){
-		return this.crediteur;
+	public String getFrom(){
+		return this.from;
 	}
 	
-	public String getDestinataire(){
-		return this.destinataire;
+	public String getTo(){
+		return this.to;
+	}
+	
+	public String getDate(){
+		return this.date;
 	}
 }

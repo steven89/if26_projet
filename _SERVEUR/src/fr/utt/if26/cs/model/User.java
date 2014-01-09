@@ -9,55 +9,51 @@ public class User extends DataBean {
 	
 	private String id=null, email, pass, prenom, nom, token, tag;
 	private int wallet=0;
-	private final static int defaultWallet = 50;
 	private HashMap<String, Transaction> transactions;
 	
 	
 	/**
-	 * Constructeur pour la recupération d'un utilisateur en DB
+	 * Constructeur pour la recupï¿½ration d'un utilisateur en DB
 	 * @param id
 	 * @param email
-	 * @param pass : crypté
+	 * @param pass : cryptï¿½
 	 * @param prenom
 	 * @param nom
 	 * @param tag
 	 * @param coins
 	 */
-	public User(String id, String email, String pass, String prenom, String nom, String tag, int coins){
+	public User(String id, String email, String pass, String prenom, String nom, String tag){
 		this.setId(id);
 		this.setEmail(email);
 		this.setPass(pass, true);
 		this.setPrenom(prenom);
 		this.setNom(nom);
 		this.setTag(tag);
-		this.setWallet(coins);
-		this.export = new String[]{"id","email","pass","prenom","nom","token","wallet","tag"};
+		this.export = new String[]{"id","email","pass","prenom","nom","token","tag","wallet"};
 	}
 	
 	/**
-	 * Constructeur pour la création d'un nouvel utilisateur
+	 * Constructeur pour la crï¿½ation d'un nouvel utilisateur
 	 * @param email
-	 * @param pass : non-crypté + stocké crypté dans l'objet
+	 * @param pass : non-cryptï¿½ + stockï¿½ cryptï¿½ dans l'objet
 	 * @param prenom
 	 * @param nom
 	 * @param tag
-	 * @param useDefaultWallet : le nouvel utilisateur aura un solde par défault
+	 * @param useDefaultWallet : le nouvel utilisateur aura un solde par dï¿½fault
 	 */
-	public User(String email, String pass, String prenom, String nom, String tag, boolean useDefaultWallet){
+	public User(String email, String pass, String prenom, String nom, String tag){
 		this.setEmail(email);
 		this.setPass(pass);
 		this.setPrenom(prenom);
 		this.setNom(nom);
 		this.setTag(tag);
-		if(useDefaultWallet)
-			this.setWallet(User.defaultWallet);
 		this.export = new String[]{"email","pass","prenom","nom","tag","wallet"};
 	}
 	
 	/**
 	 * Constructeur pour une tentative de login
 	 * @param email
-	 * @param pass : non crypté + stocké en clair dans l'objet (pour comparaison via {@link Crypt#match(String, String)})
+	 * @param pass : non cryptï¿½ + stockï¿½ en clair dans l'objet (pour comparaison via {@link Crypt#match(String, String)})
 	 */
 	public User(String email, String pass){
 		this.setEmail(email);

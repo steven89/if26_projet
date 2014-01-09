@@ -21,6 +21,7 @@ import com.mongodb.util.JSON;
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.model.DataBean;
+import fr.utt.if26.cs.model.Transaction;
 import fr.utt.if26.cs.model.User;
 import fr.utt.if26.cs.utils.ServletUtils;
 import fr.utt.if26.cs.utils.TransactionsUtils;
@@ -100,12 +101,15 @@ public class UserServlet extends HttpServlet {
 					params.getString("pass"),
 					params.getString("prenom"),
 					params.getString("nom"),
-					params.getString("tag"), true
-			);
+					params.getString("tag"));
+			TransactionsUtils.doBaseTransaction(((User) user).getTag());
 			Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
 			db.open();
 			db.insertBean(user);
 			db.close();
+			
+			// ajout de la transaction de depart
+			
 			out.println(user.getJSONStringRepresentation());
 		}
 		else{

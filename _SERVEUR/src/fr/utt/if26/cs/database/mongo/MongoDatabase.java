@@ -53,12 +53,6 @@ public class MongoDatabase extends Database {
 	}
 
 	@Override
-	public boolean insertBean(DataBean bean) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean updateBean(DataBean bean) {
 		// TODO Auto-generated method stub
 		return false;
@@ -103,7 +97,8 @@ public class MongoDatabase extends Database {
 				((ObjectId) datas.get("_id")).toString(),
 				Integer.parseInt((String) datas.get("amount")),
 				(String) datas.get("from"), 
-				(String) datas.get("to"));
+				(String) datas.get("to"),
+				(String) datas.get("date"));
 	}
 
 	@Override
@@ -115,12 +110,17 @@ public class MongoDatabase extends Database {
 					((ObjectId) obj.get("_id")).toString(),
 					Integer.parseInt((String) obj.get("amount")),
 					(String) obj.get("from"), 
-					(String) obj.get("to"))
+					(String) obj.get("to"),
+					(String) datas.get("date"))
 			);
 		}
 		return result;
 	}
 	
-	
+	@Override
+	public boolean insertBean(DataBean bean) {
+		mongoHelper.insert(bean.getBSONRepresentation());
+		return false;
+	}
 
 }
