@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `nom` text NOT NULL,
   `prenom` text NOT NULL,
   `tag` varchar(50) NOT NULL,
-  `wallet` int(11) NOT NULL,
   `token` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `tag` (`tag`),
