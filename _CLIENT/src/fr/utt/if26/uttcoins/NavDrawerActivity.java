@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
 import fr.utt.if26.uttcoins.utils.NavDrawerContentListAdapter;
+import fr.utt.if26.uttcoins.utils.UserHelper;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -41,13 +42,13 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 	protected ListView drawerList;
 	protected ActionBarDrawerToggle drawerToggler;
 	protected CharSequence title;
-	protected final String[] categories = {
+	protected static final String[] categories = {
 			"Activités", 
 			"Mon argent", 
 			"Mes transactions", 
 			"Nouveau paiement"
 			};
-	protected final int[] icons = {
+	protected static final int[] icons = {
 			R.drawable.test_icon, // icone de test pour "Activités"
 			R.drawable.test_icon, // icone de test pour "Mon argent"
 			R.drawable.test_icon, // icone de test pour "Mes transactions"
@@ -59,6 +60,12 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Bundle extras = getIntent().getExtras();
+		//si recoit des params (depuis le login notamment)
+		String userToken = (extras!=null) ? extras.getString("token") : null;
+		if(userToken != null && userToken.length() > 0)
+			//on set le token de session
+			UserHelper.setSession(userToken);
 		setContentView(R.layout.activity_wallet);
 		this.onCreateNavigationDrawer();
 	}
@@ -114,7 +121,7 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = this.drawerLayout.isDrawerOpen(this.drawerList);
+        //boolean drawerOpen = this.drawerLayout.isDrawerOpen(this.drawerList);
         //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -124,6 +131,15 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         this.drawerToggler.syncState();
+    }
+    
+    @Override
+    protected void onPostResume(){
+    	super.onPostResume();
+    	if(UserHelper.getToken() == null){
+    		this.logout();
+    	}
+    		
     }
 
     @Override
@@ -145,9 +161,6 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 				return true;
 			case R.id.logout_action :
 				this.logout();
-				Intent loadLogin = new Intent(getApplicationContext(), LoginActivity.class);
-				loadLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(loadLogin);
 				return true;
     	}
         return super.onOptionsItemSelected(item);
@@ -215,6 +228,7 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 	}
 	
 	protected void showExitMessage(){
+		final String callee = this.getClass().getCanonicalName();
 		new AlertDialog.Builder(this)
 		.setIcon(android.R.drawable.ic_dialog_alert)
 		.setTitle("Exiting the application")
@@ -223,8 +237,8 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-				finish();
+				Log.i("Class", callee);
+				logout();
 			}
 		})
 		.setNegativeButton("No", null)
@@ -237,7 +251,10 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 	}
 	
 	protected void logout(){
-		Log.i("USER", "USER DISCONNECTED");
+		UserHelper.logout();
+		Intent loadLogin = new Intent(getApplicationContext(), LoginActivity.class);
+		loadLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		this.startActivity(loadLogin);
 	}
 	
 	protected abstract void initFragments();

@@ -28,13 +28,12 @@ import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.os.Build;
 
-public class SignupActivity extends ActionBarActivity implements OnFragmentInteractionListener{
+public class SignupActivity extends ActionBarActivity implements OnFragmentInteractionListener, JsonCallback{
 
 	private FormSimpleInputFragment nameInput, firstNameInput;
 	private FormEmailFragment emailInput; 
 	private FormPasswordFragment passwordInput;
 	private FormButtonFragment signUpBtn;
-	private JsonCallback signUpCallback;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +46,6 @@ public class SignupActivity extends ActionBarActivity implements OnFragmentInter
 		this.emailInput = (FormEmailFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_email_input);
 		this.passwordInput = (FormPasswordFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_password_input);
 		this.signUpBtn = (FormButtonFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_signup_btn);
-		this.signUpCallback = this.getSignUpCallback();
 		this.initFragments();
 		this.showFragment(R.id.fragment_email_input, this.emailInput);
 		this.showFragment(R.id.fragment_password_input, this.passwordInput);
@@ -98,7 +96,7 @@ public class SignupActivity extends ActionBarActivity implements OnFragmentInter
 		if(this.isFormValide()){
 			this.signUpBtn.displayLoader();
 			String url = "http://10.0.2.2:8080/_SERVEUR/User";
-			JsonHttpRequest request = new JsonHttpRequest("POST", url, this.signUpCallback);
+			JsonHttpRequest request = new JsonHttpRequest("POST", url, this);
 	        request.putParam("nom", this.nameInput.getValue());
 			request.putParam("prenom", this.firstNameInput.getValue());
 			request.putParam("email", this.emailInput.getValue());
@@ -108,19 +106,6 @@ public class SignupActivity extends ActionBarActivity implements OnFragmentInter
 		}else{
 			this.showErrorMessage();
 		}
-	}
-	
-	protected JsonCallback getSignUpCallback(){
-		final ActionBarActivity sourceActivity = this;
-		return new JsonCallback() {
-			
-			@Override
-			public JSONObject call(JSONObject jsonResponse) {
-				// TODO Auto-generated method stub
-				NavUtils.navigateUpFromSameTask(sourceActivity);
-				return null;
-			}
-		};
 	}
 	
 	protected boolean isFormValide(){
@@ -183,5 +168,12 @@ public class SignupActivity extends ActionBarActivity implements OnFragmentInter
 		final FragmentTransaction fragTransaction = fragManager.beginTransaction();
 		fragTransaction.remove(fragment);
 		return fragTransaction.commit();
+	}
+
+	@Override
+	public JSONObject call(JSONObject jsonResponse) {
+		// TODO Auto-generated method stub
+		NavUtils.navigateUpFromSameTask(this);
+		return null;
 	}
 }
