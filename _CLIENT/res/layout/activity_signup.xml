@@ -25,6 +25,12 @@
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content" />
 	        
+	       	<fragment
+	            android:id="@+id/fragment_tag_input"
+	            android:name="fr.utt.if26.uttcoins.fragment.formulaire.FormSimpleInputFragment"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content" />
+	        
 	    	<LinearLayout
 			    android:id="@id/fragment_email_input"
 			    android:layout_width="match_parent"

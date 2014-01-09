@@ -36,4 +36,10 @@
 	<string name="first_name_input_placeholder">Prénom</string>
 	<string name="name_input_placeholder">Nom</string>
 	<string name="first_name_input_placeholder">Prénom</string>
+	<string name="solde_main_title_text">Solde UTTCoins</string>
+	<string name="solde_sub_title_text">Solde disponible</string>
+	<string name="user_solde_default_text">0</string>
+	<string name="new_send_payment_action_title">Envoie</string>
+	<string name="new_asked_payment_action_title">Demande</string>
+	<string name="tag_input_placeholder">Pseudo utilisé dans l\'application</string>
 </resources>

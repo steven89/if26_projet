@@ -30,7 +30,7 @@ import android.os.Build;
 
 public class SignupActivity extends ActionBarActivity implements OnFragmentInteractionListener, JsonCallback{
 
-	private FormSimpleInputFragment nameInput, firstNameInput;
+	private FormSimpleInputFragment nameInput, firstNameInput, tagInput;
 	private FormEmailFragment emailInput; 
 	private FormPasswordFragment passwordInput;
 	private FormButtonFragment signUpBtn;
@@ -43,6 +43,8 @@ public class SignupActivity extends ActionBarActivity implements OnFragmentInter
 		this.nameInput.setHint(R.string.name_input_placeholder);
 		this.firstNameInput = (FormSimpleInputFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_first_name_input);
 		this.firstNameInput.setHint(R.string.first_name_input_placeholder);
+		this.tagInput = (FormSimpleInputFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_tag_input);
+		this.tagInput.setHint(R.string.tag_input_placeholder);
 		this.emailInput = (FormEmailFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_email_input);
 		this.passwordInput = (FormPasswordFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_password_input);
 		this.signUpBtn = (FormButtonFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_signup_btn);
@@ -101,7 +103,7 @@ public class SignupActivity extends ActionBarActivity implements OnFragmentInter
 			request.putParam("prenom", this.firstNameInput.getValue());
 			request.putParam("email", this.emailInput.getValue());
 			request.putParam("pass", this.passwordInput.getValue());
-			request.putParam("tag", "TEST");
+			request.putParam("tag", this.tagInput.getValue());
 			request.execute();
 		}else{
 			this.showErrorMessage();
