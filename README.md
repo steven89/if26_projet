@@ -19,3 +19,4 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `email` (`email`(150))
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 ```
+
