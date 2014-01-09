@@ -4,7 +4,6 @@ import org.bson.BSONObject;
 
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
-import fr.utt.if26.cs.servlets.LoginServlet;
 import fr.utt.if26.cs.utils.Crypt;
 
 public class LoginManager {
@@ -62,7 +61,8 @@ public class LoginManager {
 					db.open();
 					db.updateBean(bean);
 					db.close();
-					return "{'email': '"+((User) bean).getEmail()+"', 'token' : '"+((User) bean).getToken()+"'}";
+					//return "{'email': '"+((User) bean).getEmail()+"', 'token' : '"+((User) bean).getToken()+"'}";
+					return bean.getJSONStringRepresentation(new String[] {"email", "token"});
 				}
 				else
 					return "{'error':'auth_error'}";
@@ -96,5 +96,10 @@ public class LoginManager {
 		}
 		else
 			return "{'error':'field_missing'}";
+	}
+	
+	public static boolean checkAuth(BSONObject params){
+		
+		return false;
 	}
 }

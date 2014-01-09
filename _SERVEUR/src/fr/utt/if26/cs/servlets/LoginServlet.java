@@ -14,12 +14,7 @@ import org.bson.BasicBSONObject;
 
 import com.mongodb.util.JSON;
 
-import fr.utt.if26.cs.database.Database;
-import fr.utt.if26.cs.database.DatabaseManager;
-import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.LoginManager;
-import fr.utt.if26.cs.model.User;
-import fr.utt.if26.cs.utils.Crypt;
 
 /**
  * Servlet implementation class Login

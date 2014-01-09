@@ -3,7 +3,6 @@ package fr.utt.if26.cs.servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +18,6 @@ import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.Transaction;
-import fr.utt.if26.cs.model.User;
 import fr.utt.if26.cs.utils.ServletUtils;
 
 
@@ -37,8 +35,6 @@ public class TransactionServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
 		Database dbTransactions = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);
-		Database dbUsers = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
-		DataBean bean = null;
 		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.GET, request);
 		if(params.containsField("id")){
 			if(ObjectId.isValid(params.getString("id"))){
@@ -61,15 +57,15 @@ public class TransactionServlet extends HttpServlet {
 				datas.put("to", params.getString("tag"));
 				ArrayList<DataBean> transactionsTo = dbTransactions.findBeans(datas);
 				dbTransactions.close();
-				out.println("{ 'from': {");
+				out.println("{ 'from': [");
 				for(DataBean t : transactionsFrom){
 					out.println("\t"+t.getJSONStringRepresentation()+", ");
 				}
-				out.println("}, 'to': {");
+				out.println("], 'to': [");
 				for(DataBean t : transactionsTo){
 					out.println("\t"+t.getJSONStringRepresentation());
 				}
-				out.println("}}");
+				out.println("]}");
 			}
 		}
 	}

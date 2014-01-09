@@ -1,15 +1,12 @@
 package fr.utt.if26.cs.model;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
-import com.mongodb.util.Hash;
 import com.mongodb.util.JSON;
 
 
@@ -62,7 +59,7 @@ public abstract class DataBean {
 		BasicBSONObject BSONData = new BasicBSONObject();
 		for(String f : this.export){
 			if(filters!=null){
-				if(in_array(f, filters)){
+				if(inArray(f, filters)){
 					BSONData.put(f, this.getParam(f));
 				}
 			}
@@ -95,7 +92,7 @@ public abstract class DataBean {
 	 * @param haystack : le tableau
 	 * @return true si présent, sinon false
 	 */
-	private static boolean in_array(Object needle, String[] array) {
+	private static boolean inArray(String needle, String[] array) {
 		for(String s : array)
 			if(s.equals(needle))
 				return true;

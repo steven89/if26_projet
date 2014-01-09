@@ -15,6 +15,7 @@ public abstract class Database {
 	public abstract boolean removeBean(DataBean bean);
 	
 	public abstract DataBean getBean(BSONObject datas);
+	
 	/**
 	 * find a bean using a key
 	 * @param key

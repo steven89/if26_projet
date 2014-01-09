@@ -40,10 +40,6 @@ public class DatabaseManager {
 		return this.sqlDb;
 	}
 	
-	/*public Database getBase(String base){
-		return this.bases.get(base);
-	}*/
-	
 	public Database getBase(int base){
 		switch(base){
 		case DatabaseManager.USERS:
@@ -53,7 +49,6 @@ public class DatabaseManager {
 		default:
 			return null;
 		}
-		
 	}
 	
 	
