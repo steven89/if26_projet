@@ -10,6 +10,7 @@ import org.bson.BSONObject;
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.User;
+import fr.utt.if26.cs.utils.TransactionsUtils;
 
 public class SQLDatabase extends Database {
 	
@@ -91,9 +92,8 @@ public class SQLDatabase extends Database {
 					(String) datas.get("pass"), 
 					(String) datas.get("prenom"), 
 					(String) datas.get("nom"),
-					(String) datas.get("tag"), 
-					Integer.parseInt((String) datas.get("wallet"))
-			);
+					(String) datas.get("tag"));
+			TransactionsUtils.applyTransactionsOnUser(bean);
 			if(datas.containsField("token")){
 				((User) bean).setToken((String) datas.get("token"));
 			}

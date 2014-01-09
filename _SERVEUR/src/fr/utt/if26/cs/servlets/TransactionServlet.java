@@ -74,7 +74,21 @@ public class TransactionServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		PrintWriter out = response.getWriter();
+		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.POST, request);
+		if(ServletUtils.checkRequiredFields(new String[] {"from", "to", "amount"}, params)){
+			Database db = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);
+			DataBean transaction = new Transaction(
+				params.getInt("amount"), 
+				params.getString("from"), 
+				params.getString("to")
+			);
+			out.println(transaction.getJSONStringRepresentation());
+			db.open();
+			db.insertBean(transaction);
+			db.close();
+			
+		}
 	}
 
 	/**

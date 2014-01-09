@@ -2,6 +2,8 @@ package fr.utt.if26.cs.utils;
 
 import java.util.ArrayList;
 
+import javax.xml.crypto.Data;
+
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
@@ -13,13 +15,16 @@ import fr.utt.if26.cs.model.User;
 
 public class TransactionsUtils {
 	
+	private static final int DEFAULT_WALLET = 50;
+	private static final String SYSTEM_USER = "system";
+	
 	
 	private static int computeTransactions(ArrayList<DataBean> from, ArrayList<DataBean> to){
 		int totalFrom=0, totalTo=0;
 		for(DataBean t : from)
-			totalFrom += ((Transaction) t).getMontant();
+			totalFrom += ((Transaction) t).getAmount();
 		for(DataBean t : to)
-			totalTo += ((Transaction) t).getMontant();
+			totalTo += ((Transaction) t).getAmount();
 		return totalTo-totalFrom;
 	}
 	
@@ -45,10 +50,20 @@ public class TransactionsUtils {
 	
 	public static void applyTransactionsOnUser(DataBean user){
 		((User) user).setWallet(
-			((User) user).getWallet()+
 			TransactionsUtils.computeTransactions(
 					TransactionsUtils.getUserTransactions(((User) user).getTag())
 			)
 		);
+	}
+	
+	public static void doTransaction(Transaction t){
+		Database db = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);
+		db.open();
+		db.insertBean(t);
+		db.close();
+	}
+	
+	public static void doBaseTransaction(String userTag){
+		TransactionsUtils.doTransaction(new Transaction(TransactionsUtils.DEFAULT_WALLET, TransactionsUtils.SYSTEM_USER, userTag));
 	}
 }

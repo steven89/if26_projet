@@ -44,30 +44,30 @@ public class MongoHelper implements DatabaseHelper {
 	}
 	
 	@Override
-	public void insert(BSONObject BSONObject) {
-		this.collection.insert((DBObject) BSONObject);
+	public void insert(BSONObject datas) {
+		this.collection.insert((DBObject) JSON.parse(datas.toString()));
 	}
 
 	@Override
-	public void insert(String JSONString) {
+	public void insert(String datas) {
 		BSONObject object = new BasicBSONObject();
-		object = (BSONObject) JSON.parse(JSONString);
+		object = (BSONObject) JSON.parse(datas);
 		this.insert(object);
 	}
 
 	@Override
-	public boolean remove(BSONObject... BSONObjects) {
-		for(BSONObject obj : BSONObjects){
+	public boolean remove(BSONObject... datas) {
+		for(BSONObject obj : datas){
 			this.collection.remove((DBObject) obj);
 		}
 		return false;
 	}
 
 	@Override
-	public boolean remove(String... JSONStrings) {
-		BSONObject[] objects = new BSONObject[JSONStrings.length];
-		for(int i=0;i<JSONStrings.length; i++){
-			objects[i] = (BSONObject) JSON.parse(JSONStrings[i]);
+	public boolean remove(String... datas) {
+		BSONObject[] objects = new BSONObject[datas.length];
+		for(int i=0;i<datas.length; i++){
+			objects[i] = (BSONObject) JSON.parse(datas[i]);
 		}
 		return this.remove(objects);
 	}
