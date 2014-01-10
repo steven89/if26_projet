@@ -46,4 +46,11 @@
 	<string name="target_payment_placeholder">À:</string>
 	<string name="payment_amount_placeholder" >Montant</string>
 	<string name="uttCoins_currency_text" >UTTCoins</string>
+	<string name="confirm_action_text" >Confirmer</string>
+	<string name="cancel_action_text">Annuler</string>
+	<string name="dialog_payment_confirm_title">Confirmer la transaction ?</string>
+	<string name="donnationTo">Donnation à </string>
+	<string name="transactionAmount">Montant de la transaction :</string>
+	<string name="accountBalanceAfterTransaction">Solde après la transaction : </string>
+	<string name="userNotFound" >Utilisateur introuvable !</string>
 </resources>

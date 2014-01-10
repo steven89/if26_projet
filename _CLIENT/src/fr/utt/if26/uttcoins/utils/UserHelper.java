@@ -18,4 +18,9 @@ public class UserHelper {
 		Log.i("USER", "USER DISCONNECTED");
 		
 	}
+
+	public static int getAccountBalance() {
+		// TODO Auto-generated method stub
+		return 100;
+	}
 }

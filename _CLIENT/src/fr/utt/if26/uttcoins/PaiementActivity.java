@@ -2,9 +2,12 @@ package fr.utt.if26.uttcoins;
 
 import fr.utt.if26.uttcoins.fragment.TransactionListFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPaiementFragment;
+import fr.utt.if26.uttcoins.utils.PaymentConfirmationDialogFragment;
+import fr.utt.if26.uttcoins.utils.PaymentConfirmationDialogFragment.PaymentConfirmationDialogListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
@@ -16,7 +19,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-public class PaiementActivity extends NavDrawerActivity {
+public class PaiementActivity extends NavDrawerActivity implements PaymentConfirmationDialogListener{
 
 	public final static int positionInDrawer = 3;
 	
@@ -60,8 +63,11 @@ public class PaiementActivity extends NavDrawerActivity {
 
 	@Override
 	public void onFragmentInteraction(Uri uri) {
-		// TODO Auto-generated method stub
-		
+		switch(Integer.parseInt(uri.getFragment())){
+			case R.id.payment_confirmation_button :
+				this.showConfirmPaymentDialog();
+				break;
+		}
 	}
 
 	@Override
@@ -76,5 +82,21 @@ public class PaiementActivity extends NavDrawerActivity {
 		this.innerListViewContainer.setLayoutParams(lp_innerListViewContainer);
 		container.addView(this.innerListViewContainer);
 	}
+	
+	private void showConfirmPaymentDialog() {
+		PaymentConfirmationDialogFragment confirmDialogFragment = new PaymentConfirmationDialogFragment();
+		confirmDialogFragment.setTransactionAmount(this.formPaymentFragment.getTransactionAmount());
+		confirmDialogFragment.setTransactionReceiver(this.formPaymentFragment.getTransactionReceiver());
+		confirmDialogFragment.show(getSupportFragmentManager(), "confirmation");
+	}
 
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog) {
+				
+	}
+
+	@Override
+	public void onDialogNegativeClick(DialogFragment dialog) {
+		dialog.dismiss();
+	}
 }

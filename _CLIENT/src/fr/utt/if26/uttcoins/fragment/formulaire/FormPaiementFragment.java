@@ -6,10 +6,13 @@ import fr.utt.if26.uttcoins.fragment.CustomFragment;
 import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
 import fr.utt.if26.uttcoins.fragment.UserSoldeFragment;
 import fr.utt.if26.uttcoins.model.TransactionList;
+import fr.utt.if26.uttcoins.utils.PaymentConfirmationDialogFragment;
+import fr.utt.if26.uttcoins.utils.PaymentConfirmationDialogFragment.PaymentConfirmationDialogListener;
 import android.app.Activity;
 import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -108,17 +111,21 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 		Log.i("SET", "Set transactionAmout = "+Integer.toString(transactionAmount));
 		this.preSetAmount = transactionAmount;
 	}
+	
+	public String getTransactionReceiver(){
+		return this.transactionReceiverInput.getText().toString();
+	}
+	
+	public int getTransactionAmount(){
+		return Integer.parseInt(this.transactionAmountInput.getText().toString());
+	}
 
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()){
 			case R.id.payment_confirmation_button :
-				this.showConfirmPaymentDialog();
+				this.mListener.onFragmentInteraction(Uri.parse("click://"+UriPath+"#"+v.getId()));;
 				break;
 		}
-	}
-
-	private void showConfirmPaymentDialog() {
-				
 	}
 }

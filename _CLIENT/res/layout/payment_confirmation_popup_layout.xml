@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <TextView
+        android:id="@+id/transaction_with_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="10dp"
+        android:text="@string/donnationTo" />
+
+    <TextView
+        android:id="@+id/transaction_amount_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/transaction_with_title"
+        android:layout_marginRight="10dp"
+        android:text="@string/transactionAmount" />
+        
+    <TextView
+        android:id="@+id/transaction_amount_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/transaction_amount_title"
+        android:layout_below="@+id/transaction_with_title"
+        android:layout_marginRight="10dp" />
+
+    <TextView
+        android:id="@+id/account_balance_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/transaction_amount_title"
+        android:layout_marginRight="10dp"
+        android:text="@string/accountBalanceAfterTransaction" />
+
+    <TextView
+        android:id="@+id/account_balance_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/account_balance_title"
+        android:layout_below="@+id/transaction_amount_title"
+        android:layout_marginRight="10dp"
+        android:layout_alignLeft="@id/transaction_amount_text"/>
+    
+   <TextView
+        android:id="@+id/uttCoins_currency_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/account_balance_value"
+        android:layout_below="@+id/transaction_amount_title"
+        android:layout_alignLeft="@id/uttCoins_currency"
+        android:text="@string/uttCoins_currency_text" />
+
+   <TextView
+       android:id="@id/uttCoins_currency"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_above="@+id/uttCoins_currency_2"
+       android:layout_toRightOf="@+id/transaction_amount_text"
+       android:text="@string/uttCoins_currency_text" />
+
+   <TextView
+       android:id="@+id/receiver_name_text"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_above="@+id/transaction_amount_title"
+       android:layout_toRightOf="@+id/transaction_with_title"
+       android:text="@string/userNotFound"/>
+
+</RelativeLayout>
+
