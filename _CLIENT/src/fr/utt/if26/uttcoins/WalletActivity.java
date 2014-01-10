@@ -5,36 +5,68 @@ import fr.utt.if26.uttcoins.fragment.UserSoldeFragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class WalletActivity extends NavDrawerActivity {
 
 	public final static int positionInDrawer = 1;
 	
-	private TransactionListFragment transactionsFragment;
+	private TransactionListFragment transactionsListFragment;
 	private UserSoldeFragment userSoldeFragment;
+	
+	private static final int USER_SOLDE_CONTAINER_ID = R.id.user_solde_container;
+	private static final int TRANSACTION_LIST_CONTAINER_ID = R.id.transaction_list_container;
+	
+	private FrameLayout userSoldeContainer;
+	private FrameLayout transactionListContainer;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//pourrait être déporté dans la classe mère avec de la "reflexivité", mais ajoute trop de try/catch
-		this.drawerList.setItemChecked(positionInDrawer, true);
-		this.initFragments();
-		this.showFragment(R.id.user_solde_container, userSoldeFragment);
-		this.showFragment(R.id.transaction_list_container, transactionsFragment);
 	}
 
+	@Override
+	protected void initInnerContentLayout(ViewGroup container) {
+		Log.i("CONTENT", "Initializing wallet content layout !");
+		
+		RelativeLayout.LayoutParams lp_userSoldeContainer = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		this.userSoldeContainer = new FrameLayout(this);
+		this.userSoldeContainer.setLayoutParams(lp_userSoldeContainer);
+		this.userSoldeContainer.setId(USER_SOLDE_CONTAINER_ID);
+		this.userSoldeContainer.setVisibility(View.VISIBLE);
+		
+		RelativeLayout.LayoutParams lp_transactionListContainer = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		lp_transactionListContainer.addRule(RelativeLayout.BELOW, USER_SOLDE_CONTAINER_ID);
+		this.transactionListContainer = new FrameLayout(this);
+		this.transactionListContainer.setLayoutParams(lp_transactionListContainer);
+		this.transactionListContainer.setId(TRANSACTION_LIST_CONTAINER_ID);
+		this.transactionListContainer.setVisibility(View.VISIBLE);
+		
+		container.addView(userSoldeContainer);
+		container.addView(transactionListContainer);
+	}
+
+	@Override
 	protected void initFragments(){
 		final FragmentManager fragManager = getSupportFragmentManager();
 		//pour chaque frag dynamique
-		this.transactionsFragment = (TransactionListFragment) fragManager.findFragmentByTag(TransactionListFragment.TAG);
-		if(this.transactionsFragment == null)
-			this.transactionsFragment = TransactionListFragment.newInstance();
+		this.transactionsListFragment = (TransactionListFragment) fragManager.findFragmentByTag(TransactionListFragment.TAG);
+		if(this.transactionsListFragment == null)
+			this.transactionsListFragment = TransactionListFragment.newInstance();
 		this.userSoldeFragment = (UserSoldeFragment) fragManager.findFragmentByTag(UserSoldeFragment.TAG);
 		if(this.userSoldeFragment == null)
 			this.userSoldeFragment = UserSoldeFragment.newInstance();
 		
-		
+		this.showFragment(USER_SOLDE_CONTAINER_ID, userSoldeFragment);
+		this.showFragment(TRANSACTION_LIST_CONTAINER_ID, transactionsListFragment);		
 	}
 	
 	@Override

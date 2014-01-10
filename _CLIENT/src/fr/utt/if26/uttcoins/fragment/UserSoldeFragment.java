@@ -20,7 +20,7 @@ import android.widget.TextView;
  * A simple {@link android.support.v4.app.Fragment} subclass.
  * 
  */
-public class UserSoldeFragment extends CustomFragment implements AbsListView.OnItemClickListener{
+public class UserSoldeFragment extends CustomFragment{
 
 
 
@@ -78,16 +78,5 @@ public class UserSoldeFragment extends CustomFragment implements AbsListView.OnI
 	public void onDetach() {
 		super.onDetach();
 		mListener = null;
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		if (null != mListener) {
-			// Notify the active callbacks interface (the activity, if the
-			// fragment is attached to one) that an item has been selected.
-			mListener.onFragmentInteraction(Uri.parse("click://"+UriPath+"/transaction#"+TransactionList.ITEMS.get(position).id));
-		}
 	}	
-	
 }
