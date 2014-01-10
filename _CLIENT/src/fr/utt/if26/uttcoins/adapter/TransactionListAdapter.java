@@ -45,7 +45,7 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> {
 		
 		//TODO : un affichage intelligent
 		this.personName.setText(transaction.crediteur);
-		this.credit.setText(Float.toString(transaction.solde));		
+		this.credit.setText(Integer.toString(transaction.getAmount()));		
 		return rowView;
 	}
 }

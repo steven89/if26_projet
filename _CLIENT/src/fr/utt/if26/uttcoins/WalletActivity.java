@@ -1,11 +1,15 @@
 package fr.utt.if26.uttcoins;
 
 import fr.utt.if26.uttcoins.fragment.TransactionListFragment;
+import fr.utt.if26.uttcoins.fragment.TransactionListFragment.OnTransactionListFragmentInteractionListener;
 import fr.utt.if26.uttcoins.fragment.UserSoldeFragment;
+import fr.utt.if26.uttcoins.model.Transaction;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class WalletActivity extends NavDrawerActivity {
+public class WalletActivity extends NavDrawerActivity implements OnTransactionListFragmentInteractionListener{
 
 	public final static int positionInDrawer = 1;
 	
@@ -74,10 +78,16 @@ public class WalletActivity extends NavDrawerActivity {
 		super.onCreateOptionsMenu(menu);
 		return true;
 	}
-
+	
 	@Override
 	public void onFragmentInteraction(Uri uri) {
-		// TODO Auto-generated method stub
+		switch(Integer.parseInt(uri.getFragment())){
+			
+		}
+	}
+
+	@Override
+	public void onTransactionListFragmentInteraction(Transaction selected_transaction) {
 		
 	}
 

@@ -8,14 +8,14 @@ public class Transaction {
 	public int id;
 	public String debiteur;
 	public String crediteur;
-	public float solde;
+	public int amount;
 	
 	public Transaction(int transaction_id, String debiteur_name, String crediteur_name, 
-			float transaction_solde){
+			int transaction_amount){
 		this.id = transaction_id;
 		this.debiteur = debiteur_name;
 		this.crediteur = crediteur_name;
-		this.solde = transaction_solde;
+		this.amount = transaction_amount;
 	}
 		
 	public String toString(){
@@ -24,11 +24,22 @@ public class Transaction {
 			representation.put("id", this.id);
 			representation.put("debiteur", this.debiteur);
 			representation.put("crediteur", this.crediteur);
-			representation.put("solde", this.solde);
+			representation.put("solde", this.amount);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return representation.toString();
+	}
+
+	public String getOtherUser() {
+		// TODO Rename method for more explicit name
+		// add some logic
+		return this.crediteur;
+	}
+
+	public int getAmount() {
+		// TODO Auto-generated method stub
+		return this.amount;
 	}
 }

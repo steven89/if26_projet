@@ -41,4 +41,12 @@
     <item type="id" name="user_solde_container" />
     <item type="id" name="content_frame" />
     <item type="id" name="content_layout" />
+    <item type="id" name="payment_receiver" />
+    <item type="id" name="payment_amount" />
+    <item type="id" name="payment_confirmation_button" />
+    <item type="id" name="uttCoins_currency" />
+    <item type="id" name="payment_inprogress_loader" />
+    <item type="id" name="formPaymentFragContainer" />
+    <item type="id" name="new_transaction_action" />
+    <item type="id" name="transaction_list_fragment_group" />
 </resources>

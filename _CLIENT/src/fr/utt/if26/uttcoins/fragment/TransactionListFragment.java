@@ -1,17 +1,25 @@
 package fr.utt.if26.uttcoins.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import fr.utt.if26.uttcoins.PaiementActivity;
 import fr.utt.if26.uttcoins.R;
 import fr.utt.if26.uttcoins.R.layout;
 import fr.utt.if26.uttcoins.adapter.TransactionListAdapter;
@@ -29,14 +37,17 @@ import fr.utt.if26.uttcoins.model.TransactionList;
  */
 public class TransactionListFragment extends Fragment implements AbsListView.OnItemClickListener {
 	public static final String TAG = "TransactionFragment";
-
 	public static final String UriPath = "application/TransactionFragment";
-
+	public static final String TRANSACTION_REVEIVER_KEY = "to";
+	public static final String TRANSACTION_AMOUNT_KEY = "amount";
+	
+	private static final int TRANSACTION_LIST_ID = android.R.id.list;
+	private static final int TRANSACTION_LIST_FRAGMENT_GROUP_ID = R.id.transaction_list_fragment_group;
 
 	// TODO: Rename and change types of parameters
 	private String mParam1;
 
-	private OnFragmentInteractionListener mListener;
+	private OnTransactionListFragmentInteractionListener mListener;
 
 	/**
 	 * The fragment's ListView/GridView.
@@ -67,10 +78,6 @@ public class TransactionListFragment extends Fragment implements AbsListView.OnI
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// TODO: Change Adapter to display your content
-//		mAdapter = new ArrayAdapter<Transaction>(getActivity(),
-//				android.R.layout.simple_list_item_1, android.R.id.text1,
-//				TransactionList.ITEMS);
 		mAdapter = new TransactionListAdapter(getActivity(), TransactionList.ITEMS);
 	}
 
@@ -79,22 +86,49 @@ public class TransactionListFragment extends Fragment implements AbsListView.OnI
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_transaction, container,
 				false);
-
 		// Set the adapter
-		mListView = (AbsListView) view.findViewById(android.R.id.list);
+		mListView = (AbsListView) view.findViewById(TRANSACTION_LIST_ID);
 		((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
-
 		// Set OnItemClickListener so we can be notified on item clicks
 		mListView.setOnItemClickListener(this);
+		registerForContextMenu(mListView);
 
 		return view;
 	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		if(v.getId() == TRANSACTION_LIST_ID){
+		    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+		    menu.setHeaderTitle("Transaction avec : "+TransactionList.ITEMS.get(info.position).getOtherUser());
+		    String[] menuItems = getResources().getStringArray(R.array.ctx_menu_transaction);
+		    menu.add(TRANSACTION_LIST_FRAGMENT_GROUP_ID, R.id.new_transaction_action, 0, menuItems[0]);
+		}
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+		if(item.getGroupId() == TRANSACTION_LIST_FRAGMENT_GROUP_ID){
+			Transaction selectedTransaction = TransactionList.ITEMS.get(info.position);
+			switch(item.getItemId()){
+				case R.id.new_transaction_action:
+					Bundle args = new Bundle();
+					args.putString(TRANSACTION_REVEIVER_KEY, selectedTransaction.getOtherUser());
+					args.putInt(TRANSACTION_AMOUNT_KEY, selectedTransaction.getAmount());
+					this.goToPaymentActivity(args);
+					break;
+			}
+		}
+	  return true;
+	}
 
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		try {
-			mListener = (OnFragmentInteractionListener) activity;
+			mListener = (OnTransactionListFragmentInteractionListener) activity;
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
 					+ " must implement OnFragmentInteractionListener");
@@ -113,10 +147,17 @@ public class TransactionListFragment extends Fragment implements AbsListView.OnI
 		if (null != mListener) {
 			// Notify the active callbacks interface (the activity, if the
 			// fragment is attached to one) that an item has been selected.
-			mListener.onFragmentInteraction(Uri.parse("click://"+UriPath+"/transaction#"+TransactionList.ITEMS.get(position).id));
+			mListener.onTransactionListFragmentInteraction(TransactionList.ITEMS.get(position));
+			//Uri.parse("click://"+UriPath+"/transaction#"+TransactionList.ITEMS.get(position).id));
 		}
 	}
 
+	public void goToPaymentActivity(Bundle data){
+		Intent loadPaymentActivity = new Intent(this.getActivity(), PaiementActivity.class);
+		loadPaymentActivity.putExtras(data);
+		Log.i("NAV", "Starting PaiementActivity");
+		startActivity(loadPaymentActivity);
+	}
 	/**
 	 * The default content for this Fragment has a TextView that is shown when
 	 * the list is empty. If you would like to change the text, call this method
@@ -128,5 +169,9 @@ public class TransactionListFragment extends Fragment implements AbsListView.OnI
 		if (emptyText instanceof TextView) {
 			((TextView) emptyView).setText(emptyText);
 		}
+	}
+	
+	public interface OnTransactionListFragmentInteractionListener{
+		public void onTransactionListFragmentInteraction(Transaction selected_transaction);
 	}
 }
