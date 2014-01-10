@@ -16,6 +16,7 @@ import com.mongodb.util.JSON;
 
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseHelper;
+import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.Transaction;
 import fr.utt.if26.cs.model.User;
@@ -91,7 +92,7 @@ public class MongoDatabase extends Database {
 	}
 
 	@Override
-	public DataBean getBean(String key, String value) {
+	public DataBean getBean(String key, String value) throws BeanException {
 		BSONObject datas = mongoHelper.findByKey(key, value);
 		return new Transaction(
 				((ObjectId) datas.get("_id")).toString(),
@@ -102,16 +103,16 @@ public class MongoDatabase extends Database {
 	}
 
 	@Override
-	public ArrayList<DataBean> findBeans(BSONObject datas) {
+	public ArrayList<DataBean> findBeans(BSONObject datas) throws BeanException {
 		ArrayList<BSONObject> dbResult = mongoHelper.find(datas);
 		ArrayList<DataBean> result = new ArrayList<>();
 		for(BSONObject obj : dbResult){
 			result.add(new Transaction(
-					((ObjectId) obj.get("_id")).toString(),
-					Integer.parseInt((String) obj.get("amount")),
-					(String) obj.get("from"), 
-					(String) obj.get("to"),
-					(String) datas.get("date"))
+				((ObjectId) obj.get("_id")).toString(),
+				Integer.parseInt((String) obj.get("amount")),
+				(String) obj.get("from"), 
+				(String) obj.get("to"),
+				(String) obj.get("date"))
 			);
 		}
 		return result;

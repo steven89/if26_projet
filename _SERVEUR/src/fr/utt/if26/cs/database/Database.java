@@ -31,8 +31,10 @@ public abstract class Database {
 	 * @param datas : key and value, added to the WHERE clause
 	 * 			ex : "name":"john"
 	 * @return list of beans found in DB
+	 * @throws BeanException 
+	 * @throws NumberFormatException 
 	 */
-	public abstract ArrayList<DataBean> findBeans(BSONObject datas);
+	public abstract ArrayList<DataBean> findBeans(BSONObject datas) throws BeanException;
 	
 	public abstract void open();
 	public abstract void close();

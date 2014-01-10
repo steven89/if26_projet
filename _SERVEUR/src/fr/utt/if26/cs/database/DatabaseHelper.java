@@ -14,33 +14,15 @@ import org.bson.BSONObject;
 public interface DatabaseHelper {
 	/*** 
 	 * Save objects in a database
-	 * @param BSONObject TODO
+	 * @param obj TODO
 	 */
-	public void insert(BSONObject BSONObject);
+	public void insert(BSONObject datas);
 	
 	/*** 
 	 * Save objects in a database
-	 * @param JSONString TODO
+	 * @param query TODO
 	 */
-	public void insert(String JSONString);
-	
-	public void insert(HashMap<String, String> map);
-	
-	/***
-	 * Remove objects from a database
-	 * @param BSONObjects
-	 * 					Array of documents to remove, in a BSON representation
-	 * @return true or false depending on the removal of the objects
-	 */
-	public boolean remove(BSONObject... BSONObjects);
-	
-	/***
-	 * Remove objects from a database
-	 * @param object
-	 * 				Array of documents to remove, in a JSON string representation
-	 * @return true or false depending on the removal of the objects
-	 */
-	public boolean remove(String... JSONStrings);
+	public void insert(String query);
 	
 	/***
 	 * 
@@ -48,15 +30,7 @@ public interface DatabaseHelper {
 	 * 				An object which represent a query to perform against the database
 	 * @return an implementation of Iterator to fetch results
 	 */
-	public ArrayList<BSONObject> find(Object query);
-	
-	/***
-	 * 
-	 * @param query
-	 * 				An object which represent a query to perform against the database
-	 * @return an implementation of Iterator to fetch results
-	 */
-	public ArrayList<BSONObject> find(BSONObject query);
+	public ArrayList<BSONObject> find(BSONObject datas);
 	
 	/**
 	 * Find one entry (use only with 'unique' fields)

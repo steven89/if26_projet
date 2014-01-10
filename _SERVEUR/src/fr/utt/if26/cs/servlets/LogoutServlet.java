@@ -15,6 +15,8 @@ import org.bson.BasicBSONObject;
 import com.mongodb.util.JSON;
 
 import fr.utt.if26.cs.exceptions.BeanException;
+import fr.utt.if26.cs.io.Echo;
+import fr.utt.if26.cs.io.JsonEcho;
 import fr.utt.if26.cs.model.LoginManager;
 
 /**
@@ -43,7 +45,7 @@ public class LogoutServlet extends HttpServlet {
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		PrintWriter out = response.getWriter();
+		Echo out = new JsonEcho(response.getWriter());
 		String paramStr = "";
 		String line = "";
 		while((line = request.getReader().readLine()) != null){
@@ -51,9 +53,9 @@ public class LogoutServlet extends HttpServlet {
 		}
 		BSONObject params = (BasicBSONObject) JSON.parse(paramStr);
 		try {
-			out.println(LoginManager.logOut(params));
+			out.echo(LoginManager.logOut(params));
 		} catch (BeanException e) {
-			out.println(e.getMessage());
+			out.echo(e.getMessage());
 			e.printStackTrace();
 		}
 	}

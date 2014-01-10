@@ -1,7 +1,6 @@
 package fr.utt.if26.cs.database.mongo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
@@ -54,29 +53,6 @@ public class MongoHelper implements DatabaseHelper {
 		object = (BSONObject) JSON.parse(datas);
 		this.insert(object);
 	}
-
-	@Override
-	public boolean remove(BSONObject... datas) {
-		for(BSONObject obj : datas){
-			this.collection.remove((DBObject) obj);
-		}
-		return false;
-	}
-
-	@Override
-	public boolean remove(String... datas) {
-		BSONObject[] objects = new BSONObject[datas.length];
-		for(int i=0;i<datas.length; i++){
-			objects[i] = (BSONObject) JSON.parse(datas[i]);
-		}
-		return this.remove(objects);
-	}
-
-	@Override
-	public ArrayList<BSONObject> find(Object query) {
-		return find((BSONObject) JSON.parse((String) query));
-	}
-
 	
 	@Override
 	public ArrayList<BSONObject> find(BSONObject query) {
@@ -92,11 +68,6 @@ public class MongoHelper implements DatabaseHelper {
 	@Override
 	public String getObjectIDKey() {
 		return objectIDKey;
-	}
-
-	@Override
-	public void insert(HashMap<String, String> map) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

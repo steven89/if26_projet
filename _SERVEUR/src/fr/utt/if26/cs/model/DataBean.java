@@ -79,12 +79,8 @@ public abstract class DataBean {
 		return JSON.serialize(this.getBSONRepresentation(filters));
 	}
 	
-	public HashMap<String, String> getHashRepresentation(){
-		HashMap<String, String> map = new HashMap<String, String>();
-		for(String f : this.export){
-			map.put(f, this.getParam(f));
-		}
-		return map;
+	public String toString(){
+		return this.getJSONStringRepresentation();
 	}
 	
 	/***

@@ -8,6 +8,8 @@ import fr.utt.if26.cs.utils.Crypt;
 
 public class User extends DataBean {
 	
+	public final static String SYS_USER = "admin@system";
+	
 	private String id=null, email, pass, prenom, nom, token, tag;
 	private int wallet=0;
 	private HashMap<String, Transaction> transactions;
@@ -71,7 +73,7 @@ public class User extends DataBean {
 	}
 	
 	public void setEmail(String email) throws BeanException{
-		if(email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$"))
+		if(email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$") || email.equals(User.SYS_USER))
 			this.email = email;
 		else
 			throw new BeanException("invalid email");
