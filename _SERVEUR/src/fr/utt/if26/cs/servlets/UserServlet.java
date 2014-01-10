@@ -33,7 +33,6 @@ import fr.utt.if26.cs.utils.TransactionsUtils;
 @WebServlet("/User")
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final int base = DatabaseManager.USERS;
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -42,13 +41,13 @@ public class UserServlet extends HttpServlet {
 		DataBean bean=null;
 		try{
 			int id = Integer.parseInt(request.getQueryString());
-			Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
+			Database db = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
 			db.open();
 			bean = db.getBean("id", Integer.toString(id));
 			db.close();
 		} catch (NumberFormatException e){
 			try {
-				Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
+				Database db = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
 				db.open();
 				if(request.getQueryString().indexOf("@")!=-1)
 					bean = db.getBean("email", request.getQueryString());
@@ -116,11 +115,12 @@ public class UserServlet extends HttpServlet {
 					params.getString("nom"),
 					params.getString("tag")
 				);
-				TransactionsUtils.doBaseTransaction(((User) user).getTag());
-				Database db = DatabaseManager.getInstance().getBase(UserServlet.base);
+				Database db = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
 				db.open();
 				db.insertBean(user);
 				db.close();
+				TransactionsUtils.doBaseTransaction(((User) user).getTag());
+				TransactionsUtils.applyTransactionsOnUser(user);
 				out.println(user.getJSONStringRepresentation());
 			} catch (BeanException e) {
 				out.println(e.getMessage());

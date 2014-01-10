@@ -19,7 +19,10 @@ import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.Transaction;
+import fr.utt.if26.cs.model.User;
 import fr.utt.if26.cs.utils.ServletUtils;
+import fr.utt.if26.cs.utils.TransactionsUtils;
+import fr.utt.if26.cs.utils.UserUtils;
 
 
 /**
@@ -56,23 +59,23 @@ public class TransactionServlet extends HttpServlet {
 		} 
 		else {
 			if(ServletUtils.checkRequiredFields(new String[]{"tag"}, params)){
-				BSONObject datas = new BasicBSONObject();
-				datas.put("from", params.getString("tag"));
-				dbTransactions.open();
-				ArrayList<DataBean> transactionsFrom = dbTransactions.findBeans(datas);
-				datas = new BasicBSONObject();
-				datas.put("to", params.getString("tag"));
-				ArrayList<DataBean> transactionsTo = dbTransactions.findBeans(datas);
-				dbTransactions.close();
-				out.println("{ 'from': [");
-				for(DataBean t : transactionsFrom){
-					out.println("\t"+t.getJSONStringRepresentation()+", ");
+				try {
+					User userFrom = UserUtils.getUserFromTag(params.getString("tag"));
+					ArrayList<DataBean>[] transactions = TransactionsUtils.getUserTransactions(userFrom);
+					out.println("{ 'from': [");
+					for(DataBean t : transactions[0]){
+						out.println("\t"+t.getJSONStringRepresentation()+", ");
+					}
+					out.println("], 'to': [");
+					for(DataBean t : transactions[1]){
+						out.println("\t"+t.getJSONStringRepresentation());
+					}
+					out.println("]}");
+				} catch (BeanException e) {
+					out.println(e.getMessage());
+					e.printStackTrace();
 				}
-				out.println("], 'to': [");
-				for(DataBean t : transactionsTo){
-					out.println("\t"+t.getJSONStringRepresentation());
-				}
-				out.println("]}");
+				
 			}
 		}
 	}
@@ -84,16 +87,25 @@ public class TransactionServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.POST, request);
 		if(ServletUtils.checkRequiredFields(new String[] {"from", "to", "amount"}, params)){
-			Database db = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);
-			DataBean transaction = new Transaction(
-				params.getInt("amount"), 
-				params.getString("from"), 
-				params.getString("to")
-			);
-			out.println(transaction.getJSONStringRepresentation());
-			db.open();
-			db.insertBean(transaction);
-			db.close();
+			Transaction transaction=null;
+			try {
+				transaction = new Transaction(
+					params.getInt("amount"), 
+					params.getString("from"), 
+					params.getString("to")
+				);
+			} catch (BeanException e1) {
+				out.println(e1.getMessage());
+				e1.printStackTrace();
+			}
+			try {
+				TransactionsUtils.doTransaction(transaction);
+				out.println(transaction.getJSONStringRepresentation());
+			} catch (BeanException e) {
+				out.println(e.getMessage());
+				e.printStackTrace();
+			}
+			
 			
 		}
 	}

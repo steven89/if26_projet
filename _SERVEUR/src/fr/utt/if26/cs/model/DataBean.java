@@ -79,14 +79,6 @@ public abstract class DataBean {
 		return JSON.serialize(this.getBSONRepresentation(filters));
 	}
 	
-	public HashMap<String, String> getHashRepresentation(){
-		HashMap<String, String> map = new HashMap<String, String>();
-		for(String f : this.export){
-			map.put(f, this.getParam(f));
-		}
-		return map;
-	}
-	
 	/***
 	 * Teste si un �l�ment est contenu dans un tableau
 	 * @param needle : l'�l�ment � rechercher
