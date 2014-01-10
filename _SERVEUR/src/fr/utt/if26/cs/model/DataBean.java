@@ -79,6 +79,10 @@ public abstract class DataBean {
 		return JSON.serialize(this.getBSONRepresentation(filters));
 	}
 	
+	public String toString(){
+		return this.getJSONStringRepresentation();
+	}
+	
 	/***
 	 * Teste si un �l�ment est contenu dans un tableau
 	 * @param needle : l'�l�ment � rechercher

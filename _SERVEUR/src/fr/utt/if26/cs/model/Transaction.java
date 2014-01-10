@@ -1,5 +1,6 @@
 package fr.utt.if26.cs.model;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -8,8 +9,8 @@ import org.bson.types.ObjectId;
 import fr.utt.if26.cs.exceptions.BeanException;
 
 
-public class Transaction extends DataBean {
-
+public class Transaction extends DataBean implements Serializable {
+	private static final long serialVersionUID = 1L;
 	protected int amount;
 	protected String from; // User.SYS_USER or email
 	protected String to; // user tag

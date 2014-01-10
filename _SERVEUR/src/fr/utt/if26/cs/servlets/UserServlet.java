@@ -21,6 +21,8 @@ import com.mongodb.util.JSON;
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.exceptions.BeanException;
+import fr.utt.if26.cs.io.Echo;
+import fr.utt.if26.cs.io.JsonEcho;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.Transaction;
 import fr.utt.if26.cs.model.User;
@@ -37,7 +39,7 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		PrintWriter out = response.getWriter();
+		Echo out = new JsonEcho(response.getWriter());
 		DataBean bean=null;
 		try{
 			int id = Integer.parseInt(request.getQueryString());
@@ -62,48 +64,24 @@ public class UserServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		if(bean==null)
-			out.println("{'error':'404'}");
+			out.echo("{'error':'404'}");
 			//response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		else {
 			try {
 				TransactionsUtils.applyTransactionsOnUser(bean);
 			} catch (BeanException e) {
-				out.println(e.getMessage());
+				out.echo(e.getMessage());
 				e.printStackTrace();
 			}
-			out.println(bean.getJSONStringRepresentation(new String[] {"email","tag","prenom","nom","wallet"}));
+			out.echo(bean.getJSONStringRepresentation(new String[] {"email","tag","prenom","nom","wallet"}));
 		}
-		//BasicBSONObject bson =  (BasicBSONObject) JSON.parse("{'test': 'aaeaze', 't':'a'}");
-		//byte[] bte = BSON.encode(bson);	
-		/*OutputStream os = response.getOutputStream();
-		os.write(bte);
-		os.flush();*/
-		/*PrintWriter out = response.getWriter();
-		String str = "";
-		for(byte b : bte){
-			str+=b+"&";
-			//out.print(b+"\n");
-		}
-		out.print(str);
-		
-//		String decode = new String(bte, "UTF-8");
-//		out.print("\n"+decode.toString());
-		String[] tab = str.split("&");
-		byte[] array = new byte[tab.length];
-		for(int i =0; i<tab.length; i++){
-//			out.print("\n"+tab[i]);
-			array[i] = Byte.valueOf(tab[i]);
-		}
-		BSONDecoder decoder = new BasicBSONDecoder();
-		BasicBSONObject obj = (BasicBSONObject) decoder.readObject(array);
-		//out.print(obj.toString());*/
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		PrintWriter out = response.getWriter();
+		Echo out = new JsonEcho(response.getWriter());
 		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.POST, request);
 		if(ServletUtils.checkRequiredFields(new String[] {"email", "pass", "prenom", "nom", "tag"}, params)){
 			DataBean user=null;
@@ -121,15 +99,15 @@ public class UserServlet extends HttpServlet {
 				db.close();
 				TransactionsUtils.doBaseTransaction(((User) user).getTag());
 				TransactionsUtils.applyTransactionsOnUser(user);
-				out.println(user.getJSONStringRepresentation());
+				out.echo(user.getJSONStringRepresentation());
 			} catch (BeanException e) {
-				out.println(e.getMessage());
+				out.echo(e.getMessage());
 				e.printStackTrace();
 			}
 			
 		}
 		else{
-			out.println("{'error':'field_missing'}");
+			out.echo("{'error':'field_missing'}");
 		}
 	}
 }

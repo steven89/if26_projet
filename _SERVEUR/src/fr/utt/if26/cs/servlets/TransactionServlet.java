@@ -14,9 +14,13 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
+import com.mongodb.util.JSON;
+
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.exceptions.BeanException;
+import fr.utt.if26.cs.io.Echo;
+import fr.utt.if26.cs.io.JsonEcho;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.Transaction;
 import fr.utt.if26.cs.model.User;
@@ -37,7 +41,7 @@ public class TransactionServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		PrintWriter out = response.getWriter();
+		Echo out = new JsonEcho(response.getWriter());
 		Database dbTransactions = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);
 		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.GET, request);
 		if(params.containsField("id")){
@@ -47,14 +51,14 @@ public class TransactionServlet extends HttpServlet {
 				try {
 					transaction = (Transaction) dbTransactions.getBean("id", params.getString("id"));
 				} catch (BeanException e) {
-					out.println(e.getMessage());
+					out.echo(e.getMessage());
 					e.printStackTrace();
 				}
 				dbTransactions.close();
-				out.println(transaction.getJSONStringRepresentation());
+				out.echo(transaction.getJSONStringRepresentation());
 			}
 			else{
-				out.println("{'error':'invalid_id'}");
+				out.echo("{'error':'invalid_id'}");
 			}
 		} 
 		else {
@@ -62,17 +66,22 @@ public class TransactionServlet extends HttpServlet {
 				try {
 					User userFrom = UserUtils.getUserFromTag(params.getString("tag"));
 					ArrayList<DataBean>[] transactions = TransactionsUtils.getUserTransactions(userFrom);
-					out.println("{ 'from': [");
+					out.echo(TransactionsUtils.toBSON(transactions));
+					
+					/*out.echo("{ \n\t'balance' : "+TransactionsUtils.computeTransactions(transactions)+",");
+					out.echo("\t'from': [");
 					for(DataBean t : transactions[0]){
-						out.println("\t"+t.getJSONStringRepresentation()+", ");
+						System.out.echo(JSON.parse(t.toString()));
+						out.echo("\t\t"+t.getJSONStringRepresentation()+",");
 					}
-					out.println("], 'to': [");
+					out.echo("\t],"); 
+					out.echo("\t'to': [");
 					for(DataBean t : transactions[1]){
-						out.println("\t"+t.getJSONStringRepresentation());
+						out.echo("\t\t"+t.getJSONStringRepresentation()+",");
 					}
-					out.println("]}");
+					out.echo("\t]\n}");*/
 				} catch (BeanException e) {
-					out.println(e.getMessage());
+					out.echo(e.getMessage());
 					e.printStackTrace();
 				}
 				
@@ -84,7 +93,7 @@ public class TransactionServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		PrintWriter out = response.getWriter();
+		Echo out = new JsonEcho(response.getWriter());
 		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.POST, request);
 		if(ServletUtils.checkRequiredFields(new String[] {"from", "to", "amount"}, params)){
 			Transaction transaction=null;
@@ -94,19 +103,12 @@ public class TransactionServlet extends HttpServlet {
 					params.getString("from"), 
 					params.getString("to")
 				);
+				TransactionsUtils.doTransaction(transaction);
+				out.echo(transaction.getJSONStringRepresentation());
 			} catch (BeanException e1) {
-				out.println(e1.getMessage());
+				out.echo(e1.getMessage());
 				e1.printStackTrace();
 			}
-			try {
-				TransactionsUtils.doTransaction(transaction);
-				out.println(transaction.getJSONStringRepresentation());
-			} catch (BeanException e) {
-				out.println(e.getMessage());
-				e.printStackTrace();
-			}
-			
-			
 		}
 	}
 }
