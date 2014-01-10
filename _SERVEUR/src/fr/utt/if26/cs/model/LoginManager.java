@@ -13,10 +13,12 @@ public class LoginManager {
 	private final static int tokenSize = 30;
 	private final static String requiredLogin[] = {"email", "pass"};
 	private final static String requiredLogout[] = {"email", "token"};
+	private final static String requiredAuth[] = {"email", "token"};
 	private final static int base = DatabaseManager.USERS;
 	
 	private static final int LOGIN = 0;
 	private static final int LOGOUT = 1;
+	private static final int AUTH = 2;
 	
 	public static String generateToken(){
 		String token="";
@@ -36,6 +38,9 @@ public class LoginManager {
 			break;
 		case LoginManager.LOGOUT:
 			requiredFields = LoginManager.requiredLogout;
+			break;
+		case LoginManager.AUTH:
+			requiredFields = LoginManager.requiredAuth;
 			break;
 		default:
 			requiredFields = LoginManager.requiredLogin;
@@ -63,7 +68,7 @@ public class LoginManager {
 					db.updateBean(bean);
 					db.close();
 					//return "{'email': '"+((User) bean).getEmail()+"', 'token' : '"+((User) bean).getToken()+"'}";
-					return bean.getJSONStringRepresentation(new String[] {"email", "token"});
+					return bean.getJSONStringRepresentation(new String[] {"email", "token", "tag"});
 				}
 				else
 					return "{'error':'auth_error'}";
@@ -100,7 +105,24 @@ public class LoginManager {
 	}
 	
 	public static boolean checkAuth(BSONObject params){
-		
-		return false;
+		if(LoginManager.hasRequiredFields(params, AUTH)){
+			Database db = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
+			DataBean user=null;
+			db.open();
+			try {
+				user = db.getBean("email", (String) params.get("email"));
+			} catch (BeanException e) {
+				db.close();
+				return false;
+			}
+			db.close();
+			if(user!=null){
+				return (((User) user).getToken().equals((String) params.get("token")))?true:false;
+			}
+			else
+				return false;
+		}
+		else
+			return false;
 	}
 }
