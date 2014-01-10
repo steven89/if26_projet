@@ -2,7 +2,6 @@ package fr.utt.if26.cs.servlets;
 
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,13 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bson.BSON;
-import org.bson.BSONDecoder;
-import org.bson.BSONObject;
-import org.bson.BasicBSONDecoder;
 import org.bson.BasicBSONObject;
 
-import com.mongodb.util.JSON;
 
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
@@ -24,7 +18,6 @@ import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.io.Echo;
 import fr.utt.if26.cs.io.JsonEcho;
 import fr.utt.if26.cs.model.DataBean;
-import fr.utt.if26.cs.model.Transaction;
 import fr.utt.if26.cs.model.User;
 import fr.utt.if26.cs.utils.ServletUtils;
 import fr.utt.if26.cs.utils.TransactionsUtils;

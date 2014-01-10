@@ -100,7 +100,7 @@ public class TransactionServlet extends HttpServlet {
 			try {
 				transaction = new Transaction(
 					params.getInt("amount"), 
-					params.getString("from"), 
+					params.getString("from"),
 					params.getString("to")
 				);
 				TransactionsUtils.doTransaction(transaction);
