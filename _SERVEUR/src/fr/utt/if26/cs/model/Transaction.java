@@ -84,11 +84,14 @@ public class Transaction extends DataBean {
 			throw new BeanException("invalid to");
 	}
 	
-	public void setDate(){
+	public void setDate() throws BeanException{
 		this.setDate(Transaction.dateFormat.format(Calendar.getInstance().getTime()));
 	}
 	
-	public void setDate(String date){
-		this.date = date;
+	public void setDate(String date) throws BeanException{
+		if(date.matches("^[0-2][0-9]:[0-5][0-9] - [0-3][0-9]/[0-1][0-9]/[0-9]{4}$"))
+			this.date = date;
+		else
+			throw new BeanException("invalid date format");
 	}
 }

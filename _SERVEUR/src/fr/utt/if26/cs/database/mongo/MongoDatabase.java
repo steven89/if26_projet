@@ -108,11 +108,11 @@ public class MongoDatabase extends Database {
 		ArrayList<DataBean> result = new ArrayList<>();
 		for(BSONObject obj : dbResult){
 			result.add(new Transaction(
-					((ObjectId) obj.get("_id")).toString(),
-					Integer.parseInt((String) obj.get("amount")),
-					(String) obj.get("from"), 
-					(String) obj.get("to"),
-					(String) datas.get("date"))
+				((ObjectId) obj.get("_id")).toString(),
+				Integer.parseInt((String) obj.get("amount")),
+				(String) obj.get("from"), 
+				(String) obj.get("to"),
+				(String) obj.get("date"))
 			);
 		}
 		return result;
