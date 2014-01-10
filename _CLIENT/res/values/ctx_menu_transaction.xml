@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="ctx_menu_transaction">
+        <item>Nouvelle Transaction</item>
+    </string-array>
+    
+</resources>

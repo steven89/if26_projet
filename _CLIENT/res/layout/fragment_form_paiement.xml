@@ -1,0 +1,55 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FormPaiementFragment" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+            <EditText
+		        android:id="@id/payment_receiver"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:hint="@string/target_payment_placeholder"
+		        android:ems="10" 
+		        android:layout_marginBottom="10dp">
+		
+		        <requestFocus />
+		    </EditText>
+		
+		    <EditText
+		        android:id="@id/payment_amount"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@id/payment_receiver"
+		        android:ems="10"
+		        android:hint="@string/payment_amount_placeholder"
+		        android:inputType="number"
+		        android:layout_marginBottom="10dp"/>
+
+		    <TextView
+		        android:id="@id/uttCoins_currency"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBottom="@id/payment_amount"
+		        android:layout_toRightOf="@id/payment_amount"
+		        android:text="@string/uttCoins_currency_text" />
+
+		    <Button
+		        android:id="@id/payment_confirmation_button"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@id/payment_amount"
+		        android:text="@string/payment_confirmation_button_text" />
+
+		    <ProgressBar
+		        android:id="@id/payment_inprogress_loader"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@id/payment_amount"
+		        android:visibility="gone"
+		        android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+</FrameLayout>
