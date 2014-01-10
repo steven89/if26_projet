@@ -1,9 +1,9 @@
 package fr.utt.if26.uttcoins;
 
+import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment;
 import fr.utt.if26.uttcoins.fragment.TransactionListFragment;
+import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment.PaymentConfirmationDialogListener;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPaiementFragment;
-import fr.utt.if26.uttcoins.utils.PaymentConfirmationDialogFragment;
-import fr.utt.if26.uttcoins.utils.PaymentConfirmationDialogFragment.PaymentConfirmationDialogListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;

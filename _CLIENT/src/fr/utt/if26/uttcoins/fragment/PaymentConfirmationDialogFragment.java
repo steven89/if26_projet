@@ -1,8 +1,7 @@
-package fr.utt.if26.uttcoins.utils;
-
-import org.w3c.dom.Text;
+package fr.utt.if26.uttcoins.fragment;
 
 import fr.utt.if26.uttcoins.R;
+import fr.utt.if26.uttcoins.utils.UserHelper;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
