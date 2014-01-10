@@ -32,6 +32,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -57,6 +58,9 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 	
 	public final static int positionInDrawer = 0;
 	
+	protected abstract void initFragments();
+	protected abstract void initInnerContentLayout(ViewGroup container);
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,8 +70,10 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 		if(userToken != null && userToken.length() > 0)
 			//on set le token de session
 			UserHelper.setSession(userToken);
-		setContentView(R.layout.activity_wallet);
+		setContentView(R.layout.activity_default_nav_drawer);
 		this.onCreateNavigationDrawer();
+		this.initInnerContentLayout((ViewGroup) findViewById(R.id.content_layout));
+		this.initFragments();
 	}
 	
 	protected void onCreateNavigationDrawer() {
@@ -108,6 +114,24 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 		this.drawerLayout.setFocusableInTouchMode(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+		this.drawerList.setItemChecked(this.getPositionInDrawer(), true);
+	}
+	
+	protected int getPositionInDrawer(){
+		int realPositionInDrawer = 0;
+		try {
+			realPositionInDrawer = this.getClass().getField("positionInDrawer").getInt(null);
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return realPositionInDrawer;
 	}
 	
 	@Override
@@ -256,8 +280,6 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 		loadLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 		this.startActivity(loadLogin);
 	}
-	
-	protected abstract void initFragments();
 	
 	protected int showFragment(int containerID, final Fragment fragment){
 		if(fragment == null){

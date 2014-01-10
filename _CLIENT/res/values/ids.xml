@@ -38,4 +38,7 @@
     <item type="id" name="email_confirmation_input" />
     <item type="id" name="fragment_form_password_container" />
     <item type="id" name="fragment_form_email_container" />
+    <item type="id" name="user_solde_container" />
+    <item type="id" name="content_frame" />
+    <item type="id" name="content_layout" />
 </resources>

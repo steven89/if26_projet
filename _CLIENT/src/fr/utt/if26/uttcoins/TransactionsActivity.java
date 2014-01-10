@@ -3,6 +3,7 @@ package fr.utt.if26.uttcoins;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.ViewGroup;
 
 
 public class TransactionsActivity extends NavDrawerActivity {
@@ -12,8 +13,6 @@ public class TransactionsActivity extends NavDrawerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//pourrait être déporté dans la classe mère avec de la "reflexivité", mais ajoute trop de try/catch
-		this.drawerList.setItemChecked(positionInDrawer, true);
 	}
 
 	@Override
@@ -30,6 +29,12 @@ public class TransactionsActivity extends NavDrawerActivity {
 
 	@Override
 	public void onFragmentInteraction(Uri uri) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void initInnerContentLayout(ViewGroup container) {
 		// TODO Auto-generated method stub
 		
 	}
