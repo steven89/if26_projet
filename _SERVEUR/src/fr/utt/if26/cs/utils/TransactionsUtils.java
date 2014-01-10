@@ -7,6 +7,8 @@ import javax.xml.crypto.Data;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
+import com.mongodb.util.JSON;
+
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.exceptions.BeanException;
@@ -28,7 +30,7 @@ public class TransactionsUtils {
 		return totalTo-totalFrom;
 	}
 	
-	private static int computeTransactions(ArrayList<DataBean>[] datas){
+	public static int computeTransactions(ArrayList<DataBean>[] datas){
 		return computeTransactions(datas[0], datas[1]);
 	}
 	
@@ -51,7 +53,7 @@ public class TransactionsUtils {
 	public static void applyTransactionsOnUser(DataBean user) throws BeanException{
 		((User) user).setWallet(
 			TransactionsUtils.computeTransactions(
-					TransactionsUtils.getUserTransactions((User) user)
+				TransactionsUtils.getUserTransactions((User) user)
 			)
 		);
 	}
@@ -69,6 +71,8 @@ public class TransactionsUtils {
 		boolean userFromOk = (t.getFrom().equals(User.SYS_USER))?true:false;
 		if(!userFromOk){
 			DataBean userFrom = dbUsers.getBean("email", t.getFrom());
+			if(userFrom==null)
+				throw new BeanException("invalid debitor");
 			applyTransactionsOnUser(userFrom);
 			userFromOk = (((User) userFrom).getWallet()>=t.getAmount())?true:false;
 		}
@@ -92,5 +96,21 @@ public class TransactionsUtils {
 		} catch (BeanException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static BSONObject toBSON(ArrayList<DataBean>[] transactions){
+		BSONObject obj = new BasicBSONObject();
+		obj.put("balance", TransactionsUtils.computeTransactions(transactions));
+		ArrayList<BSONObject> objFrom = new ArrayList<>();
+		ArrayList<BSONObject> objTo = new ArrayList<>();
+		for(DataBean t : transactions[0]){
+			objFrom.add((BSONObject) JSON.parse(t.toString()));
+		}
+		for(DataBean t : transactions[1]){
+			objTo.add((BSONObject) JSON.parse(t.toString()));
+		}
+		obj.put("from", objFrom);
+		obj.put("to", objTo);
+		return obj;
 	}
 }
