@@ -19,7 +19,6 @@ import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.io.Echo;
 import fr.utt.if26.cs.io.JsonEcho;
 import fr.utt.if26.cs.model.DataBean;
-import fr.utt.if26.cs.model.LoginManager;
 import fr.utt.if26.cs.model.User;
 import fr.utt.if26.cs.utils.ServletUtils;
 import fr.utt.if26.cs.utils.TransactionsUtils;

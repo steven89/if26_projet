@@ -2,8 +2,6 @@ package fr.utt.if26.cs.utils;
 
 import java.util.ArrayList;
 
-import javax.xml.crypto.Data;
-
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
@@ -34,6 +32,7 @@ public class TransactionsUtils {
 		return computeTransactions(datas[0], datas[1]);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static ArrayList<DataBean>[] getUserTransactions(User user) throws BeanException{
 		ArrayList<DataBean>[] transactions = new ArrayList[2];
 		Database dbTransactions = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);

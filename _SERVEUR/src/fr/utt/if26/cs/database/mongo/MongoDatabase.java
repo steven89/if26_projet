@@ -4,22 +4,17 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import org.bson.BSONObject;
-import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-import com.mongodb.util.JSON;
 
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseHelper;
 import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.Transaction;
-import fr.utt.if26.cs.model.User;
 
 
 public class MongoDatabase extends Database {
@@ -82,7 +77,7 @@ public class MongoDatabase extends Database {
 
 	@Override
 	public void close() {
-		System.out.println("closing connexion on SQL database");
+		System.out.println("closing connexion on mongo database");
 		this.mongoClient.close();
 		this.mongoHelper = null;
 	}
