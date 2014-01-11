@@ -71,12 +71,12 @@ public class LoginManager {
 					return bean.getJSONStringRepresentation(new String[] {"email", "token", "tag"});
 				}
 				else
-					return "{'error':'auth_error'}";
+					return "auth_error";
 			else
-				return "{'error':'auth_unknow'}";
+				return "auth_unknow";
 		}
 		else
-			return "{'error':'field_missing'}";
+			return "field_missing";
 	}
 	
 	public static String logOut(BSONObject params) throws BeanException{
@@ -92,16 +92,16 @@ public class LoginManager {
 					db.open();
 					db.updateBean(bean);
 					db.close();
-					return "{'error':'auth_ok'}";
+					return "auth_ok";
 				}
 				else
-					return "{'error':'auth_error'}";
+					return "auth_error";
 			}
 			else
-				return "{'error':'auth_unknow'}";
+				return "auth_unknow";
 		}
 		else
-			return "{'error':'field_missing'}";
+			return "field_missing";
 	}
 	
 	public static boolean checkAuth(BSONObject params){

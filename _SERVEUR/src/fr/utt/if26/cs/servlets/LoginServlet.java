@@ -50,9 +50,13 @@ public class LoginServlet extends HttpServlet {
 		}
 		BSONObject params = (BasicBSONObject) JSON.parse(paramStr);
 		try {
-			out.echo(LoginManager.logIn(params));
+			String logInfos = LoginManager.logIn(params);
+			if(logInfos.contains("{"))
+				out.echo(logInfos);
+			else
+				out.echo(Echo.ERR, logInfos);
 		} catch (BeanException e) {
-			out.echo(e.getMessage());
+			out.echo(Echo.ERR, e.getMessage());
 			e.printStackTrace();
 		}
 	}

@@ -53,7 +53,11 @@ public class LogoutServlet extends HttpServlet {
 		}
 		BSONObject params = (BasicBSONObject) JSON.parse(paramStr);
 		try {
-			out.echo(LoginManager.logOut(params));
+			String logInfos = LoginManager.logOut(params);
+			if(logInfos.contains("ok"))
+				out.echo(Echo.INFO, logInfos);
+			else
+				out.echo(Echo.ERR, logInfos);
 		} catch (BeanException e) {
 			out.echo(e.getMessage());
 			e.printStackTrace();

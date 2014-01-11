@@ -15,6 +15,12 @@ public class BsonEcho extends Echo {
 		// TODO Auto-generated method stub
 
 	}
+	
+	@Override
+	public void echo(int type, String msg) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void echo(BSONObject obj) {
@@ -44,5 +50,4 @@ public class BsonEcho extends Echo {
 				BasicBSONObject obj = (BasicBSONObject) decoder.readObject(array);
 				//out.print(obj.toString());*/
 	}
-
 }
