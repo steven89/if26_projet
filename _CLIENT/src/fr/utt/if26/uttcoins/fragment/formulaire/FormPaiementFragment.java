@@ -4,16 +4,20 @@ import fr.utt.if26.uttcoins.R;
 import fr.utt.if26.uttcoins.R.layout;
 import fr.utt.if26.uttcoins.fragment.CustomFragment;
 import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
+import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment;
 import fr.utt.if26.uttcoins.fragment.UserSoldeFragment;
+import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment.PaymentConfirmationDialogListener;
+import fr.utt.if26.uttcoins.model.Transaction;
 import fr.utt.if26.uttcoins.model.TransactionList;
-import fr.utt.if26.uttcoins.utils.PaymentConfirmationDialogFragment;
-import fr.utt.if26.uttcoins.utils.PaymentConfirmationDialogFragment.PaymentConfirmationDialogListener;
+import fr.utt.if26.uttcoins.utils.UserHelper;
 import android.app.Activity;
 import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,13 +42,14 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 
 	private OnFragmentInteractionListener mListener;
 
-	private EditText transactionAmountInput;
-	private EditText transactionReceiverInput;
+	private EditText transactionAmountInput, transactionReceiverInput;
 	private Button payment_confirmation_button;
 	
-	private String preSetReceiver = "";
-	private int preSetAmount = 0;
-
+	private TextView transactionAmountError, transactionReceiverError;
+	
+	private int transactionAmount;
+	private String transactionReceiver;
+	
 	public FormPaiementFragment() {
 		// Required empty public constructor
 	}
@@ -61,7 +66,10 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (getArguments() != null) {
-			this.tag = getArguments().getString(TAG);
+			Bundle args = getArguments();
+			this.tag = args.getString(TAG);
+			this.transactionAmount = args.getInt(Transaction.TRANSACTION_AMOUNT_KEY, 0);
+			this.transactionReceiver = args.getString(Transaction.TRANSACTION_RECEIVER_KEY);
 		}
 	}
 
@@ -70,19 +78,46 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_form_paiement, container,
 				false);
+		Log.i("STATE", "(FormPaiementFragment) OnCreateView");
 		this.transactionReceiverInput = (EditText) view.findViewById(R.id.payment_receiver);
-		if(this.preSetReceiver != "")
-			this.transactionReceiverInput.setText(this.preSetReceiver);
 		this.transactionAmountInput = (EditText) view.findViewById(R.id.payment_amount);
-		if(this.preSetAmount != 0)
-			this.transactionAmountInput.setText(Integer.toString(this.preSetAmount), BufferType.EDITABLE);
 		this.payment_confirmation_button = (Button) view.findViewById(R.id.payment_confirmation_button);
+		this.transactionAmountError = (TextView) view.findViewById(R.id.payment_amount_error);
+		this.transactionReceiverError = (TextView) view.findViewById(R.id.payment_receiver_error);
 		this.initListener();
+		this.initContent(container, savedInstanceState);
 		return view;
 	}
 	
 	protected void initListener(){
 		this.payment_confirmation_button.setOnClickListener(this);
+		TextWatcher validatorWatcher = new TextWatcher() {
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {				
+			}
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {				
+			}
+			@Override
+			public void afterTextChanged(Editable s) {
+				isTransactionValide();
+			}
+		};
+		this.transactionReceiverInput.addTextChangedListener(validatorWatcher);
+		this.transactionAmountInput.addTextChangedListener(validatorWatcher);
+	}
+	
+	protected void initContent(View v, Bundle savedInstanceState){
+    	savedInstanceState = (savedInstanceState != null)? savedInstanceState : new Bundle();
+    	this.transactionAmount = savedInstanceState.getInt(Transaction.TRANSACTION_AMOUNT_KEY, this.transactionAmount);
+		this.transactionReceiver = (savedInstanceState.getString(Transaction.TRANSACTION_RECEIVER_KEY) != null) ?
+				savedInstanceState.getString(Transaction.TRANSACTION_RECEIVER_KEY): this.transactionReceiver;
+		if(this.transactionAmount != 0)
+			this.transactionAmountInput.setText(Integer.toString(transactionAmount), BufferType.EDITABLE);
+		if(this.transactionReceiver != null)
+    		this.transactionReceiverInput.setText(transactionReceiver);
+		this.payment_confirmation_button.setEnabled(this.isTransactionValide());
 	}
 	
 
@@ -96,20 +131,18 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 					+ " must implement OnFragmentInteractionListener");
 		}
 	}
-
+	
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+      super.onSaveInstanceState(savedInstanceState);
+      savedInstanceState.putInt(Transaction.TRANSACTION_AMOUNT_KEY, this.getTransactionAmount());
+      savedInstanceState.putString(Transaction.TRANSACTION_RECEIVER_KEY, this.getTransactionReceiver());
+    }
+    
 	@Override
 	public void onDetach() {
 		super.onDetach();
 		mListener = null;
-	}
-
-	public void setTransactionReceiver(String reveiverName) {
-		this.preSetReceiver = reveiverName;
-	}
-
-	public void setTransactionAmount(int transactionAmount) {
-		Log.i("SET", "Set transactionAmout = "+Integer.toString(transactionAmount));
-		this.preSetAmount = transactionAmount;
 	}
 	
 	public String getTransactionReceiver(){
@@ -117,7 +150,13 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 	}
 	
 	public int getTransactionAmount(){
-		return Integer.parseInt(this.transactionAmountInput.getText().toString());
+		int transactionAmountValue; 
+	    try{
+	    	transactionAmountValue = Integer.parseInt(this.transactionAmountInput.getText().toString());
+	    }catch(NumberFormatException e){
+	    	transactionAmountValue = 0;
+	    }
+		return transactionAmountValue;
 	}
 
 	@Override
@@ -127,5 +166,48 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 				this.mListener.onFragmentInteraction(Uri.parse("click://"+UriPath+"#"+v.getId()));;
 				break;
 		}
+	}
+	
+	public boolean isTransactionReceiverValide(){
+		String transactionReceiverText = this.getTransactionReceiver();
+		Boolean valide = (transactionReceiverText != null && transactionReceiverText.length() > 0);
+		if(valide){
+			this.transactionReceiverError.setVisibility(View.GONE);
+		}else{
+			this.transactionReceiverError.setVisibility(View.VISIBLE);
+		}
+		return valide;
+	}
+	
+	public boolean isTransactionAmountValide(){
+		int transactionAmountValue = this.getTransactionAmount();
+		int UserAccountBalance = UserHelper.getAccountBalance();
+		boolean amountValue = transactionAmountValue > 0;
+		boolean enougth_uttCoins = transactionAmountValue <= UserAccountBalance;
+		if(amountValue){
+			this.transactionAmountError.setVisibility(View.GONE);
+		}else{
+			this.transactionAmountError.setText(R.string.payment_amount_required_error);
+			this.transactionAmountError.setVisibility(View.VISIBLE);
+		}
+		if(!enougth_uttCoins){
+			this.transactionAmountError.setText(R.string.not_enougth_uttCoins_error);
+			this.transactionAmountError.setVisibility(View.VISIBLE);
+		}
+		return amountValue && enougth_uttCoins;
+	}
+
+	public boolean isTransactionValide() {
+		//passe par des refs intermediaires pour forcer l'evaluation des deux expressions
+		// (dans un '&&', l'evaluation stop a la premiere expression à false rencontre) 
+		boolean isTransactionAmountValide = this.isTransactionAmountValide();
+		boolean isTransactionReceiverValide = this.isTransactionReceiverValide();
+		boolean valide =  isTransactionAmountValide && isTransactionReceiverValide;
+		if(valide){
+			this.payment_confirmation_button.setEnabled(true);
+		}else{
+			this.payment_confirmation_button.setEnabled(false);
+		}
+		return valide;
 	}
 }

@@ -6,22 +6,41 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
+        
+        	<TextView 
+        	 	android:id="@id/payment_receiver_error"
+        	 	android:layout_width="wrap_content"
+        	 	android:layout_height="wrap_content"
+        	 	android:textColor="@color/text_error"
+        	 	android:text="@string/payment_receiver_error_text"
+        	 	android:visibility="gone"/>
+            
             <EditText
 		        android:id="@id/payment_receiver"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
+		        android:layout_below="@id/payment_receiver_error"
 		        android:hint="@string/target_payment_placeholder"
 		        android:ems="10" 
 		        android:layout_marginBottom="10dp">
 		
 		        <requestFocus />
 		    </EditText>
-		
+
+           	<TextView 
+        	 	android:id="@id/payment_amount_error"
+        	 	android:layout_width="wrap_content"
+        	 	android:layout_height="wrap_content"
+        	 	android:textColor="@color/text_error"
+        	 	android:layout_below="@id/payment_receiver"
+        		android:text="@string/payment_amount_required_error"
+        		android:visibility="gone"/>		
+            
 		    <EditText
 		        android:id="@id/payment_amount"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:layout_below="@id/payment_receiver"
+		        android:layout_below="@id/payment_amount_error"
 		        android:ems="10"
 		        android:hint="@string/payment_amount_placeholder"
 		        android:inputType="number"
@@ -40,7 +59,8 @@
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:layout_below="@id/payment_amount"
-		        android:text="@string/payment_confirmation_button_text" />
+		        android:text="@string/payment_confirmation_button_text"
+		        android:enabled="false" />
 
 		    <ProgressBar
 		        android:id="@id/payment_inprogress_loader"

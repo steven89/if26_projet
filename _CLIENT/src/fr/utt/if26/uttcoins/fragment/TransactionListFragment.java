@@ -38,8 +38,6 @@ import fr.utt.if26.uttcoins.model.TransactionList;
 public class TransactionListFragment extends Fragment implements AbsListView.OnItemClickListener {
 	public static final String TAG = "TransactionFragment";
 	public static final String UriPath = "application/TransactionFragment";
-	public static final String TRANSACTION_REVEIVER_KEY = "to";
-	public static final String TRANSACTION_AMOUNT_KEY = "amount";
 	
 	private static final int TRANSACTION_LIST_ID = android.R.id.list;
 	private static final int TRANSACTION_LIST_FRAGMENT_GROUP_ID = R.id.transaction_list_fragment_group;
@@ -114,8 +112,8 @@ public class TransactionListFragment extends Fragment implements AbsListView.OnI
 			switch(item.getItemId()){
 				case R.id.new_transaction_action:
 					Bundle args = new Bundle();
-					args.putString(TRANSACTION_REVEIVER_KEY, selectedTransaction.getOtherUser());
-					args.putInt(TRANSACTION_AMOUNT_KEY, selectedTransaction.getAmount());
+					args.putString(Transaction.TRANSACTION_RECEIVER_KEY, selectedTransaction.getOtherUser());
+					args.putInt(Transaction.TRANSACTION_AMOUNT_KEY, selectedTransaction.getAmount());
 					this.goToPaymentActivity(args);
 					break;
 			}

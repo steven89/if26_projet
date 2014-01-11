@@ -49,4 +49,6 @@
     <item type="id" name="formPaymentFragContainer" />
     <item type="id" name="new_transaction_action" />
     <item type="id" name="transaction_list_fragment_group" />
+    <item type="id" name="payment_amount_error" />
+    <item type="id" name="payment_receiver_error" />
 </resources>
