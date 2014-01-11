@@ -6,6 +6,8 @@ import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormButtonFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment;
+import fr.utt.if26.uttcoins.utils.ErrorHelper;
+import fr.utt.if26.uttcoins.utils.HttpRequestErrorListener;
 import fr.utt.if26.uttcoins.utils.JsonCallback;
 import fr.utt.if26.uttcoins.utils.JsonHttpRequest;
 import android.net.Uri;
@@ -29,7 +31,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class LoginActivity extends ActionBarActivity implements OnFragmentInteractionListener, JsonCallback{
+public class LoginActivity extends ActionBarActivity implements OnFragmentInteractionListener, 
+JsonCallback, HttpRequestErrorListener{
 
 	
 	private TextView forgottenAccountLink;
@@ -87,10 +90,10 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 	private void login(){
 		boolean isInputsValide = (this.loginInputFragment.isInputValide() && this.passwordInputFragment.isInputValide());
 		if(isInputsValide){
-			String url = "http://10.0.2.2:8080/_SERVEUR/Login";
+			//String url = "http://10.0.2.2:8080/_SERVEUR/Login";
+			String url = "http://88.186.76.236/_SERVEUR/Login";
 			JsonHttpRequest request = new JsonHttpRequest("PUT", url, this);
 			Log.i("ACTION","CLICKED");
-			this.connexionBtnFragment.displayLoader();
 			//String url = "http://train.sandbox.eutech-ssii.com/messenger/login.php?email="+loginInputFragment.getValue()+"&password="+passwordInputFragment.getValue();
 			request.putParam("email", loginInputFragment.getValue());
 			request.putParam("pass", passwordInputFragment.getValue());
@@ -98,7 +101,7 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 		}
 	}
 	
-	private void showErrorMessage(String title, String message){
+	public void showErrorMessage(String title, String message){
 		new AlertDialog.Builder(this)
 		.setTitle(title)
 		.setMessage(message)
@@ -116,18 +119,26 @@ public class LoginActivity extends ActionBarActivity implements OnFragmentIntera
 	public JSONObject call(JSONObject jsonResponse) {
 		try {
 			this.connexionBtnFragment.hideLoader();
-			if(!jsonResponse.has("error")){
+			if(!jsonResponse.has("token")){
 				Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
 				loadWallet.putExtra("token", jsonResponse.getString("token"));
 				startActivity(loadWallet);
-			}else{
-				Log.e("REQUEST", jsonResponse.toString());
-				showErrorMessage("Erreur", "Mot de passe ou identifiant invalide.");
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public void beforeCall() {
+		this.connexionBtnFragment.displayLoader();
+	}
+
+	@Override
+	public void onError(Bundle errorObject) {
+		this.connexionBtnFragment.hideLoader();
+		this.showErrorMessage(errorObject.getString(ErrorHelper.ERROR_TITLE_KEY), 
+				errorObject.getString(ErrorHelper.ERROR_MSG_KEY));
 	}
 }

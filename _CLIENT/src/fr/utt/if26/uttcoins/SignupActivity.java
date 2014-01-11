@@ -9,6 +9,8 @@ import fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormInputFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormSimpleInputFragment;
+import fr.utt.if26.uttcoins.utils.ErrorHelper;
+import fr.utt.if26.uttcoins.utils.HttpRequestErrorListener;
 import fr.utt.if26.uttcoins.utils.JsonCallback;
 import fr.utt.if26.uttcoins.utils.JsonHttpRequest;
 import android.net.Uri;
@@ -28,7 +30,8 @@ import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.os.Build;
 
-public class SignupActivity extends ActionBarActivity implements OnFragmentInteractionListener, JsonCallback{
+public class SignupActivity extends ActionBarActivity implements OnFragmentInteractionListener, 
+JsonCallback, HttpRequestErrorListener{
 
 	private FormSimpleInputFragment nameInput, firstNameInput, tagInput;
 	private FormEmailFragment emailInput; 
@@ -96,8 +99,8 @@ public class SignupActivity extends ActionBarActivity implements OnFragmentInter
 	
 	protected void signUp(){
 		if(this.isFormValide()){
-			this.signUpBtn.displayLoader();
-			String url = "http://10.0.2.2:8080/_SERVEUR/User";
+			//String url = "http://10.0.2.2:8080/_SERVEUR/User";
+			String url = "http://88.186.76.236/_SERVEUR/User";
 			JsonHttpRequest request = new JsonHttpRequest("POST", url, this);
 	        request.putParam("nom", this.nameInput.getValue());
 			request.putParam("prenom", this.firstNameInput.getValue());
@@ -106,7 +109,7 @@ public class SignupActivity extends ActionBarActivity implements OnFragmentInter
 			request.putParam("tag", this.tagInput.getValue());
 			request.execute();
 		}else{
-			this.showErrorMessage();
+			this.showInvalidFormMessage();
 		}
 	}
 	
@@ -116,7 +119,7 @@ public class SignupActivity extends ActionBarActivity implements OnFragmentInter
 		return (this.emailInput.isInputValide() && this.passwordInput.isInputValide());
 	}
 	
-	protected void showErrorMessage(){
+	protected void showInvalidFormMessage(){
 		String message = "";
 		if(!this.emailInput.isInputValide()){
 			message += "Les emails ne correspondent pas !\n";
@@ -155,10 +158,6 @@ public class SignupActivity extends ActionBarActivity implements OnFragmentInter
 		final FragmentManager fragManager = getSupportFragmentManager();
 		final FragmentTransaction fragTransaction = fragManager.beginTransaction();
 		fragTransaction.replace(containerID, fragment);
-		/*if(this.currentFrag!=null)
-			fragTransaction.detach(this.currentFrag);
-		this.currentFrag = fragment;
-		fragTransaction.attach(this.currentFrag);*/
 		return fragTransaction.commit();
 	}
 	
@@ -174,8 +173,34 @@ public class SignupActivity extends ActionBarActivity implements OnFragmentInter
 
 	@Override
 	public JSONObject call(JSONObject jsonResponse) {
-		// TODO Auto-generated method stub
+		this.signUpBtn.hideLoader();
 		NavUtils.navigateUpFromSameTask(this);
 		return null;
+	}
+	
+	public void showErrorMessage(String title, String message){
+		new AlertDialog.Builder(this)
+		.setTitle(title)
+		.setMessage(message)
+		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		})
+		.show();
+	}
+
+	@Override
+	public void beforeCall() {
+		this.signUpBtn.displayLoader();
+	}
+
+	@Override
+	public void onError(Bundle errorObject) {
+		this.signUpBtn.hideLoader();
+		this.showErrorMessage(errorObject.getString(ErrorHelper.ERROR_TITLE_KEY), 
+				errorObject.getString(ErrorHelper.ERROR_MSG_KEY));
 	}
 }

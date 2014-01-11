@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -26,7 +27,12 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import fr.utt.if26.uttcoins.error.CustomServerException;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 
 public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
@@ -40,6 +46,8 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 	private HttpRequestBase request;
 	private HttpResponse response;
 	private HttpClient client;
+	private boolean error;
+	private Bundle errorObject;
 	
 	// wildcard utilisé : map vérouillée en lecture seule
 	protected static HashMap<String, Class<? extends HttpRequestBase>> methodClasses; 
@@ -61,44 +69,47 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 		this.method = method;
 		this.url = url;
 		this.jsonCallback = callback;
+		this.error = false;
 	}
 	
+	@Override
+	protected void onPreExecute (){
+		if(this.jsonCallback != null){
+			this.jsonCallback.beforeCall();
+		}
+	}
 	
 	@Override
 	protected JSONObject doInBackground(String... args){
-		// Juste pour les appels task.execute(method, url) ET task.execute(url)
-//		if(args.length < 2){
-//			this.method = "GET";
-//			this.url = args[0];
-//		}else{
-//			this.method = args[0];
-//			this.url = args[1];	
-//		}
 		Log.i("REQUEST", "PREPARING with method = " + method+" and url = "+url);
 		Log.i("REQUEST",  "MedthodClass : " + methodClasses.get(method).toString());
 		try {
 			this.request = methodClasses.get(this.method).getConstructor(String.class).newInstance(url);
 			Log.i("REQUEST", "email = "+(String)this.jsonParams.get("email")
 					+" pass = "+(String)this.jsonParams.get("pass"));
-			//request.setParams(this.httpParams);
 			this.loadParams();
 			Log.i("REQUEST", "EXECUTING");
 			this.response = client.execute(request);
 			Log.i("REQUEST", "READING");
-	        return this.readResponse(this.response.getEntity().getContent());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+	        return this.readResponse(this.response.getEntity().getContent());			
+		}catch (Exception e) {
 			e.printStackTrace();
+			this.error = true;
+			this.errorObject = ErrorHelper.getErrorObject(e);
 		}
-			return null;
+		return null;
 	}
-	
 	
 	@Override
 	protected void onPostExecute(JSONObject result){
-		if(this.jsonCallback != null)
+		if(this.jsonCallback != null){
 			this.clearParams();
-			this.jsonCallback.call(result);
+			if(!this.error){
+				this.jsonCallback.call(result);
+			}else{
+				this.jsonCallback.onError(this.errorObject);
+			}
+		}
 	}
 	
 	protected void loadParams() {
@@ -182,20 +193,25 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 			this.jsonParams = new JSONObject();
 	}
 	
-	protected JSONObject readResponse(InputStream stream){
+	protected JSONObject readResponse(InputStream stream) 
+			throws CustomServerException, JSONException, IOException{
 		String lineRead = "";
 		StringBuilder stringResponse = new StringBuilder();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-		
+		JSONObject JsonResponse;
 		try {
 			while((lineRead = reader.readLine())!=null){
 				stringResponse.append(lineRead);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw e;
 		}
 		Log.i("STRING RESPONSE", stringResponse.toString());
-		return this.JSONParse(stringResponse.toString());
+		JsonResponse = this.JSONParse(stringResponse.toString());
+		if(JsonResponse.has("error")){
+			throw ErrorHelper.getCustomServerExecption(JsonResponse.getString("error"));
+		}
+		return JsonResponse;
 	}
 	
 	protected JSONObject JSONParse(String jsonString){
@@ -207,5 +223,4 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 		}
 		return jsonResponse;
 	}
-
 }
