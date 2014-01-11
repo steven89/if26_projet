@@ -17,6 +17,7 @@ public class DatabaseManager {
 	public final static int TRANSACTIONS = 1;
 	
 	private DatabaseManager(){
+		DatabaseManager.db = this;
 		this.initBases();
 	}
 	

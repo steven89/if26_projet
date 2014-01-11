@@ -11,6 +11,10 @@ public abstract class Database {
 	
 	private static Database db;
 	
+	protected Database(){
+		Database.db = this;
+	}
+	
 	public abstract boolean insertBean(DataBean bean);
 	public abstract boolean updateBean(DataBean bean);
 	public abstract boolean removeBean(DataBean bean);
@@ -41,5 +45,11 @@ public abstract class Database {
 	
 	public static Database getInstance(){
 		return null;
+	}
+	public static Database getDb() {
+		return db;
+	}
+	public static void setDb(Database db) {
+		Database.db = db;
 	}
 }

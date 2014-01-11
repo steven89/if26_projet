@@ -1,7 +1,6 @@
 package fr.utt.if26.cs.database;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.bson.BSONObject;
 

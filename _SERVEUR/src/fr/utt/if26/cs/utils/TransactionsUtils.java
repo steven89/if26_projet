@@ -39,12 +39,10 @@ public class TransactionsUtils {
 		Database dbTransactions = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);
 		BSONObject datas = new BasicBSONObject();
 		datas.put("from", user.getEmail());
-		dbTransactions.open();
 		ArrayList<DataBean> transactionsFrom = dbTransactions.findBeans(datas);
 		datas = new BasicBSONObject();
 		datas.put("to", user.getTag());
 		ArrayList<DataBean> transactionsTo = dbTransactions.findBeans(datas);
-		dbTransactions.close();
 		transactions[0] = transactionsFrom;
 		transactions[1] = transactionsTo; 
 		return transactions;
@@ -65,7 +63,6 @@ public class TransactionsUtils {
 	 */
 	public static void doTransaction(Transaction t) throws BeanException{
 		Database dbUsers = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
-		dbUsers.open();
 		DataBean userTo = dbUsers.getBean("tag", t.getTo());
 		// CHECK user from
 		boolean userFromOk = (t.getFrom().equals(User.SYS_USER))?true:false;
@@ -76,13 +73,10 @@ public class TransactionsUtils {
 			applyTransactionsOnUser(userFrom);
 			userFromOk = (((User) userFrom).getWallet()>=t.getAmount())?true:false;
 		}
-		dbUsers.close();
 		if(userTo!=null)
 			if (userFromOk){
 				Database db = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);
-				db.open();
 				db.insertBean(t);
-				db.close();
 			}
 			else
 				throw new BeanException("invalid debitor amount");
