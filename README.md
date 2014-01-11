@@ -3,6 +3,10 @@ if26_projet
 
 projet if26 - application android monnaie virtuelle + webserver
 
+# Client Android :
+
+Utilisation de la lib support : http://developer.android.com/tools/support-library/setup.html
+
 # WebService :
 ### User Database
 ```sql
