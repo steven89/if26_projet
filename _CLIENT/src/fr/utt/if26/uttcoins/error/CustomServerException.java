@@ -7,7 +7,7 @@ public class CustomServerException extends Exception {
 		return "Erreur serveur";
 	}
 	
-	public static String getErrorMsg(){
+	public static String getErrorMessage(){
 		return "Le serveur à rencontré une erreur";
 	}
 	

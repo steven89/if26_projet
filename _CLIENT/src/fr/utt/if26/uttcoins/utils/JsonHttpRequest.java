@@ -209,7 +209,7 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 		Log.i("STRING RESPONSE", stringResponse.toString());
 		JsonResponse = this.JSONParse(stringResponse.toString());
 		if(JsonResponse.has("error")){
-			throw ErrorHelper.getCustomServerExecption(JsonResponse.getString("error"));
+			throw ErrorHelper.getCustomServerException(JsonResponse.getString("error"));
 		}
 		return JsonResponse;
 	}
