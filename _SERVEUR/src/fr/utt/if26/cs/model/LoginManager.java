@@ -58,16 +58,11 @@ public class LoginManager {
 			User user = new User((String) params.get("email"), (String) params.get("pass"));
 			DataBean bean=null;
 			Database db = DatabaseManager.getInstance().getBase(LoginManager.base);
-			db.open();
 			bean = db.getBean("email", user.getEmail());
-			db.close();
 			if(bean!=null)
 				if(Crypt.match(user.getPass(), ((User) bean).getPass())){
 					((User) bean).setToken(LoginManager.generateToken());
-					db.open();
 					db.updateBean(bean);
-					db.close();
-					//return "{'email': '"+((User) bean).getEmail()+"', 'token' : '"+((User) bean).getToken()+"'}";
 					return bean.getJSONStringRepresentation(new String[] {"email", "token", "tag"});
 				}
 				else
@@ -83,15 +78,11 @@ public class LoginManager {
 		if(LoginManager.hasRequiredFields(params, LOGOUT)){
 			DataBean bean = null;
 			Database db = DatabaseManager.getInstance().getBase(LoginManager.base);
-			db.open();
 			bean = db.getBean("email", (String) params.get("email"));
-			db.close();
 			if(bean!=null){
 				if(((User) bean).getToken().equals((String) params.get("token"))){
 					((User) bean).setToken(LoginManager.generateToken());
-					db.open();
 					db.updateBean(bean);
-					db.close();
 					return "auth_ok";
 				}
 				else
@@ -108,14 +99,11 @@ public class LoginManager {
 		if(LoginManager.hasRequiredFields(params, AUTH)){
 			Database db = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
 			DataBean user=null;
-			db.open();
 			try {
 				user = db.getBean("email", (String) params.get("email"));
 			} catch (BeanException e) {
-				db.close();
 				return false;
 			}
-			db.close();
 			if(user!=null){
 				return (((User) user).getToken().equals((String) params.get("token")))?true:false;
 			}

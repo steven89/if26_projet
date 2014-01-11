@@ -10,9 +10,7 @@ public class UserUtils {
 
 	public static User getUserFromTag(String tag) throws BeanException{
 		Database db = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
-		db.open();
 		DataBean bean = db.getBean("tag", tag);
-		db.close();
 		return (User) bean;
 	}
 	

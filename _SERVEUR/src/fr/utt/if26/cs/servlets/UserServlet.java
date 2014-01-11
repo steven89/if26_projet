@@ -39,19 +39,15 @@ public class UserServlet extends HttpServlet {
 		try{
 			int id = Integer.parseInt(request.getQueryString());
 			Database db = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
-			db.open();
 			bean = db.getBean("id", Integer.toString(id));
-			db.close();
 		} catch (NumberFormatException e){
 			try {
 				Database db = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
-				db.open();
 				if(request.getQueryString().indexOf("@")!=-1)
 					bean = db.getBean("email", request.getQueryString());
 				else{
 					bean = db.getBean("tag", request.getQueryString());
 				}
-				db.close();	
 			} catch (BeanException e1) {
 				e1.printStackTrace();
 			}
@@ -89,9 +85,7 @@ public class UserServlet extends HttpServlet {
 					params.getString("tag")
 				);
 				Database db = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
-				db.open();
 				boolean inserted = db.insertBean(user);
-				db.close();
 				if(inserted){
 					TransactionsUtils.doBaseTransaction(((User) user).getTag());
 					TransactionsUtils.applyTransactionsOnUser(user);
@@ -104,7 +98,6 @@ public class UserServlet extends HttpServlet {
 				out.echo(e.getMessage());
 				e.printStackTrace();
 			}
-			
 		}
 		else{
 			out.echo("{'error':'field_missing'}");

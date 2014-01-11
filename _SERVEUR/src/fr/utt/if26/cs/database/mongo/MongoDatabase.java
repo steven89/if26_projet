@@ -35,7 +35,7 @@ public class MongoDatabase extends Database {
 	private DatabaseHelper mongoHelper;
 	
 	private MongoDatabase(){
-		
+		super();
 	}
 	
 	public static MongoDatabase getInstance(){
@@ -67,6 +67,7 @@ public class MongoDatabase extends Database {
 
 	@Override
 	public void open() {
+		System.out.println("opening connexion on mongo database");
 		try {
 			mongoClient = new MongoClient();
 			mongoDB = mongoClient.getDB(this.base);
@@ -81,6 +82,7 @@ public class MongoDatabase extends Database {
 
 	@Override
 	public void close() {
+		System.out.println("closing connexion on SQL database");
 		this.mongoClient.close();
 		this.mongoHelper = null;
 	}

@@ -44,7 +44,6 @@ public class TransactionServlet extends HttpServlet {
 		if(LoginManager.checkAuth(params)){
 			if(params.containsField("id")){
 				if(ObjectId.isValid(params.getString("id"))){
-					dbTransactions.open();
 					Transaction transaction=null;
 					try {
 						transaction = (Transaction) dbTransactions.getBean("id", params.getString("id"));
@@ -52,7 +51,6 @@ public class TransactionServlet extends HttpServlet {
 						out.echo(e.getMessage());
 						e.printStackTrace();
 					}
-					dbTransactions.close();
 					out.echo(transaction.getJSONStringRepresentation());
 				}
 				else{

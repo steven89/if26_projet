@@ -26,6 +26,7 @@ public class SQLDatabase extends Database {
 	private Connection connexion = null;
 	
 	private SQLDatabase(){
+		super();
 		try {
 			Class.forName( SQLDatabase.driver );
 		} catch (ClassNotFoundException e) {
@@ -40,6 +41,7 @@ public class SQLDatabase extends Database {
 	
 	@Override
 	public void open() {
+		System.out.println("opening connexion on SQL database");
 		try {
 			this.connexion = DriverManager.getConnection(SQLDatabase.url, SQLDatabase.user, SQLDatabase.passwd);
 			this.sqlHelper = new SQLHelper(this.connexion, "users");
@@ -50,6 +52,7 @@ public class SQLDatabase extends Database {
 
 	@Override
 	public void close() {
+		System.out.println("closing connexion on SQL database");
 		try {
 			if(this.connexion!=null)
 				this.connexion.close();
