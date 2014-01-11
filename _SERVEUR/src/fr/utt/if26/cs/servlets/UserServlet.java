@@ -13,9 +13,11 @@ import org.bson.BasicBSONObject;
 
 
 
+
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.exceptions.BeanException;
+import fr.utt.if26.cs.io.BsonEcho;
 import fr.utt.if26.cs.io.Echo;
 import fr.utt.if26.cs.io.JsonEcho;
 import fr.utt.if26.cs.model.DataBean;
@@ -33,7 +35,7 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Echo out = new JsonEcho(response.getWriter());
+		Echo out = new BsonEcho(response.getWriter());
 		DataBean bean=null;
 		try{
 			int id = Integer.parseInt(request.getQueryString());
@@ -71,7 +73,7 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Echo out = new JsonEcho(response.getWriter());
+		Echo out = new BsonEcho(response.getWriter());
 		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.POST, request);
 		if(ServletUtils.checkRequiredFields(new String[] {"email", "pass", "prenom", "nom", "tag"}, params)){
 			DataBean user=null;

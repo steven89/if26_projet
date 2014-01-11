@@ -4,6 +4,9 @@ import java.io.PrintWriter;
 
 import org.bson.BSONObject;
 
+import com.mongodb.util.JSON;
+import com.mongodb.util.JSONParseException;
+
 public class JsonEcho extends Echo {
 
 	public JsonEcho(PrintWriter writer) {
@@ -12,7 +15,12 @@ public class JsonEcho extends Echo {
 
 	@Override
 	public void echo(String msg) {
-		this.out.println(msg);
+		try{
+			JSON.parse(msg);
+			this.out.println(msg);
+		} catch (JSONParseException e){
+			this.echo(Echo.MSG, msg);
+		}
 	}
 	
 	@Override

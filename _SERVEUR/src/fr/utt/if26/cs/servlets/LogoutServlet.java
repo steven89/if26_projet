@@ -14,6 +14,7 @@ import org.bson.BasicBSONObject;
 import com.mongodb.util.JSON;
 
 import fr.utt.if26.cs.exceptions.BeanException;
+import fr.utt.if26.cs.io.BsonEcho;
 import fr.utt.if26.cs.io.Echo;
 import fr.utt.if26.cs.io.JsonEcho;
 import fr.utt.if26.cs.model.LoginManager;
@@ -44,7 +45,7 @@ public class LogoutServlet extends HttpServlet {
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Echo out = new JsonEcho(response.getWriter());
+		Echo out = new BsonEcho(response.getWriter());
 		String paramStr = "";
 		String line = "";
 		while((line = request.getReader().readLine()) != null){

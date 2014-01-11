@@ -15,6 +15,7 @@ import org.bson.types.ObjectId;
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.exceptions.BeanException;
+import fr.utt.if26.cs.io.BsonEcho;
 import fr.utt.if26.cs.io.Echo;
 import fr.utt.if26.cs.io.JsonEcho;
 import fr.utt.if26.cs.model.DataBean;
@@ -38,7 +39,7 @@ public class TransactionServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Echo out = new JsonEcho(response.getWriter());
+		Echo out = new BsonEcho(response.getWriter());
 		Database dbTransactions = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);
 		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.GET, request);
 		if(LoginManager.checkAuth(params)){
@@ -79,7 +80,7 @@ public class TransactionServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Echo out = new JsonEcho(response.getWriter());
+		Echo out = new BsonEcho(response.getWriter());
 		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.POST, request);
 		if(LoginManager.checkAuth(params)){
 			if(ServletUtils.checkRequiredFields(new String[] {"email", "to", "amount"}, params)){

@@ -2,9 +2,18 @@ package fr.utt.if26.cs.io;
 
 import java.io.PrintWriter;
 
+import org.bson.BSON;
+import org.bson.BSONDecoder;
 import org.bson.BSONObject;
+import org.bson.BasicBSONDecoder;
+import org.bson.BasicBSONObject;
+
+import com.mongodb.util.JSON;
+import com.mongodb.util.JSONParseException;
 
 public class BsonEcho extends Echo {
+	
+	private final static String dico = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	public BsonEcho(PrintWriter writer) {
 		super(writer);
@@ -12,42 +21,57 @@ public class BsonEcho extends Echo {
 
 	@Override
 	public void echo(String msg) {
-		// TODO Auto-generated method stub
-
+		try{
+			BSONObject obj = (BSONObject) JSON.parse(msg);
+			this.echo(obj);
+		} catch (JSONParseException e){
+			this.echo(Echo.MSG, msg);
+		}
 	}
 	
 	@Override
 	public void echo(int type, String msg) {
-		// TODO Auto-generated method stub
-		
+		String msgType = "";
+		switch(type){
+		case Echo.ERR:
+			msgType = "error";
+			break;
+		case Echo.INFO:
+			msgType = "info";
+			break;
+		default:
+			msgType = "message";
+			break;
+		}
+		String str = "{'"+msgType+"' : '"+msg+"'}";
+		try{
+			BSONObject obj = (BSONObject) JSON.parse(str);
+			this.echo(obj);
+		} catch (JSONParseException e){
+			
+		}
 	}
 
 	@Override
 	public void echo(BSONObject obj) {
-		// TODO Auto-generated method stub
-		//BasicBSONObject bson =  (BasicBSONObject) JSON.parse("{'test': 'aaeaze', 't':'a'}");
-				//byte[] bte = BSON.encode(bson);	
-				/*OutputStream os = response.getOutputStream();
-				os.write(bte);
-				os.flush();*/
-				/*PrintWriter out = response.getWriter();
-				String str = "";
-				for(byte b : bte){
-					str+=b+"&";
-					//out.print(b+"\n");
-				}
-				out.print(str);
-				
-//				String decode = new String(bte, "UTF-8");
-//				out.print("\n"+decode.toString());
-				String[] tab = str.split("&");
-				byte[] array = new byte[tab.length];
-				for(int i =0; i<tab.length; i++){
-//					out.print("\n"+tab[i]);
-					array[i] = Byte.valueOf(tab[i]);
-				}
-				BSONDecoder decoder = new BasicBSONDecoder();
-				BasicBSONObject obj = (BasicBSONObject) decoder.readObject(array);
-				//out.print(obj.toString());*/
+		byte[] bte = BSON.encode(obj);	
+		String str = "";
+		for(byte b : bte){
+			int random = (int) (Math.random()*BsonEcho.dico.length());
+			str+=b;
+			str+=BsonEcho.dico.charAt(random);
+		}
+		out.println(str);
+		
+		
+		//decoding
+		/*String[] tab = str.split("[a-zA-Z]");
+		byte[] array = new byte[tab.length];
+		for(int i =0; i<tab.length; i++){
+			array[i] = Byte.valueOf(tab[i]);
+		}
+		BSONDecoder decoder = new BasicBSONDecoder();
+		BasicBSONObject obje = (BasicBSONObject) decoder.readObject(array);
+		out.println(obje.toString());*/
 	}
 }
