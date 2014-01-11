@@ -43,8 +43,9 @@ public class MongoHelper implements DatabaseHelper {
 	}
 	
 	@Override
-	public void insert(BSONObject datas) {
+	public String insert(BSONObject datas) {
 		this.collection.insert((DBObject) JSON.parse(datas.toString()));
+		return "ok";
 	}
 
 	@Override

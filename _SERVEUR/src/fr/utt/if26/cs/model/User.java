@@ -52,7 +52,8 @@ public class User extends DataBean {
 		this.setPrenom(prenom);
 		this.setNom(nom);
 		this.setTag(tag);
-		this.export = new String[]{"email","pass","prenom","nom","tag","wallet"};
+		this.setToken(LoginManager.generateToken());
+		this.export = new String[]{"email","pass","prenom","nom","tag","wallet","token"};
 	}
 	
 	/**
@@ -119,7 +120,7 @@ public class User extends DataBean {
 	}
 	
 	public void setTag(String tag) throws BeanException{
-		if(tag.matches("^[a-zA-Z0-9_-]{3,}$"))
+		if(tag.matches("^[a-zA-Z0-9]{3,}$"))
 			this.tag = tag;
 		else
 			throw new BeanException("invalid tag");

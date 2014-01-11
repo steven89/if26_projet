@@ -60,8 +60,13 @@ public class SQLDatabase extends Database {
 
 	@Override
 	public boolean insertBean(DataBean bean) {
-		sqlHelper.insert(bean.getBSONRepresentation(new String[]{"email","pass","nom","prenom","tag","token"}));
-		return false;
+		String result = sqlHelper.insert(bean.getBSONRepresentation(
+			new String[]{"email","pass","nom","prenom","tag","token"}
+		));
+		if(result.equals("ok"))
+			return true;
+		else
+			return false;
 	}
 
 	@Override

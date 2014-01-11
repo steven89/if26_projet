@@ -26,7 +26,7 @@ public class SQLHelper implements DatabaseHelper {
 	}
 
 	@Override
-	public void insert(BSONObject datas) {
+	public String insert(BSONObject datas) {
 		String keys = "";
 		String values = "";
 		String params[] = new String[datas.keySet().size()];
@@ -49,12 +49,12 @@ public class SQLHelper implements DatabaseHelper {
 			}
 			this.statement.executeUpdate();
 		} catch (MySQLIntegrityConstraintViolationException e){
-			//TODO : entry already exists
-			System.out.println(e.getMessage());
+			return "user already exists ("+e.getMessage()+")";
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+			return e.getMessage();
 		}
+		return "ok";
 	}
 	
 	@Override

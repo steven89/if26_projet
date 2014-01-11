@@ -12,12 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.bson.BasicBSONObject;
 
 
+
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.io.Echo;
 import fr.utt.if26.cs.io.JsonEcho;
 import fr.utt.if26.cs.model.DataBean;
+import fr.utt.if26.cs.model.LoginManager;
 import fr.utt.if26.cs.model.User;
 import fr.utt.if26.cs.utils.ServletUtils;
 import fr.utt.if26.cs.utils.TransactionsUtils;
@@ -88,11 +90,16 @@ public class UserServlet extends HttpServlet {
 				);
 				Database db = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
 				db.open();
-				db.insertBean(user);
+				boolean inserted = db.insertBean(user);
 				db.close();
-				TransactionsUtils.doBaseTransaction(((User) user).getTag());
-				TransactionsUtils.applyTransactionsOnUser(user);
-				out.echo(user.getJSONStringRepresentation());
+				if(inserted){
+					TransactionsUtils.doBaseTransaction(((User) user).getTag());
+					TransactionsUtils.applyTransactionsOnUser(user);
+					out.echo(user.getJSONStringRepresentation());
+				}
+				else{
+					out.echo(Echo.ERR, "user already exists");
+				}
 			} catch (BeanException e) {
 				out.echo(e.getMessage());
 				e.printStackTrace();

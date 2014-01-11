@@ -16,7 +16,7 @@ public interface DatabaseHelper {
 	 * Save objects in a database
 	 * @param obj TODO
 	 */
-	public void insert(BSONObject datas);
+	public String insert(BSONObject datas);
 	
 	/*** 
 	 * Save objects in a database
