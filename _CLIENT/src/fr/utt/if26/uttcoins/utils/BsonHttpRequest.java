@@ -242,7 +242,7 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 	
 	protected BSONObject decodeBSONResponse(String encodedResponse){
 		BSONObject bsonResponse;
-		String[] chunks = encodedResponse.split("[a-ZA-Z]");
+		String[] chunks = encodedResponse.split("[a-zA-Z]");
 		byte[] decodedByteResponse = new byte[chunks.length];
 		for(int i = 0; i < chunks.length; i++){
 			decodedByteResponse[i] = Byte.valueOf(chunks[i]);
