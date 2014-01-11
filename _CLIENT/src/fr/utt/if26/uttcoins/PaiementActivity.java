@@ -4,6 +4,7 @@ import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment;
 import fr.utt.if26.uttcoins.fragment.TransactionListFragment;
 import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment.PaymentConfirmationDialogListener;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPaiementFragment;
+import fr.utt.if26.uttcoins.model.Transaction;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -32,18 +33,31 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.i("NAV", "PaiementActivity has started");
-		Bundle data = this.getIntent().getExtras();
-		Log.i("ACTIVITY", "got PaiementActivity's Bundle");
-		if( data != null){
-			String preSetTransactionReceiver = data.getString(TransactionListFragment.TRANSACTION_REVEIVER_KEY);
-			int preSetTransactionAmount = data.getInt(TransactionListFragment.TRANSACTION_AMOUNT_KEY);
-			Log.i("ACTIVITY", "preset var initialized");
-			if(preSetTransactionReceiver != null)
-				this.formPaymentFragment.setTransactionReceiver(preSetTransactionReceiver);
-			if(preSetTransactionAmount != 0)
-				this.formPaymentFragment.setTransactionAmount(preSetTransactionAmount);
-		}
+		this.formPaymentFragment.setArguments(this.getPresetData(savedInstanceState));
 	}
+
+	private Bundle getPresetData(Bundle savedInstanceState) {
+		Bundle extra = (this.getIntent().getExtras() != null) ? this.getIntent().getExtras() : new Bundle();
+		savedInstanceState = (savedInstanceState != null) ? savedInstanceState : new Bundle();
+		Log.i("ACTIVITY", "got PaiementActivity's Bundle");
+		Bundle preSetData = new Bundle();
+		String transactionReceiver = savedInstanceState.getString(Transaction.TRANSACTION_RECEIVER_KEY);
+		transactionReceiver = (transactionReceiver != null) ? 
+				transactionReceiver : extra.getString(Transaction.TRANSACTION_RECEIVER_KEY);
+		int transactionAmount = savedInstanceState.getInt(Transaction.TRANSACTION_AMOUNT_KEY);
+		transactionAmount = (transactionAmount != 0) ?
+				transactionAmount : extra.getInt(Transaction.TRANSACTION_AMOUNT_KEY);
+		preSetData.putString(Transaction.TRANSACTION_RECEIVER_KEY, transactionReceiver);
+		preSetData.putInt(Transaction.TRANSACTION_AMOUNT_KEY, transactionAmount);
+		return preSetData;
+	}
+	
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+      super.onSaveInstanceState(savedInstanceState);
+      savedInstanceState.putInt(Transaction.TRANSACTION_AMOUNT_KEY, this.formPaymentFragment.getTransactionAmount());
+      savedInstanceState.putString(Transaction.TRANSACTION_RECEIVER_KEY, this.formPaymentFragment.getTransactionReceiver());
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -65,16 +79,17 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	public void onFragmentInteraction(Uri uri) {
 		switch(Integer.parseInt(uri.getFragment())){
 			case R.id.payment_confirmation_button :
-				this.showConfirmPaymentDialog();
+				if(this.formPaymentFragment.isTransactionValide()){
+					this.showConfirmPaymentDialog();
+				}else{
+					
+				}
 				break;
 		}
 	}
 
 	@Override
 	protected void initInnerContentLayout(ViewGroup container) {
-		//Class layoutParamsClass = Class.forName(container.getClass().getCanonicalName() + ".LayoutParams");
-		//ViewGroup.LayoutParams lp_innerListViewContainer = new (layoutParamsClass.getClass().getConstructor(int, int))(FrameLayout.LayoutParams.FILL_PARENT, 
-		//		FrameLayout.LayoutParams.WRAP_CONTENT);
 		RelativeLayout.LayoutParams lp_innerListViewContainer = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, 
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
 		this.innerListViewContainer = new ScrollView(this);
@@ -85,11 +100,13 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	
 	private void showConfirmPaymentDialog() {
 		PaymentConfirmationDialogFragment confirmDialogFragment = new PaymentConfirmationDialogFragment();
-		confirmDialogFragment.setTransactionAmount(this.formPaymentFragment.getTransactionAmount());
-		confirmDialogFragment.setTransactionReceiver(this.formPaymentFragment.getTransactionReceiver());
+		Bundle initialState = new Bundle();
+		initialState.putInt(Transaction.TRANSACTION_AMOUNT_KEY, this.formPaymentFragment.getTransactionAmount());
+		initialState.putString(Transaction.TRANSACTION_RECEIVER_KEY, this.formPaymentFragment.getTransactionReceiver());
+		confirmDialogFragment.setArguments(initialState);
 		confirmDialogFragment.show(getSupportFragmentManager(), "confirmation");
 	}
-
+	
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog) {
 				

@@ -5,6 +5,9 @@ import org.json.JSONObject;
 
 public class Transaction {
 
+	public static String TRANSACTION_AMOUNT_KEY = "transaction_amount";
+	public static String TRANSACTION_RECEIVER_KEY = "transaction_receiver";
+	
 	public int id;
 	public String debiteur;
 	public String crediteur;
