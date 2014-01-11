@@ -24,6 +24,10 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
+import org.bson.BSONDecoder;
+import org.bson.BSONObject;
+import org.bson.BasicBSONDecoder;
+import org.bson.BasicBSONObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,13 +39,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
-public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
+public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 
 	//params for non enclosing entity request (GET, DELETE)
 	private BasicHttpParams httpParams;
 	//params for enclonsing entity request (POST, PUT)
 	private JSONObject jsonParams;
-	private JsonCallback jsonCallback;
+	private BsonCallback bsonCallback;
 	private String method, url;
 	private HttpRequestBase request;
 	private HttpResponse response;
@@ -62,25 +66,25 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 		}
 	}
 	
-	public JsonHttpRequest(String method, String url, JsonCallback callback){
+	public BsonHttpRequest(String method, String url, BsonCallback callback){
 		this.httpParams = new BasicHttpParams();
 		this.jsonParams = new JSONObject();
 		this.client = new DefaultHttpClient();
 		this.method = method;
 		this.url = url;
-		this.jsonCallback = callback;
+		this.bsonCallback = callback;
 		this.error = false;
 	}
 	
 	@Override
 	protected void onPreExecute (){
-		if(this.jsonCallback != null){
-			this.jsonCallback.beforeCall();
+		if(this.bsonCallback != null){
+			this.bsonCallback.beforeCall();
 		}
 	}
 	
 	@Override
-	protected JSONObject doInBackground(String... args){
+	protected BSONObject doInBackground(String... args){
 		Log.i("REQUEST", "PREPARING with method = " + method+" and url = "+url);
 		Log.i("REQUEST",  "MedthodClass : " + methodClasses.get(method).toString());
 		try {
@@ -91,7 +95,8 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 			Log.i("REQUEST", "EXECUTING");
 			this.response = client.execute(request);
 			Log.i("REQUEST", "READING");
-	        return this.readResponse(this.response.getEntity().getContent());			
+	        //return this.readResponse(this.response.getEntity().getContent());		
+			return this.readBSONResponse(this.response.getEntity().getContent());
 		}catch (Exception e) {
 			e.printStackTrace();
 			this.error = true;
@@ -101,13 +106,13 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 	}
 	
 	@Override
-	protected void onPostExecute(JSONObject result){
-		if(this.jsonCallback != null){
+	protected void onPostExecute(BSONObject result){
+		if(this.bsonCallback != null){
 			this.clearParams();
 			if(!this.error){
-				this.jsonCallback.call(result);
+				this.bsonCallback.call(result);
 			}else{
-				this.jsonCallback.onError(this.errorObject);
+				this.bsonCallback.onError(this.errorObject);
 			}
 		}
 	}
@@ -193,6 +198,7 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 			this.jsonParams = new JSONObject();
 	}
 	
+	@Deprecated
 	protected JSONObject readResponse(InputStream stream) 
 			throws CustomServerException, JSONException, IOException{
 		String lineRead = "";
@@ -212,6 +218,38 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 			throw ErrorHelper.getCustomServerException(JsonResponse.getString("error"));
 		}
 		return JsonResponse;
+	}
+	
+	protected BSONObject readBSONResponse(InputStream stream) 
+			throws CustomServerException, JSONException, IOException{
+		BSONObject bsonResponse;
+		String lineRead = "";
+		StringBuilder stringResponse = new StringBuilder();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		try {
+			while((lineRead = reader.readLine())!=null){
+				stringResponse.append(lineRead);
+			}
+		} catch (IOException e) {
+			throw e;
+		}
+		bsonResponse = this.decodeBSONResponse(stringResponse.toString());
+		if(bsonResponse.containsField("error")){
+			throw ErrorHelper.getCustomServerException((String) bsonResponse.get("error"));
+		}
+		return bsonResponse;
+	}
+	
+	protected BSONObject decodeBSONResponse(String encodedResponse){
+		BSONObject bsonResponse;
+		String[] chunks = encodedResponse.split("[a-ZA-Z]");
+		byte[] decodedByteResponse = new byte[chunks.length];
+		for(int i = 0; i < chunks.length; i++){
+			decodedByteResponse[i] = Byte.valueOf(chunks[i]);
+		}
+		BSONDecoder decoder = new BasicBSONDecoder();
+		bsonResponse = (BasicBSONObject) decoder.readObject(decodedByteResponse);
+		return bsonResponse;
 	}
 	
 	protected JSONObject JSONParse(String jsonString){

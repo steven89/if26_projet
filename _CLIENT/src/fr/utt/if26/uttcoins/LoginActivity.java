@@ -1,5 +1,6 @@
 package fr.utt.if26.uttcoins;
 
+import org.bson.BSONObject;
 import org.json.JSONObject;
 
 import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
@@ -8,8 +9,8 @@ import fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
 import fr.utt.if26.uttcoins.utils.HttpRequestErrorListener;
-import fr.utt.if26.uttcoins.utils.JsonCallback;
-import fr.utt.if26.uttcoins.utils.JsonHttpRequest;
+import fr.utt.if26.uttcoins.utils.BsonCallback;
+import fr.utt.if26.uttcoins.utils.BsonHttpRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -32,7 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class LoginActivity extends ActionBarActivity implements OnFragmentInteractionListener, 
-JsonCallback, HttpRequestErrorListener{
+BsonCallback, HttpRequestErrorListener{
 
 	
 	private TextView forgottenAccountLink;
@@ -92,7 +93,7 @@ JsonCallback, HttpRequestErrorListener{
 		if(isInputsValide){
 			//String url = "http://10.0.2.2:8080/_SERVEUR/Login";
 			String url = "http://88.186.76.236/_SERVEUR/Login";
-			JsonHttpRequest request = new JsonHttpRequest("PUT", url, this);
+			BsonHttpRequest request = new BsonHttpRequest("PUT", url, this);
 			Log.i("ACTION","CLICKED");
 			//String url = "http://train.sandbox.eutech-ssii.com/messenger/login.php?email="+loginInputFragment.getValue()+"&password="+passwordInputFragment.getValue();
 			request.putParam("email", loginInputFragment.getValue());
@@ -116,12 +117,12 @@ JsonCallback, HttpRequestErrorListener{
 	}
 	
 	@Override
-	public JSONObject call(JSONObject jsonResponse) {
+	public BSONObject call(BSONObject bsonResponse) {
 		try {
 			this.connexionBtnFragment.hideLoader();
-			if(!jsonResponse.has("token")){
+			if(bsonResponse.containsField("token")){
 				Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
-				loadWallet.putExtra("token", jsonResponse.getString("token"));
+				loadWallet.putExtra("token", (String) bsonResponse.get("token"));
 				startActivity(loadWallet);
 			}
 		} catch (Exception e) {
