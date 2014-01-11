@@ -26,7 +26,7 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	
 	private FormPaiementFragment formPaymentFragment;
 	private static String FORM_PAYMENT_FRAGMENT_TAG = "formPaymentFragment";
-	private ScrollView innerListViewContainer;
+	private ScrollView innerScrollViewContainer;
 	private static final int INNER_LIST_VIEW_CONTAINER_ID = R.id.formPaymentFragContainer;
 	
 	@Override
@@ -81,8 +81,6 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 			case R.id.payment_confirmation_button :
 				if(this.formPaymentFragment.isTransactionValide()){
 					this.showConfirmPaymentDialog();
-				}else{
-					
 				}
 				break;
 		}
@@ -92,10 +90,10 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	protected void initInnerContentLayout(ViewGroup container) {
 		RelativeLayout.LayoutParams lp_innerListViewContainer = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, 
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		this.innerListViewContainer = new ScrollView(this);
-		this.innerListViewContainer.setId(INNER_LIST_VIEW_CONTAINER_ID);
-		this.innerListViewContainer.setLayoutParams(lp_innerListViewContainer);
-		container.addView(this.innerListViewContainer);
+		this.innerScrollViewContainer = new ScrollView(this);
+		this.innerScrollViewContainer.setId(INNER_LIST_VIEW_CONTAINER_ID);
+		this.innerScrollViewContainer.setLayoutParams(lp_innerListViewContainer);
+		container.addView(this.innerScrollViewContainer);
 	}
 	
 	private void showConfirmPaymentDialog() {

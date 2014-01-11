@@ -53,4 +53,7 @@
 	<string name="transactionAmount">Montant de la transaction :</string>
 	<string name="accountBalanceAfterTransaction">Solde après la transaction : </string>
 	<string name="userNotFound" >Utilisateur introuvable !</string>
+	<string name="payment_receiver_error_text" >Destinataire de la transaction requis</string>
+	<string name="payment_amount_required_error" >Montant de la transaction requis</string>
+	<string name="not_enougth_uttCoins_error" >Solde insufisant</string>
 </resources>

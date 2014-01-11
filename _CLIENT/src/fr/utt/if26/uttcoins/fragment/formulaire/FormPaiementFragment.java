@@ -9,12 +9,15 @@ import fr.utt.if26.uttcoins.fragment.UserSoldeFragment;
 import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment.PaymentConfirmationDialogListener;
 import fr.utt.if26.uttcoins.model.Transaction;
 import fr.utt.if26.uttcoins.model.TransactionList;
+import fr.utt.if26.uttcoins.utils.UserHelper;
 import android.app.Activity;
 import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,9 +42,10 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 
 	private OnFragmentInteractionListener mListener;
 
-	private EditText transactionAmountInput;
-	private EditText transactionReceiverInput;
+	private EditText transactionAmountInput, transactionReceiverInput;
 	private Button payment_confirmation_button;
+	
+	private TextView transactionAmountError, transactionReceiverError;
 	
 	private int transactionAmount;
 	private String transactionReceiver;
@@ -78,6 +82,8 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 		this.transactionReceiverInput = (EditText) view.findViewById(R.id.payment_receiver);
 		this.transactionAmountInput = (EditText) view.findViewById(R.id.payment_amount);
 		this.payment_confirmation_button = (Button) view.findViewById(R.id.payment_confirmation_button);
+		this.transactionAmountError = (TextView) view.findViewById(R.id.payment_amount_error);
+		this.transactionReceiverError = (TextView) view.findViewById(R.id.payment_receiver_error);
 		this.initListener();
 		this.initContent(container, savedInstanceState);
 		return view;
@@ -85,6 +91,21 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 	
 	protected void initListener(){
 		this.payment_confirmation_button.setOnClickListener(this);
+		TextWatcher validatorWatcher = new TextWatcher() {
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {				
+			}
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {				
+			}
+			@Override
+			public void afterTextChanged(Editable s) {
+				isTransactionValide();
+			}
+		};
+		this.transactionReceiverInput.addTextChangedListener(validatorWatcher);
+		this.transactionAmountInput.addTextChangedListener(validatorWatcher);
 	}
 	
 	protected void initContent(View v, Bundle savedInstanceState){
@@ -96,6 +117,7 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 			this.transactionAmountInput.setText(Integer.toString(transactionAmount), BufferType.EDITABLE);
 		if(this.transactionReceiver != null)
     		this.transactionReceiverInput.setText(transactionReceiver);
+		this.payment_confirmation_button.setEnabled(this.isTransactionValide());
 	}
 	
 
@@ -145,9 +167,47 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 				break;
 		}
 	}
+	
+	public boolean isTransactionReceiverValide(){
+		String transactionReceiverText = this.getTransactionReceiver();
+		Boolean valide = (transactionReceiverText != null && transactionReceiverText.length() > 0);
+		if(valide){
+			this.transactionReceiverError.setVisibility(View.GONE);
+		}else{
+			this.transactionReceiverError.setVisibility(View.VISIBLE);
+		}
+		return valide;
+	}
+	
+	public boolean isTransactionAmountValide(){
+		int transactionAmountValue = this.getTransactionAmount();
+		int UserAccountBalance = UserHelper.getAccountBalance();
+		boolean amountValue = transactionAmountValue > 0;
+		boolean enougth_uttCoins = transactionAmountValue <= UserAccountBalance;
+		if(amountValue){
+			this.transactionAmountError.setVisibility(View.GONE);
+		}else{
+			this.transactionAmountError.setText(R.string.payment_amount_required_error);
+			this.transactionAmountError.setVisibility(View.VISIBLE);
+		}
+		if(!enougth_uttCoins){
+			this.transactionAmountError.setText(R.string.not_enougth_uttCoins_error);
+			this.transactionAmountError.setVisibility(View.VISIBLE);
+		}
+		return amountValue && enougth_uttCoins;
+	}
 
 	public boolean isTransactionValide() {
-		// TODO Auto-generated method stub
-		return true;
+		//passe par des refs intermediaires pour forcer l'evaluation des deux expressions
+		// (dans un '&&', l'evaluation stop a la premiere expression à false rencontre) 
+		boolean isTransactionAmountValide = this.isTransactionAmountValide();
+		boolean isTransactionReceiverValide = this.isTransactionReceiverValide();
+		boolean valide =  isTransactionAmountValide && isTransactionReceiverValide;
+		if(valide){
+			this.payment_confirmation_button.setEnabled(true);
+		}else{
+			this.payment_confirmation_button.setEnabled(false);
+		}
+		return valide;
 	}
 }
