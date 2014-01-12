@@ -53,6 +53,25 @@ CREATE TABLE IF NOT EXISTS `users` (
 }
 ```
 
+#####GET /Transaction
+Liste des transactions de l'utilisateur :
+```json
+{
+  "email" : "test@test.fr",
+  "token" : "Afsdfh1356sfdEDZQS54sdADS15aa"
+}
+```
+Recherche d'une transaction spécifique (par id) 
+RQ : l'utilisateur doit intervenir dans la transaction pour y avoir accès
+
+```json
+{
+  "id" : "52dq5564d2355",
+  "email" : "test@test.fr",
+  "token" : "Afsdfh1356sfdEDZQS54sdADS15aa"
+}
+```
+
 #####POST /Transaction
 ```json
 {
