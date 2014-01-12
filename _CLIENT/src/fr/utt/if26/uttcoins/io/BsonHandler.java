@@ -12,6 +12,7 @@ import org.bson.BasicBSONDecoder;
 import org.bson.BasicBSONObject;
 import org.json.JSONException;
 
+import android.util.Log;
 import fr.utt.if26.uttcoins.error.CustomServerException;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
 
@@ -57,9 +58,11 @@ public class BsonHandler {
 
 	protected static BasicBSONObject decodeBSONResponse(String encodedResponse){
 		BasicBSONObject bsonResponse;
+		Log.i("DECODE BSON", "encodedresponse = "+encodedResponse);
 		String[] chunks = encodedResponse.split("[a-zA-Z]");
 		byte[] decodedByteResponse = new byte[chunks.length];
 		for(int i = 0; i < chunks.length; i++){
+			Log.i("DECODE BSON", "chunks["+Integer.toString(i)+"] = "+chunks[i]);
 			decodedByteResponse[i] = Byte.valueOf(chunks[i]);
 		}
 		BSONDecoder decoder = new BasicBSONDecoder();
