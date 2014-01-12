@@ -14,4 +14,9 @@ public class UserUtils {
 		return (User) bean;
 	}
 	
+	public static User getUserFromEmail(String email) throws BeanException{
+		Database db = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);
+		DataBean bean = db.getBean("email", email);
+		return (User) bean;
+	}
 }

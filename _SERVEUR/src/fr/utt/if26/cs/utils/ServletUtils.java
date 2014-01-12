@@ -1,5 +1,6 @@
 package fr.utt.if26.cs.utils;
 
+import java.io.Console;
 import java.io.IOException;
 import java.util.Map;
 
@@ -12,6 +13,8 @@ import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;
 
 public class ServletUtils {
+	
+	public static final boolean useBSON = false;
 	
 	public final static int GET = 0;
 	public final static int POST = 1;
@@ -27,29 +30,26 @@ public class ServletUtils {
 		return true;
 	}
 	
-	public static BasicBSONObject extractRequestData(int type, HttpServletRequest request){
-		switch (type) {
-		case ServletUtils.GET:
-			return extractGetRequestData(request);
-		case ServletUtils.PUT:
-		case ServletUtils.POST:
+	public static BasicBSONObject extractRequestData(HttpServletRequest request){
+		if(request.getMethod().equals("PUT") || request.getMethod().equals("POST") || request.getMethod().equals("DELETE"))
 			return extractPostRequestData(request);
-		default:
-			return null;
-		}
+		else if(request.getMethod().equals("GET"))
+			return extractGetRequestData(request);
+		else
+			return new BasicBSONObject();
 	}
 	
 	
 	private static BasicBSONObject extractGetRequestData(HttpServletRequest request){
-		Map<String, String[]> params = request.getParameterMap();
-		BasicBSONObject obj = new BasicBSONObject();
-		for(String key : params.keySet()){
-			if(params.get(key).length<2)
-				obj.put(key, params.get(key)[0]);
-			else
-				obj.put(key, params.get(key));
+		try{
+			String query = request.getQueryString();
+			query = query.replaceAll("(%22|%27)", "\"");
+			query = query.replaceAll("%20", " ");
+			BasicBSONObject params = (BasicBSONObject) JSON.parse(query);
+			return params;
+		} catch (JSONParseException e){
+			return new BasicBSONObject();
 		}
-		return obj;
 	}
 	
 	private static BasicBSONObject extractPostRequestData(HttpServletRequest request){

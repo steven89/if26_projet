@@ -17,7 +17,6 @@ import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.io.BsonEcho;
 import fr.utt.if26.cs.io.Echo;
-import fr.utt.if26.cs.io.JsonEcho;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.LoginManager;
 import fr.utt.if26.cs.model.Transaction;
@@ -41,39 +40,46 @@ public class TransactionServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Echo out = new BsonEcho(response.getWriter());
 		Database dbTransactions = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);
-		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.GET, request);
+		BasicBSONObject params = ServletUtils.extractRequestData(request);
+		System.out.println(params);
 		if(LoginManager.checkAuth(params)){
-			if(params.containsField("id")){
-				if(ObjectId.isValid(params.getString("id"))){
-					Transaction transaction=null;
-					try {
-						transaction = (Transaction) dbTransactions.getBean("id", params.getString("id"));
-					} catch (BeanException e) {
-						out.echo(e.getMessage());
-						e.printStackTrace();
+			User user;
+			try {
+				user = UserUtils.getUserFromEmail(params.getString("email"));
+				if(params.containsField("id")){
+					if(ObjectId.isValid(params.getString("id"))){
+						Transaction transaction=null;
+						try {
+							transaction = (Transaction) dbTransactions.getBean("id", params.getString("id"));
+						} catch (BeanException e) {
+							out.echo(e.getMessage());
+						}
+						if(transaction!=null && ( transaction.getFrom().equals(user.getEmail()) || transaction.getTo().equals(user.getTag()) ))
+							out.echo(transaction.getJSONStringRepresentation());
+						else
+							out.echo(Echo.ERR, "not allowed");
 					}
-					out.echo(transaction.getJSONStringRepresentation());
-				}
-				else{
-					out.echo("{'error':'invalid_id'}");
-				}
-			} 
-			else {
-				if(ServletUtils.checkRequiredFields(new String[]{"tag"}, params)){
+					else{
+						out.echo("{'error':'invalid_id'}");
+					}
+				} 
+				else {
 					try {
-						User userFrom = UserUtils.getUserFromTag(params.getString("tag"));
-						ArrayList<DataBean>[] transactions = TransactionsUtils.getUserTransactions(userFrom);
+						ArrayList<DataBean>[] transactions = TransactionsUtils.getUserTransactions(user);
 						out.echo(TransactionsUtils.toBSON(transactions));
 					} catch (BeanException e) {
 						out.echo(e.getMessage());
 						e.printStackTrace();
 					}
-					
 				}
+			} catch (BeanException e1) {
+				System.out.println(e1.getMessage());
+				out.echo(Echo.ERR, "auth required");
 			}
+			
 		}
 		else
-			out.echo("auth required");
+			out.echo(Echo.ERR, "auth required");
 	}
 
 	/**
@@ -81,7 +87,7 @@ public class TransactionServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Echo out = new BsonEcho(response.getWriter());
-		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.POST, request);
+		BasicBSONObject params = ServletUtils.extractRequestData(request);
 		if(LoginManager.checkAuth(params)){
 			if(ServletUtils.checkRequiredFields(new String[] {"email", "to", "amount"}, params)){
 				Transaction transaction=null;
@@ -98,8 +104,10 @@ public class TransactionServlet extends HttpServlet {
 					e1.printStackTrace();
 				}
 			}
+			else
+				out.echo(Echo.ERR, "fields_missing");
 		}
 		else
-			out.echo("auth required");
+			out.echo(Echo.ERR, "auth required");
 	}
 }

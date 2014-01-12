@@ -3,10 +3,10 @@ package fr.utt.if26.cs.io;
 import java.io.PrintWriter;
 
 import org.bson.BSON;
-import org.bson.BSONDecoder;
 import org.bson.BSONObject;
 import org.bson.BasicBSONDecoder;
 import org.bson.BasicBSONObject;
+import org.bson.BSONDecoder;
 
 import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;

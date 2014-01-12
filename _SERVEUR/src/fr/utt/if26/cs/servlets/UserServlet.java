@@ -19,7 +19,6 @@ import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.io.BsonEcho;
 import fr.utt.if26.cs.io.Echo;
-import fr.utt.if26.cs.io.JsonEcho;
 import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.User;
 import fr.utt.if26.cs.utils.ServletUtils;
@@ -35,7 +34,7 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Echo out = new BsonEcho(response.getWriter());
+		/*Echo out = new BsonEcho(response.getWriter());
 		DataBean bean=null;
 		try{
 			int id = Integer.parseInt(request.getQueryString());
@@ -66,7 +65,7 @@ public class UserServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			out.echo(bean.getJSONStringRepresentation(new String[] {"email","tag","prenom","nom","wallet"}));
-		}
+		}*/
 	}
 
 	/**
@@ -74,7 +73,7 @@ public class UserServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Echo out = new BsonEcho(response.getWriter());
-		BasicBSONObject params = ServletUtils.extractRequestData(ServletUtils.POST, request);
+		BasicBSONObject params = ServletUtils.extractRequestData(request);
 		if(ServletUtils.checkRequiredFields(new String[] {"email", "pass", "prenom", "nom", "tag"}, params)){
 			DataBean user=null;
 			try {
