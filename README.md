@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 }
 ```
 
-#####GET /Transaction
+#####GET /Transaction?{...}
 Liste des transactions de l'utilisateur :
 ```json
 {
