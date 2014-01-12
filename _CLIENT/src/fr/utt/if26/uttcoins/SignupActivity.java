@@ -11,7 +11,7 @@ import fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormInputFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormSimpleInputFragment;
-import fr.utt.if26.uttcoins.server.bson.BasicBSONCallback;
+import fr.utt.if26.uttcoins.server.bson.CustomBasicBSONCallback;
 import fr.utt.if26.uttcoins.server.bson.BasicBSONHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
 import android.net.Uri;
@@ -32,7 +32,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 
 public class SignupActivity extends ActionBarActivity implements OnFragmentInteractionListener, 
-BasicBSONCallback, CustomErrorListener{
+CustomBasicBSONCallback, CustomErrorListener{
 
 	private FormSimpleInputFragment nameInput, firstNameInput, tagInput;
 	private FormEmailFragment emailInput; 
@@ -101,14 +101,14 @@ BasicBSONCallback, CustomErrorListener{
 	protected void signUp(){
 		if(this.isFormValide()){
 			//String url = "http://10.0.2.2:8080/_SERVEUR/User";
-			String url = "http://88.186.76.236/_SERVEUR/User";
-			BasicBSONHttpRequest request = new BasicBSONHttpRequest("POST", url, this);
-	        request.putParam("nom", this.nameInput.getValue());
-			request.putParam("prenom", this.firstNameInput.getValue());
-			request.putParam("email", this.emailInput.getValue());
-			request.putParam("pass", this.passwordInput.getValue());
-			request.putParam("tag", this.tagInput.getValue());
-			request.execute();
+//			String url = "http://88.186.76.236/_SERVEUR/User";
+//			//BasicBSONHttpRequest request = new BasicBSONHttpRequest("POST", url, this);
+//	        request.putParam("nom", this.nameInput.getValue());
+//			request.putParam("prenom", this.firstNameInput.getValue());
+//			request.putParam("email", this.emailInput.getValue());
+//			request.putParam("pass", this.passwordInput.getValue());
+//			request.putParam("tag", this.tagInput.getValue());
+//			request.execute();
 		}else{
 			this.showInvalidFormMessage();
 		}
@@ -179,7 +179,7 @@ BasicBSONCallback, CustomErrorListener{
 		return null;
 	}
 	
-	public void showErrorMessage(String title, String message){
+	public void showCustomErrorMessage(String title, String message){
 		new AlertDialog.Builder(this)
 		.setTitle(title)
 		.setMessage(message)
@@ -201,7 +201,7 @@ BasicBSONCallback, CustomErrorListener{
 	@Override
 	public void onError(Bundle errorObject) {
 		this.signUpBtn.hideLoader();
-		this.showErrorMessage(errorObject.getString(ErrorHelper.ERROR_TITLE_KEY), 
+		this.showCustomErrorMessage(errorObject.getString(ErrorHelper.ERROR_TITLE_KEY), 
 				errorObject.getString(ErrorHelper.ERROR_MSG_KEY));
 	}
 }

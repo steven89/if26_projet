@@ -9,7 +9,7 @@ import fr.utt.if26.uttcoins.fragment.UserSoldeFragment;
 import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment.PaymentConfirmationDialogListener;
 import fr.utt.if26.uttcoins.model.Transaction;
 import fr.utt.if26.uttcoins.model.TransactionList;
-import fr.utt.if26.uttcoins.utils.UserHelper;
+import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.app.Activity;
 import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
@@ -181,7 +181,7 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 	
 	public boolean isTransactionAmountValide(){
 		int transactionAmountValue = this.getTransactionAmount();
-		int UserAccountBalance = UserHelper.getAccountBalance();
+		int UserAccountBalance = 100; //ServerHelper.getUserSolde(request_tag, callback);
 		boolean amountValue = transactionAmountValue > 0;
 		boolean enougth_uttCoins = transactionAmountValue <= UserAccountBalance;
 		if(amountValue){

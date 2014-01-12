@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import fr.utt.if26.uttcoins.server.CustomHttpRequestCallback;
 import android.os.Bundle;
 
-public interface BasicBSONCallback extends CustomHttpRequestCallback{
+public interface CustomBasicBSONCallback extends CustomHttpRequestCallback{
 
 	public Object call(BasicBSONObject bsonResponse);
 	public void onError(Bundle errorObject);

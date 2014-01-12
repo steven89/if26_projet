@@ -9,11 +9,12 @@ import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormButtonFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment;
-import fr.utt.if26.uttcoins.server.bson.BasicBSONCallback;
+import fr.utt.if26.uttcoins.server.bson.CustomBasicBSONCallback;
 import fr.utt.if26.uttcoins.server.bson.BasicBSONHttpRequest;
-import fr.utt.if26.uttcoins.server.json.JSONCallback;
+import fr.utt.if26.uttcoins.server.json.CustomJSONCallback;
 import fr.utt.if26.uttcoins.server.json.JsonHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
+import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -36,7 +37,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class LoginActivity extends ActionBarActivity implements OnFragmentInteractionListener, 
-BasicBSONCallback, JSONCallback, CustomErrorListener{
+CustomBasicBSONCallback, CustomJSONCallback, CustomErrorListener{
 
 	
 	private TextView forgottenAccountLink;
@@ -94,18 +95,12 @@ BasicBSONCallback, JSONCallback, CustomErrorListener{
 	private void sendLogin(){
 		boolean isInputsValide = (this.loginInputFragment.isInputValide() && this.passwordInputFragment.isInputValide());
 		if(isInputsValide){
-			String url = "http://10.0.2.2:8080/_SERVEUR/Login";
-			//String url = "http://88.186.76.236/_SERVEUR/Login";
-			JsonHttpRequest request = new JsonHttpRequest("PUT", url, this);
 			Log.i("ACTION","CLICKED");
-			//String url = "http://train.sandbox.eutech-ssii.com/messenger/login.php?email="+loginInputFragment.getValue()+"&password="+passwordInputFragment.getValue();
-			request.putParam("email", loginInputFragment.getValue());
-			request.putParam("pass", passwordInputFragment.getValue());
-			request.execute();
+			ServerHelper.logUser(loginInputFragment.getValue(), passwordInputFragment.getValue(), ServerHelper.JSON_REQUEST, this);
 		}
 	}
 	
-	public void showErrorMessage(String title, String message){
+	public void showCustomErrorMessage(String title, String message){
 		new AlertDialog.Builder(this)
 		.setTitle(title)
 		.setMessage(message)
@@ -122,10 +117,15 @@ BasicBSONCallback, JSONCallback, CustomErrorListener{
 	@Override
 	public Object call(BasicBSONObject bsonResponse) {
 		this.connexionBtnFragment.hideLoader();
-		if(bsonResponse.containsField("token")){
+		Log.i("REQUEST", bsonResponse.toString());
+		if(bsonResponse.containsField(ServerHelper.SERVER_TOKEN_KEY)){
 			Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
-			loadWallet.putExtra("token", (String) bsonResponse.get("token"));
-			startActivity(loadWallet);
+			Bundle session = new Bundle();
+			session.putString(ServerHelper.SERVER_TOKEN_KEY, bsonResponse.getString(ServerHelper.SERVER_TOKEN_KEY));
+			session.putString(ServerHelper.SERVER_EMAIL_KEY, bsonResponse.getString(ServerHelper.SERVER_EMAIL_KEY));
+			session.putString(ServerHelper.SERVER_TAG_KEY, bsonResponse.getString(ServerHelper.SERVER_TAG_KEY));			
+			loadWallet.putExtra("session", session);
+			//startActivity(loadWallet);
 		}
 		return null;
 	}
@@ -134,15 +134,22 @@ BasicBSONCallback, JSONCallback, CustomErrorListener{
 	@Override
 	public Object call(JSONObject jsonResponse) {
 		this.connexionBtnFragment.hideLoader();
-		if(jsonResponse.has("token")){
+		Log.i("REQUEST", jsonResponse.toString());
+		if(jsonResponse.has(ServerHelper.SERVER_TOKEN_KEY) 
+				&& jsonResponse.has(ServerHelper.SERVER_EMAIL_KEY)){
 			Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
+			Bundle session = new Bundle();
 			try {
-				loadWallet.putExtra("token", jsonResponse.getString("token"));
+				session.putString(ServerHelper.SERVER_TOKEN_KEY, jsonResponse.getString(ServerHelper.SERVER_TOKEN_KEY));
+				session.putString(ServerHelper.SERVER_EMAIL_KEY, jsonResponse.getString(ServerHelper.SERVER_EMAIL_KEY));
+				session.putString(ServerHelper.SERVER_TAG_KEY, jsonResponse.getString(ServerHelper.SERVER_TAG_KEY));
+				loadWallet.putExtra("session", session);
+				startActivity(loadWallet);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			startActivity(loadWallet);
+
 		}
 		return null;
 	}
@@ -155,7 +162,7 @@ BasicBSONCallback, JSONCallback, CustomErrorListener{
 	@Override
 	public void onError(Bundle errorObject) {
 		this.connexionBtnFragment.hideLoader();
-		this.showErrorMessage(errorObject.getString(ErrorHelper.ERROR_TITLE_KEY), 
+		this.showCustomErrorMessage(errorObject.getString(ErrorHelper.ERROR_TITLE_KEY), 
 				errorObject.getString(ErrorHelper.ERROR_MSG_KEY));
 	}
 }

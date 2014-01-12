@@ -2,7 +2,7 @@ package fr.utt.if26.uttcoins.fragment;
 
 import fr.utt.if26.uttcoins.R;
 import fr.utt.if26.uttcoins.model.Transaction;
-import fr.utt.if26.uttcoins.utils.UserHelper;
+import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -79,7 +79,7 @@ public class PaymentConfirmationDialogFragment extends DialogFragment{
 		this.transactionAmountText.setText(Integer.toString(transactionAmount));
 		//if(this.transactionReceiver != null)
 			this.receiverNameText.setText(transactionReceiver);
-    	this.accountBalanceText.setText(Integer.toString(UserHelper.getAccountBalance() - transactionAmount));
+    	this.accountBalanceText.setText(Integer.toString(100 - transactionAmount));
     }
     
     @Override
