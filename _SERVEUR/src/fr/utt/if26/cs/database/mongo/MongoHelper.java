@@ -79,10 +79,15 @@ public class MongoHelper implements DatabaseHelper {
 		else
 			obj.put(key, value);
 		DBCursor cursor = this.collection.find(obj);
-		if(cursor.hasNext())
-			return (BSONObject) cursor.next();
-		else
+		if(cursor.hasNext()){
+			BSONObject res = (BSONObject) cursor.next();
+			cursor.close();
+			return res;
+		}
+		else{
+			cursor.close();
 			return null;
+		}
 	}
 
 	@Override
