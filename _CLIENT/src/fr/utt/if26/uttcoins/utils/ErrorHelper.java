@@ -10,6 +10,7 @@ import fr.utt.if26.uttcoins.error.CustomFieldMissingInRequestException;
 import fr.utt.if26.uttcoins.error.CustomServerException;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 
 public class ErrorHelper {
 	
@@ -38,6 +39,8 @@ public class ErrorHelper {
 				+ "\n Si le problème persiste, le problème vient peut être du serveur. ";
 		putError(NoHttpResponseException.class, networkUnknowErrorTitle, networkUnknowErrorMsg);
 		putError(CustomServerException.class, CustomServerException.getErrorTitle(), CustomServerException.getErrorMessage());
+		putError(CustomAuthException.class, CustomAuthException.getErrorTitle(), CustomAuthException.getErrorMessage());
+		putError(CustomFieldMissingInRequestException.class, CustomFieldMissingInRequestException.getErrorTitle(), CustomFieldMissingInRequestException.getErrorMessage());
 	}
 	
 	private static void initCustomErrorMap(){
@@ -55,6 +58,7 @@ public class ErrorHelper {
 		//lazy implementation
 		CustomServerException serveur_exception = null;
 		try {
+			Log.i("ERROR", error_tag);
 			serveur_exception = CUSTOM_ERROR_MAP.get(error_tag).getConstructor().newInstance();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
