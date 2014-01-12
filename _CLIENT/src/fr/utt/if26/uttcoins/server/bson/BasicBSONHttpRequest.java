@@ -43,13 +43,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
-public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
+public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONObject> {
 
 	//params for non enclosing entity request (GET, DELETE)
 	private BasicHttpParams httpParams;
 	//params for enclonsing entity request (POST, PUT)
 	private BasicBSONObject bsonParams;
-	private BsonCallback bsonCallback;
+	private BasicBSONCallback bsonCallback;
 	private String method, url;
 	private HttpRequestBase request;
 	private HttpResponse response;
@@ -70,7 +70,7 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 		}
 	}
 	
-	public BsonHttpRequest(String method, String url, BsonCallback callback){
+	public BasicBSONHttpRequest(String method, String url, BasicBSONCallback callback){
 		this.httpParams = new BasicHttpParams();
 		this.bsonParams = new BasicBSONObject();
 		this.client = new DefaultHttpClient();
@@ -88,7 +88,7 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 	}
 	
 	@Override
-	protected BSONObject doInBackground(String... args){
+	protected BasicBSONObject doInBackground(String... args){
 		Log.i("REQUEST", "PREPARING with method = " + method+" and url = "+url);
 		Log.i("REQUEST",  "MedthodClass : " + methodClasses.get(method).toString());
 		try {
@@ -110,7 +110,7 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 	}
 	
 	@Override
-	protected void onPostExecute(BSONObject result){
+	protected void onPostExecute(BasicBSONObject result){
 		if(this.bsonCallback != null){
 			this.clearBsonParams();
 			if(!this.error){
@@ -129,7 +129,9 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 				//set the body as json
 				HttpEntityEnclosingRequest entityEnclosingRequest = (HttpEntityEnclosingRequest) this.request;
 				try {
-					entityEnclosingRequest.setEntity(new StringEntity(BsonHandler.encodeBSONObjectToString(this.bsonParams), "UTF-8"));
+					String stringBson = BsonHandler.encodeBSONObjectToString(this.bsonParams);
+					Log.i("REQEST", "BSON body = "+stringBson);
+					entityEnclosingRequest.setEntity(new StringEntity(stringBson, "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
 					throw e;
 				}

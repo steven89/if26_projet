@@ -1,6 +1,6 @@
 package fr.utt.if26.uttcoins;
 
-import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
 import org.json.JSONObject;
 
 import fr.utt.if26.uttcoins.error.CustomErrorListener;
@@ -11,8 +11,8 @@ import fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormInputFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormSimpleInputFragment;
-import fr.utt.if26.uttcoins.server.bson.BsonCallback;
-import fr.utt.if26.uttcoins.server.bson.BsonHttpRequest;
+import fr.utt.if26.uttcoins.server.bson.BasicBSONCallback;
+import fr.utt.if26.uttcoins.server.bson.BasicBSONHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,7 +32,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 
 public class SignupActivity extends ActionBarActivity implements OnFragmentInteractionListener, 
-BsonCallback, CustomErrorListener{
+BasicBSONCallback, CustomErrorListener{
 
 	private FormSimpleInputFragment nameInput, firstNameInput, tagInput;
 	private FormEmailFragment emailInput; 
@@ -102,7 +102,7 @@ BsonCallback, CustomErrorListener{
 		if(this.isFormValide()){
 			//String url = "http://10.0.2.2:8080/_SERVEUR/User";
 			String url = "http://88.186.76.236/_SERVEUR/User";
-			BsonHttpRequest request = new BsonHttpRequest("POST", url, this);
+			BasicBSONHttpRequest request = new BasicBSONHttpRequest("POST", url, this);
 	        request.putParam("nom", this.nameInput.getValue());
 			request.putParam("prenom", this.firstNameInput.getValue());
 			request.putParam("email", this.emailInput.getValue());
@@ -173,7 +173,7 @@ BsonCallback, CustomErrorListener{
 	}
 
 	@Override
-	public Object call(BSONObject bsonResponse) {
+	public Object call(BasicBSONObject bsonResponse) {
 		this.signUpBtn.hideLoader();
 		NavUtils.navigateUpFromSameTask(this);
 		return null;
