@@ -11,7 +11,7 @@ import fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment;
 import fr.utt.if26.uttcoins.server.bson.BasicBSONCallback;
 import fr.utt.if26.uttcoins.server.bson.BasicBSONHttpRequest;
-import fr.utt.if26.uttcoins.server.json.JsonCallback;
+import fr.utt.if26.uttcoins.server.json.JSONCallback;
 import fr.utt.if26.uttcoins.server.json.JsonHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
 import android.net.Uri;
@@ -36,7 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class LoginActivity extends ActionBarActivity implements OnFragmentInteractionListener, 
-BasicBSONCallback, JsonCallback, CustomErrorListener{
+BasicBSONCallback, JSONCallback, CustomErrorListener{
 
 	
 	private TextView forgottenAccountLink;

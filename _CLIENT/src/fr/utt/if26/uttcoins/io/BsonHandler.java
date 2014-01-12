@@ -22,7 +22,7 @@ public class BsonHandler {
 		'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 
 		'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
-	public static BasicBSONObject readBSONResponse(InputStream stream) 
+	public static BasicBSONObject readResponse(InputStream stream) 
 			throws CustomServerException, JSONException, IOException{
 		BasicBSONObject bsonResponse;
 		String lineRead = "";
@@ -35,20 +35,20 @@ public class BsonHandler {
 		} catch (IOException e) {
 			throw e;
 		}
-		bsonResponse = decodeBSONResponse(stringResponse.toString());
+		bsonResponse = decodeResponseBody(stringResponse.toString());
 		if(bsonResponse.containsField("error")){
 			throw ErrorHelper.getCustomServerException(bsonResponse.getString("error"));
 		}
 		return bsonResponse;
 	}
 	
-	public static String encodeBSONObjectToString(BSONObject bsonObject){
-		byte[] byteResponse = BSON.encode(bsonObject);
-		String StringResponse = "";
-		for(int i = 0; i < byteResponse.length; i++){
-			StringResponse += Byte.toString(byteResponse[i]) + getRandomChar(DEFAULT_ENCODING_CHAR_TABLE);
+	public static String encodeRequestBody(BSONObject bsonRequestBody){
+		byte[] byteRequestBody = BSON.encode(bsonRequestBody);
+		String stringRequestBody = "";
+		for(int i = 0; i < byteRequestBody.length; i++){
+			stringRequestBody += Byte.toString(byteRequestBody[i]) + getRandomChar(DEFAULT_ENCODING_CHAR_TABLE);
 		}
-		return StringResponse;
+		return stringRequestBody;
 	}
 	
 	protected static char getRandomChar(char[] charTable){
@@ -56,18 +56,18 @@ public class BsonHandler {
 		return charTable[i];
 	}
 
-	protected static BasicBSONObject decodeBSONResponse(String encodedResponse){
-		BasicBSONObject bsonResponse;
-		Log.i("DECODE BSON", "encodedresponse = "+encodedResponse);
-		String[] chunks = encodedResponse.split("[a-zA-Z]");
-		byte[] decodedByteResponse = new byte[chunks.length];
+	protected static BasicBSONObject decodeResponseBody(String encodedResponseBody){
+		BasicBSONObject bsonResponseBody;
+		Log.i("DECODE BSON", "encodedresponse = "+encodedResponseBody);
+		String[] chunks = encodedResponseBody.split("[a-zA-Z]");
+		byte[] byteDecodedResponseBody = new byte[chunks.length];
 		for(int i = 0; i < chunks.length; i++){
 			Log.i("DECODE BSON", "chunks["+Integer.toString(i)+"] = "+chunks[i]);
-			decodedByteResponse[i] = Byte.valueOf(chunks[i]);
+			byteDecodedResponseBody[i] = Byte.valueOf(chunks[i]);
 		}
 		BSONDecoder decoder = new BasicBSONDecoder();
-		bsonResponse = (BasicBSONObject) decoder.readObject(decodedByteResponse);
-		return bsonResponse;
+		bsonResponseBody = (BasicBSONObject) decoder.readObject(byteDecodedResponseBody);
+		return bsonResponseBody;
 	}
 }
 

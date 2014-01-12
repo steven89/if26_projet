@@ -100,7 +100,7 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 			Log.i("REQUEST", "EXECUTING");
 			this.response = client.execute(request);
 			Log.i("REQUEST", "READING");
-			return BsonHandler.readBSONResponse(this.response.getEntity().getContent());
+			return BsonHandler.readResponse(this.response.getEntity().getContent());
 		}catch (Exception e) {
 			e.printStackTrace();
 			this.error = true;
@@ -129,7 +129,7 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 				//set the body as json
 				HttpEntityEnclosingRequest entityEnclosingRequest = (HttpEntityEnclosingRequest) this.request;
 				try {
-					String stringBson = BsonHandler.encodeBSONObjectToString(this.bsonParams);
+					String stringBson = BsonHandler.encodeRequestBody(this.bsonParams);
 					Log.i("REQEST", "BSON body = "+stringBson);
 					entityEnclosingRequest.setEntity(new StringEntity(stringBson, "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
