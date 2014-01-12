@@ -51,7 +51,7 @@ public class BsonHandler {
 	}
 	
 	protected static char getRandomChar(char[] charTable){
-		int i = (int) Math.round(Math.random() * charTable.length); 
+		int i = (int) Math.round(Math.random() * (charTable.length-1)); 
 		return charTable[i];
 	}
 
