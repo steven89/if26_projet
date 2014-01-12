@@ -3,6 +3,7 @@ package fr.utt.if26.uttcoins;
 import org.bson.BSONObject;
 import org.json.JSONObject;
 
+import fr.utt.if26.uttcoins.error.CustomErrorListener;
 import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
 import fr.utt.if26.uttcoins.fragment.TransactionListFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormButtonFragment;
@@ -10,10 +11,9 @@ import fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormInputFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormSimpleInputFragment;
+import fr.utt.if26.uttcoins.server.bson.BsonCallback;
+import fr.utt.if26.uttcoins.server.bson.BsonHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
-import fr.utt.if26.uttcoins.utils.HttpRequestErrorListener;
-import fr.utt.if26.uttcoins.utils.BsonCallback;
-import fr.utt.if26.uttcoins.utils.BsonHttpRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -32,7 +32,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 
 public class SignupActivity extends ActionBarActivity implements OnFragmentInteractionListener, 
-BsonCallback, HttpRequestErrorListener{
+BsonCallback, CustomErrorListener{
 
 	private FormSimpleInputFragment nameInput, firstNameInput, tagInput;
 	private FormEmailFragment emailInput; 

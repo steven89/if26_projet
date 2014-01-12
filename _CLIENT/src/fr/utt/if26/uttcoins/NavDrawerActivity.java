@@ -7,8 +7,8 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import fr.utt.if26.uttcoins.adapter.NavDrawerContentListAdapter;
 import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
-import fr.utt.if26.uttcoins.utils.NavDrawerContentListAdapter;
 import fr.utt.if26.uttcoins.utils.UserHelper;
 import android.app.Activity;
 import android.app.ActivityManager;

@@ -3,14 +3,14 @@ package fr.utt.if26.uttcoins;
 import org.bson.BSONObject;
 import org.json.JSONObject;
 
+import fr.utt.if26.uttcoins.error.CustomErrorListener;
 import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormButtonFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment;
+import fr.utt.if26.uttcoins.server.bson.BsonCallback;
+import fr.utt.if26.uttcoins.server.bson.BsonHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
-import fr.utt.if26.uttcoins.utils.HttpRequestErrorListener;
-import fr.utt.if26.uttcoins.utils.BsonCallback;
-import fr.utt.if26.uttcoins.utils.BsonHttpRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -33,7 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class LoginActivity extends ActionBarActivity implements OnFragmentInteractionListener, 
-BsonCallback, HttpRequestErrorListener{
+BsonCallback, CustomErrorListener{
 
 	
 	private TextView forgottenAccountLink;
@@ -78,7 +78,7 @@ BsonCallback, HttpRequestErrorListener{
 		Log.v("CLICK", "click on : "+uri.toString());
 		switch((Integer.parseInt(uri.getFragment()))){
 			case R.id.form_submit_btn :
-				this.login();
+				this.sendLogin();
 				break;
 		}
 	}
@@ -88,7 +88,7 @@ BsonCallback, HttpRequestErrorListener{
 		startActivity(loadSuActivity);		
 	}
 	
-	private void login(){
+	private void sendLogin(){
 		boolean isInputsValide = (this.loginInputFragment.isInputValide() && this.passwordInputFragment.isInputValide());
 		if(isInputsValide){
 			//String url = "http://10.0.2.2:8080/_SERVEUR/Login";
@@ -118,15 +118,11 @@ BsonCallback, HttpRequestErrorListener{
 	
 	@Override
 	public Object call(BSONObject bsonResponse) {
-		try {
-			this.connexionBtnFragment.hideLoader();
-			if(bsonResponse.containsField("token")){
-				Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
-				loadWallet.putExtra("token", (String) bsonResponse.get("token"));
-				startActivity(loadWallet);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		this.connexionBtnFragment.hideLoader();
+		if(bsonResponse.containsField("token")){
+			Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
+			loadWallet.putExtra("token", (String) bsonResponse.get("token"));
+			startActivity(loadWallet);
 		}
 		return null;
 	}

@@ -1,4 +1,4 @@
-package fr.utt.if26.uttcoins.utils;
+package fr.utt.if26.uttcoins.server.bson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,6 +35,7 @@ import org.json.JSONObject;
 
 import fr.utt.if26.uttcoins.error.CustomServerException;
 import fr.utt.if26.uttcoins.io.BsonHandler;
+import fr.utt.if26.uttcoins.utils.ErrorHelper;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

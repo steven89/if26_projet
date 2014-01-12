@@ -1,4 +1,4 @@
-package fr.utt.if26.uttcoins.utils;
+package fr.utt.if26.uttcoins.server.json;
 
 import org.json.JSONObject;
 

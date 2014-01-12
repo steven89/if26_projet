@@ -1,4 +1,4 @@
-package fr.utt.if26.uttcoins.utils;
+package fr.utt.if26.uttcoins.server.json;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -23,6 +23,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import fr.utt.if26.uttcoins.io.JSONHandler;
+import fr.utt.if26.uttcoins.utils.ErrorHelper;
 
 @Deprecated
 public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
