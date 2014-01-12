@@ -173,7 +173,7 @@ BsonCallback, HttpRequestErrorListener{
 	}
 
 	@Override
-	public BSONObject call(BSONObject bsonResponse) {
+	public Object call(BSONObject bsonResponse) {
 		this.signUpBtn.hideLoader();
 		NavUtils.navigateUpFromSameTask(this);
 		return null;

@@ -117,7 +117,7 @@ BsonCallback, HttpRequestErrorListener{
 	}
 	
 	@Override
-	public BSONObject call(BSONObject bsonResponse) {
+	public Object call(BSONObject bsonResponse) {
 		try {
 			this.connexionBtnFragment.hideLoader();
 			if(bsonResponse.containsField("token")){
