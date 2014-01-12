@@ -1,5 +1,7 @@
 package fr.utt.if26.uttcoins.error;
 
+import android.text.style.SuperscriptSpan;
+
 public class CustomFieldMissingInRequestException extends CustomServerException {
 
 	public static String getErrorTitle(){

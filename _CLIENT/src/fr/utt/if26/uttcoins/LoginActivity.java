@@ -1,16 +1,19 @@
 package fr.utt.if26.uttcoins;
 
-import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import fr.utt.if26.uttcoins.error.CustomErrorListener;
 import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormButtonFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment;
+import fr.utt.if26.uttcoins.server.bson.BasicBSONCallback;
+import fr.utt.if26.uttcoins.server.bson.BasicBSONHttpRequest;
+import fr.utt.if26.uttcoins.server.json.JSONCallback;
+import fr.utt.if26.uttcoins.server.json.JsonHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
-import fr.utt.if26.uttcoins.utils.HttpRequestErrorListener;
-import fr.utt.if26.uttcoins.utils.BsonCallback;
-import fr.utt.if26.uttcoins.utils.BsonHttpRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -33,7 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class LoginActivity extends ActionBarActivity implements OnFragmentInteractionListener, 
-BsonCallback, HttpRequestErrorListener{
+BasicBSONCallback, JSONCallback, CustomErrorListener{
 
 	
 	private TextView forgottenAccountLink;
@@ -78,7 +81,7 @@ BsonCallback, HttpRequestErrorListener{
 		Log.v("CLICK", "click on : "+uri.toString());
 		switch((Integer.parseInt(uri.getFragment()))){
 			case R.id.form_submit_btn :
-				this.login();
+				this.sendLogin();
 				break;
 		}
 	}
@@ -88,12 +91,12 @@ BsonCallback, HttpRequestErrorListener{
 		startActivity(loadSuActivity);		
 	}
 	
-	private void login(){
+	private void sendLogin(){
 		boolean isInputsValide = (this.loginInputFragment.isInputValide() && this.passwordInputFragment.isInputValide());
 		if(isInputsValide){
-			//String url = "http://10.0.2.2:8080/_SERVEUR/Login";
-			String url = "http://88.186.76.236/_SERVEUR/Login";
-			BsonHttpRequest request = new BsonHttpRequest("PUT", url, this);
+			String url = "http://10.0.2.2:8080/_SERVEUR/Login";
+			//String url = "http://88.186.76.236/_SERVEUR/Login";
+			JsonHttpRequest request = new JsonHttpRequest("PUT", url, this);
 			Log.i("ACTION","CLICKED");
 			//String url = "http://train.sandbox.eutech-ssii.com/messenger/login.php?email="+loginInputFragment.getValue()+"&password="+passwordInputFragment.getValue();
 			request.putParam("email", loginInputFragment.getValue());
@@ -117,16 +120,29 @@ BsonCallback, HttpRequestErrorListener{
 	}
 	
 	@Override
-	public BSONObject call(BSONObject bsonResponse) {
-		try {
-			this.connexionBtnFragment.hideLoader();
-			if(bsonResponse.containsField("token")){
-				Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
-				loadWallet.putExtra("token", (String) bsonResponse.get("token"));
-				startActivity(loadWallet);
+	public Object call(BasicBSONObject bsonResponse) {
+		this.connexionBtnFragment.hideLoader();
+		if(bsonResponse.containsField("token")){
+			Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
+			loadWallet.putExtra("token", (String) bsonResponse.get("token"));
+			startActivity(loadWallet);
+		}
+		return null;
+	}
+	
+
+	@Override
+	public Object call(JSONObject jsonResponse) {
+		this.connexionBtnFragment.hideLoader();
+		if(jsonResponse.has("token")){
+			Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
+			try {
+				loadWallet.putExtra("token", jsonResponse.getString("token"));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			startActivity(loadWallet);
 		}
 		return null;
 	}

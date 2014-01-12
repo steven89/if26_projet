@@ -1,4 +1,4 @@
-package fr.utt.if26.uttcoins.utils;
+package fr.utt.if26.uttcoins.server.bson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,14 +24,18 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
+import org.bson.BSON;
 import org.bson.BSONDecoder;
 import org.bson.BSONObject;
 import org.bson.BasicBSONDecoder;
+import org.bson.BasicBSONEncoder;
 import org.bson.BasicBSONObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.utt.if26.uttcoins.error.CustomServerException;
+import fr.utt.if26.uttcoins.io.BsonHandler;
+import fr.utt.if26.uttcoins.utils.ErrorHelper;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -39,13 +43,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
-public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
+public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONObject> {
 
 	//params for non enclosing entity request (GET, DELETE)
 	private BasicHttpParams httpParams;
 	//params for enclonsing entity request (POST, PUT)
-	private JSONObject jsonParams;
-	private BsonCallback bsonCallback;
+	private BasicBSONObject bsonParams;
+	private BasicBSONCallback bsonCallback;
 	private String method, url;
 	private HttpRequestBase request;
 	private HttpResponse response;
@@ -66,9 +70,9 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 		}
 	}
 	
-	public BsonHttpRequest(String method, String url, BsonCallback callback){
+	public BasicBSONHttpRequest(String method, String url, BasicBSONCallback callback){
 		this.httpParams = new BasicHttpParams();
-		this.jsonParams = new JSONObject();
+		this.bsonParams = new BasicBSONObject();
 		this.client = new DefaultHttpClient();
 		this.method = method;
 		this.url = url;
@@ -84,19 +88,19 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 	}
 	
 	@Override
-	protected BSONObject doInBackground(String... args){
+	protected BasicBSONObject doInBackground(String... args){
 		Log.i("REQUEST", "PREPARING with method = " + method+" and url = "+url);
 		Log.i("REQUEST",  "MedthodClass : " + methodClasses.get(method).toString());
 		try {
 			this.request = methodClasses.get(this.method).getConstructor(String.class).newInstance(url);
-			Log.i("REQUEST", "email = "+(String)this.jsonParams.get("email")
-					+" pass = "+(String)this.jsonParams.get("pass"));
-			this.loadParams();
+			Log.i("REQUEST", "email = "+this.bsonParams.getString("email")
+					+" pass = "+this.bsonParams.getString("pass"));
+			//this.loadJSONParams();
+			this.loadBSONParams();
 			Log.i("REQUEST", "EXECUTING");
 			this.response = client.execute(request);
 			Log.i("REQUEST", "READING");
-	        //return this.readResponse(this.response.getEntity().getContent());		
-			return this.readBSONResponse(this.response.getEntity().getContent());
+			return BsonHandler.readResponse(this.response.getEntity().getContent());
 		}catch (Exception e) {
 			e.printStackTrace();
 			this.error = true;
@@ -106,9 +110,9 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 	}
 	
 	@Override
-	protected void onPostExecute(BSONObject result){
+	protected void onPostExecute(BasicBSONObject result){
 		if(this.bsonCallback != null){
-			this.clearParams();
+			this.clearBsonParams();
 			if(!this.error){
 				this.bsonCallback.call(result);
 			}else{
@@ -117,7 +121,7 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 		}
 	}
 	
-	protected void loadParams() {
+	protected void loadBSONParams() throws UnsupportedEncodingException{
 		//if the request is set
 		if(this.request!=null){
 			//if body request can be set
@@ -125,12 +129,13 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 				//set the body as json
 				HttpEntityEnclosingRequest entityEnclosingRequest = (HttpEntityEnclosingRequest) this.request;
 				try {
-					entityEnclosingRequest.setEntity(new StringEntity(this.jsonParams.toString(), "UTf8"));
+					String stringBson = BsonHandler.encodeRequestBody(this.bsonParams);
+					Log.i("REQEST", "BSON body = "+stringBson);
+					entityEnclosingRequest.setEntity(new StringEntity(stringBson, "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw e;
 				}
-				entityEnclosingRequest.setHeader("Content-type", "application/json");
+				entityEnclosingRequest.setHeader("Content-type", "application/bson");
 			//else
 			}else{
 				//send basic http request
@@ -140,9 +145,9 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 	}
 
 	public void setParams(Map<String, Object> paramMap){
-		this.clearParams();
+		this.clearBsonParams();
 		if(this.method=="PUT" || this.method=="POST"){
-			this.setJSONParams(paramMap);
+			this.setBSONParams(paramMap);
 		}else{
 			this.setHttpParams(paramMap);
 		}
@@ -150,29 +155,28 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 	
 	public void putParam(String key, Object value){
 		if(this.method=="PUT" || this.method=="POST"){
-			this.putJSONParam(key, value);
+			this.putBSONParam(key, value);
 		}else{
 			this.putHttpParam(key, value);
 		}
 	}
-	
-	protected void putJSONParam(String key, Object value){
-		try {
-			this.jsonParams.put(key, value);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+	protected void putBSONParam(String key, Object value){
+			this.bsonParams.put(key, value);
 	}
 
 	protected void putHttpParam(String key, Object value){
 		this.httpParams.setParameter(key, value);
 	}
 	
-	protected void setJSONParams(Map<String, Object> paramMap){
+	protected void setBSONParams(Map<String, Object> paramMap){
 		for(String key : paramMap.keySet()){
-			this.putJSONParam(key, paramMap.get(key));
+			this.putBSONParam(key, paramMap.get(key));
 		}
+	}
+	
+	protected void setBSONParams(BasicBSONObject bsonParams){
+		this.bsonParams = bsonParams;
 	}
 	
 	protected void setHttpParams(Map<String, Object> paramMap){
@@ -181,84 +185,14 @@ public class BsonHttpRequest extends AsyncTask<String, Integer, BSONObject> {
 		}
 	}
 	
-	protected void setJSONParams(JSONObject jsonParams){
-		this.jsonParams = jsonParams;
-	}
-	
 	protected void setHttpParams(HttpParams httpParams){
 		this.httpParams = (BasicHttpParams) httpParams;
 	}
-	
-	protected void clearParams(){
+		
+	protected void clearBsonParams(){
 		this.httpParams.clear();
 		//thx garbage collector <3 (screw you memory)
 		this.httpParams = new BasicHttpParams();
-		//just to be sure ...
-		if(this.jsonParams==null)
-			this.jsonParams = new JSONObject();
-	}
-	
-	@Deprecated
-	protected JSONObject readResponse(InputStream stream) 
-			throws CustomServerException, JSONException, IOException{
-		String lineRead = "";
-		StringBuilder stringResponse = new StringBuilder();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-		JSONObject JsonResponse;
-		try {
-			while((lineRead = reader.readLine())!=null){
-				stringResponse.append(lineRead);
-			}
-		} catch (IOException e) {
-			throw e;
-		}
-		Log.i("STRING RESPONSE", stringResponse.toString());
-		JsonResponse = this.JSONParse(stringResponse.toString());
-		if(JsonResponse.has("error")){
-			throw ErrorHelper.getCustomServerException(JsonResponse.getString("error"));
-		}
-		return JsonResponse;
-	}
-	
-	protected BSONObject readBSONResponse(InputStream stream) 
-			throws CustomServerException, JSONException, IOException{
-		BSONObject bsonResponse;
-		String lineRead = "";
-		StringBuilder stringResponse = new StringBuilder();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-		try {
-			while((lineRead = reader.readLine())!=null){
-				stringResponse.append(lineRead);
-			}
-		} catch (IOException e) {
-			throw e;
-		}
-		bsonResponse = this.decodeBSONResponse(stringResponse.toString());
-		if(bsonResponse.containsField("error")){
-			throw ErrorHelper.getCustomServerException((String) bsonResponse.get("error"));
-		}
-		return bsonResponse;
-	}
-	
-	protected BSONObject decodeBSONResponse(String encodedResponse){
-		BSONObject bsonResponse;
-		String[] chunks = encodedResponse.split("[a-zA-Z]");
-		byte[] decodedByteResponse = new byte[chunks.length];
-		for(int i = 0; i < chunks.length; i++){
-			decodedByteResponse[i] = Byte.valueOf(chunks[i]);
-		}
-		BSONDecoder decoder = new BasicBSONDecoder();
-		bsonResponse = (BasicBSONObject) decoder.readObject(decodedByteResponse);
-		return bsonResponse;
-	}
-	
-	protected JSONObject JSONParse(String jsonString){
-		JSONObject jsonResponse = new JSONObject();
-		try {
-			jsonResponse = new JSONObject(jsonString);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return jsonResponse;
+		this.bsonParams = new BasicBSONObject();
 	}
 }

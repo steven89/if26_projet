@@ -3,13 +3,12 @@ package fr.utt.if26.uttcoins;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import fr.utt.if26.uttcoins.adapter.NavDrawerContentListAdapter;
 import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
-import fr.utt.if26.uttcoins.utils.NavDrawerContentListAdapter;
 import fr.utt.if26.uttcoins.utils.UserHelper;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -19,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -69,7 +69,7 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 		String userToken = (extras!=null) ? extras.getString("token") : null;
 		if(userToken != null && userToken.length() > 0)
 			//on set le token de session
-			UserHelper.setSession(userToken);
+			UserHelper.setSession(userToken, null);
 		setContentView(R.layout.activity_default_nav_drawer);
 		this.onCreateNavigationDrawer();
 		this.initInnerContentLayout((ViewGroup) findViewById(R.id.content_layout));
@@ -274,6 +274,7 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 		//autres trucs ?
 	}
 	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	protected void logout(){
 		UserHelper.logout();
 		Intent loadLogin = new Intent(getApplicationContext(), LoginActivity.class);

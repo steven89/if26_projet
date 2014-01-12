@@ -1,4 +1,4 @@
-package fr.utt.if26.uttcoins.utils;
+package fr.utt.if26.uttcoins.adapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
