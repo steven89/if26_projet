@@ -9,6 +9,7 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
 import com.mongodb.util.JSON;
+import com.mongodb.util.JSONParseException;
 
 public class ServletUtils {
 	
@@ -61,7 +62,12 @@ public class ServletUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		BasicBSONObject jsonParams = (BasicBSONObject) JSON.parse(params);
-		return jsonParams;
+		try{
+			BasicBSONObject jsonParams = (BasicBSONObject) JSON.parse(params);
+			return jsonParams;
+		} catch (JSONParseException e){
+			return new BasicBSONObject();
+		}
+		
 	}
 }

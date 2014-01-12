@@ -18,6 +18,7 @@ import fr.utt.if26.cs.io.BsonEcho;
 import fr.utt.if26.cs.io.Echo;
 import fr.utt.if26.cs.io.JsonEcho;
 import fr.utt.if26.cs.model.LoginManager;
+import fr.utt.if26.cs.utils.ServletUtils;
 
 /**
  * Servlet implementation class Logout
@@ -46,12 +47,7 @@ public class LogoutServlet extends HttpServlet {
 	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Echo out = new BsonEcho(response.getWriter());
-		String paramStr = "";
-		String line = "";
-		while((line = request.getReader().readLine()) != null){
-			paramStr += line;
-		}
-		BSONObject params = (BasicBSONObject) JSON.parse(paramStr);
+		BSONObject params = ServletUtils.extractRequestData(ServletUtils.PUT, request);
 		try {
 			String logInfos = LoginManager.logOut(params);
 			if(logInfos.contains("ok"))
