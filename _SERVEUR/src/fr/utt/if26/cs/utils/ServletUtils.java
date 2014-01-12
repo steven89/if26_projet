@@ -43,10 +43,14 @@ public class ServletUtils {
 	private static BasicBSONObject extractGetRequestData(HttpServletRequest request){
 		try{
 			String query = request.getQueryString();
-			query = query.replaceAll("(%22|%27)", "\"");
-			query = query.replaceAll("%20", " ");
-			BasicBSONObject params = (BasicBSONObject) JSON.parse(query);
-			return params;
+			if(query!=null){
+				query = query.replaceAll("(%22|%27)", "\"");
+				query = query.replaceAll("%20", " ");
+				BasicBSONObject params = (BasicBSONObject) JSON.parse(query);
+				return params;
+			}
+			else
+				return new BasicBSONObject();
 		} catch (JSONParseException e){
 			return new BasicBSONObject();
 		}
