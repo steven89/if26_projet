@@ -16,12 +16,19 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
+import org.bson.BSON;
+import org.bson.BasicBSONCallback;
+import org.bson.BasicBSONObject;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.mongodb.util.JSON;
+import com.mongodb.util.JSONSerializers;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import fr.utt.if26.uttcoins.io.BsonHandler;
 import fr.utt.if26.uttcoins.io.JSONHandler;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
 
@@ -31,7 +38,7 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 		private BasicHttpParams httpParams;
 		//params for enclonsing entity request (POST, PUT)
 		private JSONObject jsonParams;
-		private JsonCallback jsonCallback;
+		private JSONCallback jsonCallback;
 		private String method, url;
 		private HttpRequestBase request;
 		private HttpResponse response;
@@ -52,7 +59,7 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 			}
 		}
 		
-		public JsonHttpRequest(String method, String url, JsonCallback callback){
+		public JsonHttpRequest(String method, String url, JSONCallback callback){
 			this.httpParams = new BasicHttpParams();
 			this.jsonParams = new JSONObject();
 			this.client = new DefaultHttpClient();
@@ -82,7 +89,8 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 				Log.i("REQUEST", "EXECUTING");
 				this.response = client.execute(request);
 				Log.i("REQUEST", "READING");
-				return JSONHandler.readResponse(this.response.getEntity().getContent());
+				return new JSONObject(BsonHandler.readResponse(this.response.getEntity().getContent()).toString());
+				//return JSONHandler.readResponse(this.response.getEntity().getContent());
 			}catch (Exception e) {
 				e.printStackTrace();
 				this.error = true;
