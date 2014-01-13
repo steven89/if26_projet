@@ -11,9 +11,11 @@ import fr.utt.if26.uttcoins.fragment.formulaire.FormEmailFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormInputFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPasswordFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormSimpleInputFragment;
+import fr.utt.if26.uttcoins.model.User;
 import fr.utt.if26.uttcoins.server.bson.CustomBasicBSONCallback;
 import fr.utt.if26.uttcoins.server.bson.BasicBSONHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
+import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -109,6 +111,12 @@ CustomBasicBSONCallback, CustomErrorListener{
 //			request.putParam("pass", this.passwordInput.getValue());
 //			request.putParam("tag", this.tagInput.getValue());
 //			request.execute();
+			Bundle userData = User.getFormatedData(this.nameInput.getValue(),
+					this.firstNameInput.getValue(), 
+					this.tagInput.getValue(), 
+					this.emailInput.getValue(), 
+					this.passwordInput.getValue());
+			ServerHelper.signUp(userData, this);
 		}else{
 			this.showInvalidFormMessage();
 		}
@@ -174,8 +182,10 @@ CustomBasicBSONCallback, CustomErrorListener{
 
 	@Override
 	public Object call(BasicBSONObject bsonResponse) {
-		this.signUpBtn.hideLoader();
-		NavUtils.navigateUpFromSameTask(this);
+		if(bsonResponse.getString(ServerHelper.RESQUEST_TAG) == ServerHelper.SIGN_UP_TAG){
+			this.signUpBtn.hideLoader();
+			NavUtils.navigateUpFromSameTask(this);
+		}
 		return null;
 	}
 	

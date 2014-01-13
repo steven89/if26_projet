@@ -1,6 +1,8 @@
 package fr.utt.if26.uttcoins.server.json;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,9 +74,10 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> impl
 			Log.i("REQUEST",  "MedthodClass : " + ServerHelper.REQUEST_MAP.get(method).toString());
 			try {
 				this.request = ServerHelper.REQUEST_MAP.get(this.method).getConstructor(String.class).newInstance(url);
-				Log.i("REQUEST", "params = "+this.jsonParams.toString());
-				//this.loadJSONParams();
 				this.loadParams();
+				//this.loadJSONParams();
+				Log.i("REQUEST", "JsonParams = "+this.jsonParams.toString());
+				Log.i("REQUEST", "httpParams = "+this.request.getParams());
 				Log.i("REQUEST", "EXECUTING");
 				this.response = client.execute(request);
 				Log.i("REQUEST", "READING");
@@ -124,7 +127,14 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> impl
 				//else
 				}else{
 					//send basic http request
-					this.request.setParams(this.httpParams);
+					this.url = this.url + "?" + this.jsonParams.toString();
+					try {
+						//ne fonctionne pas en JSON (il faut échaper les "{" et "}"
+						this.request.setURI(new URI(this.url));
+					} catch (URISyntaxException e) {
+						e.printStackTrace();
+					}
+					//this.request.setParams(this.httpParams);
 				}
 			}
 		}
@@ -159,6 +169,7 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> impl
 		}
 
 		protected void putHttpParam(String key, Object value){
+			Log.i("PARAMS", "{'"+key+"' : '"+value+"'} inserted in httpparams");
 			this.httpParams.setParameter(key, value);
 		}
 		

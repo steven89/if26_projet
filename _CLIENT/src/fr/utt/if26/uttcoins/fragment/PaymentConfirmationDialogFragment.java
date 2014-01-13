@@ -35,12 +35,12 @@ public class PaymentConfirmationDialogFragment extends DialogFragment{
         		.setView(content)
         		.setPositiveButton(R.string.confirm_action_text, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                       listener.onDialogPositiveClick(PaymentConfirmationDialogFragment.this);
+                       listener.onPaymentConfirmationDialogPositiveClick(PaymentConfirmationDialogFragment.this);
                    }
                })
                	.setNegativeButton(R.string.cancel_action_text, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                	   listener.onDialogNegativeClick(PaymentConfirmationDialogFragment.this);
+                	   listener.onPaymentConfirmationDialogNegativeClick(PaymentConfirmationDialogFragment.this);
                    }
                });
         // Create the AlertDialog object and return it
@@ -60,8 +60,8 @@ public class PaymentConfirmationDialogFragment extends DialogFragment{
     }
 
     public interface PaymentConfirmationDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+        public void onPaymentConfirmationDialogPositiveClick(PaymentConfirmationDialogFragment dialog);
+        public void onPaymentConfirmationDialogNegativeClick(PaymentConfirmationDialogFragment dialog);
     }
 
     private void initContent(View contentView, Bundle savedInstanceState){
@@ -78,8 +78,9 @@ public class PaymentConfirmationDialogFragment extends DialogFragment{
 				savedInstanceState.getString(Transaction.TRANSACTION_RECEIVER_KEY): this.transactionReceiver;
 		this.transactionAmountText.setText(Integer.toString(transactionAmount));
 		//if(this.transactionReceiver != null)
-			this.receiverNameText.setText(transactionReceiver);
-    	this.accountBalanceText.setText(Integer.toString(100 - transactionAmount));
+		this.receiverNameText.setText(transactionReceiver);
+		int UserAccountBalance = ServerHelper.getSession().getInt(ServerHelper.SERVER_BALANCE_KEY);
+    	this.accountBalanceText.setText(UserAccountBalance);
     }
     
     @Override
@@ -95,4 +96,12 @@ public class PaymentConfirmationDialogFragment extends DialogFragment{
 		savedInstanceState.putInt(Transaction.TRANSACTION_AMOUNT_KEY, transactionAmountValue);
 		savedInstanceState.putString(Transaction.TRANSACTION_RECEIVER_KEY, this.receiverNameText.getText().toString());
     }
+
+	public String getTransactionReceiver() {
+		return this.transactionReceiver;
+	}
+
+	public int getTransactionAmount() {
+		return this.transactionAmount;
+	}
 }

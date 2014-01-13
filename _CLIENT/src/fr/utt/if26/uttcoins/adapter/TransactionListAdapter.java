@@ -4,9 +4,12 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
+import com.mongodb.ServerError;
+
 import fr.utt.if26.uttcoins.R;
 import fr.utt.if26.uttcoins.model.Transaction;
 import fr.utt.if26.uttcoins.model.TransactionList;
+import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,10 +45,17 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> {
 		this.personName = (TextView) rowView.findViewById(R.id.person_name);
 		this.credit = (TextView) rowView.findViewById(R.id.solde_credit);
 		this.debit = (TextView) rowView.findViewById(R.id.solde_debit);
-		
+		String nameToDisplay;
+		//si le destinataire de la transaction == l'utilisateur
+		if(transaction.getReceiver().equals(ServerHelper.getSession().getString(ServerHelper.SERVER_EMAIL_KEY))){
+			nameToDisplay = transaction.getSender();
+			this.credit.setText(Integer.toString(transaction.getAmount()));		
+		}else{
+			nameToDisplay = transaction.getReceiver();
+			this.debit.setText(Integer.toString(transaction.getAmount()));		
+		}
 		//TODO : un affichage intelligent
-		this.personName.setText(transaction.crediteur);
-		this.credit.setText(Integer.toString(transaction.getAmount()));		
+		this.personName.setText(nameToDisplay);
 		return rowView;
 	}
 }

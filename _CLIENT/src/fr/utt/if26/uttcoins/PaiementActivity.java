@@ -6,6 +6,7 @@ import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment.PaymentCo
 import fr.utt.if26.uttcoins.fragment.UserSoldeFragment;
 import fr.utt.if26.uttcoins.fragment.formulaire.FormPaiementFragment;
 import fr.utt.if26.uttcoins.model.Transaction;
+import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -127,12 +128,13 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	}
 	
 	@Override
-	public void onDialogPositiveClick(DialogFragment dialog) {
-				
+	public void onPaymentConfirmationDialogPositiveClick(PaymentConfirmationDialogFragment dialog) {
+		Transaction transactionToPost = new Transaction(dialog.getTransactionReceiver(), dialog.getTransactionAmount());
+		ServerHelper.postNewTransactions(transactionToPost, ServerHelper.BSON_REQUEST, this);
 	}
 
 	@Override
-	public void onDialogNegativeClick(DialogFragment dialog) {
+	public void onPaymentConfirmationDialogNegativeClick(PaymentConfirmationDialogFragment dialog) {
 		dialog.dismiss();
 	}
 }
