@@ -1,12 +1,12 @@
 package fr.utt.if26.cs.utils;
 
-import java.io.Console;
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.bson.BSONDecoder;
 import org.bson.BSONObject;
+import org.bson.BasicBSONDecoder;
 import org.bson.BasicBSONObject;
 
 import com.mongodb.util.JSON;
@@ -42,7 +42,11 @@ public class ServletUtils {
 	
 	private static BasicBSONObject extractGetRequestData(HttpServletRequest request){
 		try{
-			String query = request.getQueryString();
+			String query;
+			if(useBSON)
+				query = ServletUtils.decryptBSON(request.getQueryString());
+			else
+				query = request.getQueryString();
 			if(query!=null){
 				query = query.replaceAll("(%22|%27)", "\"");
 				query = query.replaceAll("%20", " ");
@@ -67,11 +71,23 @@ public class ServletUtils {
 			e.printStackTrace();
 		}
 		try{
+			if(useBSON)
+				params = ServletUtils.decryptBSON(params);
 			BasicBSONObject jsonParams = (BasicBSONObject) JSON.parse(params);
 			return jsonParams;
 		} catch (JSONParseException e){
 			return new BasicBSONObject();
 		}
-		
+	}
+	
+	private static String decryptBSON(String datas){
+		String[] tab = datas.split("[a-zA-Z]");
+        byte[] array = new byte[tab.length];
+        for(int i =0; i<tab.length; i++){
+            array[i] = Byte.valueOf(tab[i]);
+        }
+        BSONDecoder decoder = new BasicBSONDecoder();
+        BasicBSONObject obje = (BasicBSONObject) decoder.readObject(array);
+        return obje.toString();
 	}
 }
