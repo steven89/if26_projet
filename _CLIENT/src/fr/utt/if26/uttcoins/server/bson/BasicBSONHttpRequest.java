@@ -1,46 +1,23 @@
 package fr.utt.if26.uttcoins.server.bson;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.NoHttpResponseException;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
-import org.bson.BSON;
-import org.bson.BSONDecoder;
-import org.bson.BSONObject;
-import org.bson.BasicBSONDecoder;
-import org.bson.BasicBSONEncoder;
 import org.bson.BasicBSONObject;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import fr.utt.if26.uttcoins.error.CustomServerException;
 import fr.utt.if26.uttcoins.io.BsonHandler;
 import fr.utt.if26.uttcoins.server.CustomHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
 import fr.utt.if26.uttcoins.utils.ServerHelper;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,6 +26,7 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 	implements CustomHttpRequest{
 
 	//params for non enclosing entity request (GET, DELETE)
+	@Deprecated
 	private BasicHttpParams httpParams;
 	//params for enclonsing entity request (POST, PUT)
 	private BasicBSONObject bsonParams;
@@ -84,10 +62,9 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 		Log.i("REQUEST",  "MedthodClass : " + ServerHelper.REQUEST_MAP.get(method).toString());
 		try {
 			this.request = ServerHelper.REQUEST_MAP.get(this.method).getConstructor(String.class).newInstance(url);
-			Log.i("REQUEST", "email = "+this.bsonParams.getString("email")
-					+" pass = "+this.bsonParams.getString("pass"));
-			//this.loadJSONParams();
 			this.loadParams();
+			Log.i("REQUEST", "bsonParams = "+this.bsonParams.toString());
+			Log.i("REQUEST", "httpParams = "+this.request.getParams());
 			Log.i("REQUEST", "EXECUTING");
 			this.response = client.execute(request);
 			Log.i("REQUEST", "READING");
@@ -119,8 +96,8 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 		//if the request is set
 		if(this.request!=null){
 			//if body request can be set
-			if(this.method == "PUT" || this.method == "POST"){
-				//set the body as json
+			if(this.method==ServerHelper.POST || this.method==ServerHelper.PUT){
+				//set the body as bson
 				HttpEntityEnclosingRequest entityEnclosingRequest = (HttpEntityEnclosingRequest) this.request;
 				try {
 					String stringBson = BsonHandler.encodeRequestBody(this.bsonParams);
@@ -133,7 +110,15 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 			//else
 			}else{
 				//send basic http request
-				this.request.setParams(this.httpParams);
+				//this.request.setParams(this.httpParams);
+				Log.i("REQUEST", "params = "+this.bsonParams.toString());
+				this.url = this.url + "?" + BsonHandler.encodeRequestBody(this.bsonParams);
+				Log.i("REQUEST", "url set : "+this.url);
+				try {
+					this.request.setURI(new URI(this.url));
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -141,20 +126,12 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 	@Override
 	public void setParams(Map<String, Object> paramMap){
 		this.clearParams();
-		if(this.method=="PUT" || this.method=="POST"){
-			this.setBSONParams(paramMap);
-		}else{
-			this.setHttpParams(paramMap);
-		}
+		this.setBSONParams(paramMap);
 	}
 	
 	@Override
 	public void putParam(String key, Object value){
-		if(this.method=="PUT" || this.method=="POST"){
-			this.putBSONParam(key, value);
-		}else{
-			this.putHttpParam(key, value);
-		}
+		this.putBSONParam(key, value);
 	}
 	
 	@Override
@@ -169,6 +146,7 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 			this.bsonParams.put(key, value);
 	}
 
+	@Deprecated
 	protected void putHttpParam(String key, Object value){
 		this.httpParams.setParameter(key, value);
 	}
@@ -183,12 +161,14 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 		this.bsonParams = bsonParams;
 	}
 	
+	@Deprecated
 	protected void setHttpParams(Map<String, Object> paramMap){
 		for(String key : paramMap.keySet()){
 			this.putHttpParam(key, paramMap.get(key));
 		}
 	}
 	
+	@Deprecated
 	protected void setHttpParams(HttpParams httpParams){
 		this.httpParams = (BasicHttpParams) httpParams;
 	}

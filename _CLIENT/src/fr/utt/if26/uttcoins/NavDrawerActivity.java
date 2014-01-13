@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bson.BasicBSONObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.utt.if26.uttcoins.adapter.NavDrawerContentListAdapter;
 import fr.utt.if26.uttcoins.error.CustomErrorListener;
 import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
+import fr.utt.if26.uttcoins.server.bson.CustomBasicBSONCallback;
 import fr.utt.if26.uttcoins.server.json.CustomJSONCallback;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
 import fr.utt.if26.uttcoins.utils.ServerHelper;
@@ -42,7 +44,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 public abstract class NavDrawerActivity extends ActionBarActivity 
-implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, CustomJSONCallback, CustomErrorListener{
+implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, CustomBasicBSONCallback, CustomErrorListener{
 	
 	protected ArrayList<JSONObject> drawerListItem;
 	protected DrawerLayout drawerLayout;
@@ -283,19 +285,15 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	protected void logout(){
-		ServerHelper.logout(ServerHelper.JSON_REQUEST, this);
+		ServerHelper.logout(ServerHelper.BSON_REQUEST, this);
 	}
 	
 	@Override
-	public Object call(JSONObject jsonResponse){
-		try {
-			if(jsonResponse.getString(ServerHelper.RESQUEST_TAG) == ServerHelper.LOGOUT_TAG){
-				Intent loadLogin = new Intent(getApplicationContext(), LoginActivity.class);
-				loadLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				this.startActivity(loadLogin);
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
+	public Object call(BasicBSONObject bsonResponse){
+		if(bsonResponse.getString(ServerHelper.RESQUEST_TAG) == ServerHelper.LOGOUT_TAG){
+			Intent loadLogin = new Intent(getApplicationContext(), LoginActivity.class);
+			loadLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			this.startActivity(loadLogin);
 		}
 		return null;
 	}

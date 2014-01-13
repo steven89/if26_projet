@@ -35,6 +35,7 @@ public class ServerHelper {
 	public static final String SERVER_EMAIL_KEY = "email";
 	public static final String SERVER_PASS_KEY = "pass";
 	public static final String SERVER_TAG_KEY = "tag";
+	public static final String SERVER_BALANCE_KEY = "balance";
 	public static final String GET = "GET";
 	public static final String POST = "POST";
 	public static final String PUT = "PUT";
@@ -120,6 +121,7 @@ public class ServerHelper {
 		if(request_tag == BSON_REQUEST){
 			BasicBSONHttpRequest request = 
 					new BasicBSONHttpRequest(GET, USER_WALLET_URL, GET_WALLET_TAG, (CustomBasicBSONCallback) callback);
+			Log.i("REQUEST", "get balance with params = "+user.toBundle().toString());
 			request.putParam(SERVER_TOKEN_KEY, user.getToken());
 			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
 			request.execute();
@@ -127,6 +129,7 @@ public class ServerHelper {
 		if(request_tag == JSON_REQUEST){
 			JsonHttpRequest request = 
 					new JsonHttpRequest(GET, USER_WALLET_URL, GET_WALLET_TAG, (CustomJSONCallback) callback);
+			Log.i("REQUEST", "get balance with params = "+user.toBundle().toString());
 			request.putParam(SERVER_TOKEN_KEY, user.getToken());
 			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
 			request.execute();

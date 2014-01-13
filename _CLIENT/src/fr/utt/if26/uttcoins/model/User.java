@@ -36,15 +36,15 @@ public class User {
 	}
 	
 	public Bundle getCurrentSession(){
-		Date currentDate = new Date();
+		int currentTime = (int) (new Date().getTime() / 1000);
 		Bundle session = null;
 		if(currentUser != null){
 			Log.i("USER", "currentUser = " + currentUser.toBundle().toString());
-			if((int) (currentDate.getTime() / 1000) - currentUser.getLoginTime() < 1800){
+			if(currentTime - currentUser.getLoginTime() < 1800){
+				currentUser.setLoginTime(currentTime);
 				session = currentUser.toBundle();
 			}else{
-				int delta = (int) (currentDate.getTime() / 1000) - currentUser.getLoginTime();
-				Log.i("USER", "user session timedOut : delta time = "+Integer.toString(delta));
+				Log.i("USER", "user session timedOut : delta time = "+Integer.toString(currentTime - currentUser.getLoginTime()));
 			}
 		}else{
 			
@@ -60,8 +60,13 @@ public class User {
 		return bundle;
 	}
 
-	private int getLoginTime() {
+	public int getLoginTime() {
 		return this.loginTime;
+	}
+	
+	public void setLoginTime(int time){
+		//timeStamp en secondes
+		this.loginTime = time;
 	}
 
 	public String getEmail() {

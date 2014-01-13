@@ -37,7 +37,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class LoginActivity extends ActionBarActivity implements OnFragmentInteractionListener, 
-CustomBasicBSONCallback, CustomJSONCallback, CustomErrorListener{
+CustomBasicBSONCallback, CustomErrorListener{
 
 	
 	private TextView forgottenAccountLink;
@@ -96,7 +96,7 @@ CustomBasicBSONCallback, CustomJSONCallback, CustomErrorListener{
 		boolean isInputsValide = (this.loginInputFragment.isInputValide() && this.passwordInputFragment.isInputValide());
 		if(isInputsValide){
 			Log.i("ACTION","CLICKED");
-			ServerHelper.logUser(loginInputFragment.getValue(), passwordInputFragment.getValue(), ServerHelper.JSON_REQUEST, this);
+			ServerHelper.logUser(loginInputFragment.getValue(), passwordInputFragment.getValue(), ServerHelper.BSON_REQUEST, this);
 		}
 	}
 	
@@ -118,41 +118,42 @@ CustomBasicBSONCallback, CustomJSONCallback, CustomErrorListener{
 	public Object call(BasicBSONObject bsonResponse) {
 		this.connexionBtnFragment.hideLoader();
 		Log.i("REQUEST", bsonResponse.toString());
-		if(bsonResponse.containsField(ServerHelper.SERVER_TOKEN_KEY)){
+		if(bsonResponse.containsField(ServerHelper.SERVER_TOKEN_KEY)
+				&& bsonResponse.containsField(ServerHelper.SERVER_EMAIL_KEY)){
 			Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
 			Bundle session = new Bundle();
 			session.putString(ServerHelper.SERVER_TOKEN_KEY, bsonResponse.getString(ServerHelper.SERVER_TOKEN_KEY));
 			session.putString(ServerHelper.SERVER_EMAIL_KEY, bsonResponse.getString(ServerHelper.SERVER_EMAIL_KEY));
 			session.putString(ServerHelper.SERVER_TAG_KEY, bsonResponse.getString(ServerHelper.SERVER_TAG_KEY));			
 			loadWallet.putExtra("session", session);
-			//startActivity(loadWallet);
+			startActivity(loadWallet);
 		}
 		return null;
 	}
 	
 
-	@Override
-	public Object call(JSONObject jsonResponse) {
-		this.connexionBtnFragment.hideLoader();
-		Log.i("REQUEST", jsonResponse.toString());
-		if(jsonResponse.has(ServerHelper.SERVER_TOKEN_KEY) 
-				&& jsonResponse.has(ServerHelper.SERVER_EMAIL_KEY)){
-			Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
-			Bundle session = new Bundle();
-			try {
-				session.putString(ServerHelper.SERVER_TOKEN_KEY, jsonResponse.getString(ServerHelper.SERVER_TOKEN_KEY));
-				session.putString(ServerHelper.SERVER_EMAIL_KEY, jsonResponse.getString(ServerHelper.SERVER_EMAIL_KEY));
-				session.putString(ServerHelper.SERVER_TAG_KEY, jsonResponse.getString(ServerHelper.SERVER_TAG_KEY));
-				loadWallet.putExtra("session", session);
-				startActivity(loadWallet);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
-		return null;
-	}
+//	@Override
+//	public Object call(JSONObject jsonResponse) {
+//		this.connexionBtnFragment.hideLoader();
+//		Log.i("REQUEST", jsonResponse.toString());
+//		if(jsonResponse.has(ServerHelper.SERVER_TOKEN_KEY) 
+//				&& jsonResponse.has(ServerHelper.SERVER_EMAIL_KEY)){
+//			Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
+//			Bundle session = new Bundle();
+//			try {
+//				session.putString(ServerHelper.SERVER_TOKEN_KEY, jsonResponse.getString(ServerHelper.SERVER_TOKEN_KEY));
+//				session.putString(ServerHelper.SERVER_EMAIL_KEY, jsonResponse.getString(ServerHelper.SERVER_EMAIL_KEY));
+//				session.putString(ServerHelper.SERVER_TAG_KEY, jsonResponse.getString(ServerHelper.SERVER_TAG_KEY));
+//				loadWallet.putExtra("session", session);
+//				startActivity(loadWallet);
+//			} catch (JSONException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//		}
+//		return null;
+//	}
 
 	@Override
 	public void beforeCall() {
