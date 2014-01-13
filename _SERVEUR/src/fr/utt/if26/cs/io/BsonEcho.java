@@ -65,13 +65,13 @@ public class BsonEcho extends Echo {
 		
 		
 		//decoding
-		String[] tab = str.split("[a-zA-Z]");
+		/*String[] tab = str.split("[a-zA-Z]");
 		byte[] array = new byte[tab.length];
 		for(int i =0; i<tab.length; i++){
 			array[i] = Byte.valueOf(tab[i]);
 		}
 		BSONDecoder decoder = new BasicBSONDecoder();
 		BasicBSONObject obje = (BasicBSONObject) decoder.readObject(array);
-		out.println(obje.toString());
+		out.println(obje.toString());*/
 	}
 }
