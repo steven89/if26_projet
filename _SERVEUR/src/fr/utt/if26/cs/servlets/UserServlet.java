@@ -89,7 +89,7 @@ public class UserServlet extends HttpServlet {
 				if(inserted){
 					TransactionsUtils.doBaseTransaction(((User) user).getTag());
 					TransactionsUtils.applyTransactionsOnUser(user);
-					out.echo(user.getJSONStringRepresentation());
+					out.echo(user.toJSONString());
 				}
 				else{
 					out.echo(Echo.ERR, "user already exists");

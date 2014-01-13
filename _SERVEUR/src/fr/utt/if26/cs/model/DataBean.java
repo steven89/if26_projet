@@ -45,16 +45,23 @@ public abstract class DataBean {
 					e1.printStackTrace();
 					return null;
 				}
+			else if(e.getMessage().substring(0, 14).equals("java.lang.Long"))
+				try {
+					return Long.toString((long) method.invoke(this));
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+					e1.printStackTrace();
+					return null;
+				}
 			else
 				return null;
 		}
 	}
 	
-	public BSONObject getBSONRepresentation(){
-		return getBSONRepresentation(null);
+	public BSONObject toBSON(){
+		return toBSON(null);
 	}
 	
-	public BSONObject getBSONRepresentation(String[] filters){
+	public BSONObject toBSON(String[] filters){
 		BasicBSONObject BSONData = new BasicBSONObject();
 		for(String f : this.export){
 			if(filters!=null){
@@ -69,16 +76,16 @@ public abstract class DataBean {
 		return BSONData;
 	}
 	
-	public String getJSONStringRepresentation(){
-		return JSON.serialize(this.getBSONRepresentation());
+	public String toJSONString(){
+		return JSON.serialize(this.toBSON());
 	}
 	
-	public String getJSONStringRepresentation(String[] filters){
-		return JSON.serialize(this.getBSONRepresentation(filters));
+	public String toJSONString(String[] filters){
+		return JSON.serialize(this.toBSON(filters));
 	}
 	
 	public String toString(){
-		return this.getJSONStringRepresentation();
+		return this.toJSONString();
 	}
 	
 	/***

@@ -123,4 +123,10 @@ public class SQLHelper implements DatabaseHelper {
 		}
 	}
 
+	@Override
+	public void remove(BSONObject datas) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

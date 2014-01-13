@@ -41,7 +41,6 @@ public class TransactionServlet extends HttpServlet {
 		Echo out = new BsonEcho(response.getWriter());
 		Database dbTransactions = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);
 		BasicBSONObject params = ServletUtils.extractRequestData(request);
-		System.out.println(params);
 		if(LoginManager.checkAuth(params)){
 			User user;
 			try {
@@ -55,7 +54,7 @@ public class TransactionServlet extends HttpServlet {
 							out.echo(e.getMessage());
 						}
 						if(transaction!=null && ( transaction.getFrom().equals(user.getEmail()) || transaction.getTo().equals(user.getTag()) ))
-							out.echo(transaction.getJSONStringRepresentation());
+							out.echo(transaction.toJSONString());
 						else
 							out.echo(Echo.ERR, "not allowed");
 					}
@@ -98,7 +97,7 @@ public class TransactionServlet extends HttpServlet {
 						params.getString("to")
 					);
 					TransactionsUtils.doTransaction(transaction);
-					out.echo(transaction.getJSONStringRepresentation());
+					out.echo(transaction.toJSONString());
 				} catch (BeanException e1) {
 					out.echo(e1.getMessage());
 					e1.printStackTrace();

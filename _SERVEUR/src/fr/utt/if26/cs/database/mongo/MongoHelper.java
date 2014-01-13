@@ -95,4 +95,9 @@ public class MongoHelper implements DatabaseHelper {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void remove(BSONObject datas) {
+		this.collection.remove((DBObject) JSON.parse(datas.toString()));
+	}
 }

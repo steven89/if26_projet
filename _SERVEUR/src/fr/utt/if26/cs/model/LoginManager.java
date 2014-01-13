@@ -56,17 +56,24 @@ public class LoginManager {
 	public static String logIn(BSONObject params) throws BeanException{
 		if(LoginManager.hasRequiredFields(params, LOGIN)){
 			User user = new User((String) params.get("email"), (String) params.get("pass"));
-			DataBean bean=null;
+			User bean=null;
 			Database db = DatabaseManager.getInstance().getBase(LoginManager.base);
-			bean = db.getBean("email", user.getEmail());
-			if(bean!=null)
-				if(Crypt.match(user.getPass(), ((User) bean).getPass())){
-					((User) bean).setToken(LoginManager.generateToken());
-					db.updateBean(bean);
-					return bean.getJSONStringRepresentation(new String[] {"email", "token", "tag"});
+			bean = (User) db.getBean("email", user.getEmail());
+			if(bean!=null){
+				if(BanManager.canLog(user.getEmail())){
+					if(Crypt.match(user.getPass(), ((User) bean).getPass())){
+						((User) bean).setToken(LoginManager.generateToken());
+						db.updateBean(bean);
+						return bean.toJSONString(new String[] {"email", "token", "tag"});
+					}
+					else {
+						BanManager.addLogTry(user.getEmail());
+						return "auth_error";
+					}
 				}
 				else
-					return "auth_error";
+					return "auth_ban";
+			}
 			else
 				return "auth_unknow";
 		}
@@ -81,7 +88,7 @@ public class LoginManager {
 			bean = db.getBean("email", (String) params.get("email"));
 			if(bean!=null){
 				if(((User) bean).getToken().equals((String) params.get("token"))){
-					((User) bean).setToken(LoginManager.generateToken());
+					((User) bean).setToken(LoginManager.generateToken()+"@");
 					db.updateBean(bean);
 					return "auth_ok";
 				}

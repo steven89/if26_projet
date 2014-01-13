@@ -46,4 +46,6 @@ public interface DatabaseHelper {
 	public String getObjectIDKey();
 	
 	public void update(BSONObject datas);
+	
+	public void remove(BSONObject datas);
 }

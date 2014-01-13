@@ -39,6 +39,10 @@ public class SQLDatabase extends Database {
 		return (SQLDatabase.db!=null)?SQLDatabase.db:new SQLDatabase();
 	}
 	
+	public void chooseSet(int index){
+		
+	}
+	
 	@Override
 	public void open() {
 		System.out.println("opening connexion on SQL database");
@@ -63,7 +67,7 @@ public class SQLDatabase extends Database {
 
 	@Override
 	public boolean insertBean(DataBean bean) {
-		String result = sqlHelper.insert(bean.getBSONRepresentation(
+		String result = sqlHelper.insert(bean.toBSON(
 			new String[]{"email","pass","nom","prenom","tag","token"}
 		));
 		if(result.equals("ok"))
@@ -74,7 +78,7 @@ public class SQLDatabase extends Database {
 
 	@Override
 	public boolean updateBean(DataBean bean) {
-		sqlHelper.update(bean.getBSONRepresentation(new String[]{"id","email","pass","nom","prenom","tag","token"}));
+		sqlHelper.update(bean.toBSON(new String[]{"id","email","pass","nom","prenom","tag","token"}));
 		return false;
 	}
 
@@ -116,5 +120,11 @@ public class SQLDatabase extends Database {
 	public ArrayList<DataBean> findBeans(BSONObject datas) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean removeBeans(BSONObject datas) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

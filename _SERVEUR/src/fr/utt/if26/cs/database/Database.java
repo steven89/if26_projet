@@ -15,9 +15,12 @@ public abstract class Database {
 		Database.db = this;
 	}
 	
+	public abstract void chooseSet(int index);
+	
 	public abstract boolean insertBean(DataBean bean);
 	public abstract boolean updateBean(DataBean bean);
 	public abstract boolean removeBean(DataBean bean);
+	public abstract boolean removeBeans(BSONObject datas);
 	
 	public abstract DataBean getBean(BSONObject datas);
 	
