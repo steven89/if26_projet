@@ -64,7 +64,7 @@ public class UserSoldeFragment extends CustomFragment implements CustomBasicBSON
 		View view = inflater.inflate(R.layout.fragment_user_solde, container,
 				false);
 		this.userAccountBalance = (TextView) view.findViewById(R.id.user_solde_value);
-		ServerHelper.getUserSolde(ServerHelper.BSON_REQUEST, this);
+		this.refreshData();
 		return view;
 	}
 	
@@ -88,7 +88,7 @@ public class UserSoldeFragment extends CustomFragment implements CustomBasicBSON
 
 	@Override
 	public Object call(BasicBSONObject bsonResponse) {
-		if(bsonResponse.containsField(ServerHelper.SERVER_BALANCE_KEY)){
+		if(bsonResponse.getString(ServerHelper.RESQUEST_TAG) == ServerHelper.GET_WALLET_TAG){
 			this.userAccountBalance.setText(bsonResponse.getString(ServerHelper.SERVER_BALANCE_KEY));
 		}else{
 			Log.e("ERROR", "no balance in : " + bsonResponse.toString());
@@ -119,5 +119,9 @@ public class UserSoldeFragment extends CustomFragment implements CustomBasicBSON
 			}
 		})
 		.show();
+	}
+	
+	public void refreshData(){
+		ServerHelper.getUserSolde(ServerHelper.BSON_REQUEST, this);
 	}
 }

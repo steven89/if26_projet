@@ -26,6 +26,7 @@ import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
@@ -44,6 +45,8 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 
 	private EditText transactionAmountInput, transactionReceiverInput;
 	private Button payment_confirmation_button;
+	private ProgressBar loader;
+	
 	
 	private TextView transactionAmountError, transactionReceiverError;
 	
@@ -84,6 +87,7 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 		this.payment_confirmation_button = (Button) view.findViewById(R.id.payment_confirmation_button);
 		this.transactionAmountError = (TextView) view.findViewById(R.id.payment_amount_error);
 		this.transactionReceiverError = (TextView) view.findViewById(R.id.payment_receiver_error);
+		this.loader = (ProgressBar) view.findViewById(R.id.payment_inprogress_loader);
 		this.initListener();
 		this.initContent(container, savedInstanceState);
 		return view;
@@ -182,7 +186,6 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 	public boolean isTransactionAmountValide(){
 		int transactionAmountValue = this.getTransactionAmount();
 		int UserAccountBalance = ServerHelper.getSession().getInt(ServerHelper.SERVER_BALANCE_KEY); //ServerHelper.getUserSolde(request_tag, callback);
-		Log.i("FORM PAYMENT", "UserAccountBalance = "+Integer.toString(UserAccountBalance) + "with session =" + ServerHelper.getSession().toString());
 		boolean amountValue = transactionAmountValue > 0;
 		boolean enougth_uttCoins = transactionAmountValue <= UserAccountBalance;
 		if(amountValue){
@@ -210,5 +213,16 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 			this.payment_confirmation_button.setEnabled(false);
 		}
 		return valide;
+	}
+	
+	
+	public void showLoader(){
+		this.payment_confirmation_button.setVisibility(View.GONE);
+		this.loader.setVisibility(View.VISIBLE);
+	}
+	
+	public void hideLoader(){
+		this.loader.setVisibility(View.GONE);
+		this.payment_confirmation_button.setVisibility(View.VISIBLE);
 	}
 }

@@ -28,9 +28,10 @@ public class User {
 	}
 	
 	public static User newSession(String email, String tag, String token){
+		Log.i("User", "newSession with email = "+email+", tag = "+tag+" , token ="+token);
 		if(currentUser != null){
 			currentUser.setEmail(email);
-			currentUser.setEmail(email);
+			currentUser.setTag(tag);
 			currentUser.setToken(token);
 		}else{
 			currentUser = new User(email, tag, token);

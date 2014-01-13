@@ -1,5 +1,7 @@
 package fr.utt.if26.uttcoins;
 
+import org.bson.BasicBSONObject;
+
 import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment;
 import fr.utt.if26.uttcoins.fragment.TransactionListFragment;
 import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment.PaymentConfirmationDialogListener;
@@ -10,6 +12,7 @@ import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -136,5 +139,20 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	@Override
 	public void onPaymentConfirmationDialogNegativeClick(PaymentConfirmationDialogFragment dialog) {
 		dialog.dismiss();
+	}
+	
+	@Override
+	public Object call(BasicBSONObject bsonResponse){
+		super.call(bsonResponse);
+		if(bsonResponse.getString(ServerHelper.RESQUEST_TAG) == ServerHelper.POST_TRANSACTION_TAG){
+			this.userSoldeFragment.refreshData();
+		}
+		this.formPaymentFragment.hideLoader();
+		return null;
+	}
+	
+	@Override
+	public void beforeCall(){
+		this.formPaymentFragment.showLoader();
 	}
 }

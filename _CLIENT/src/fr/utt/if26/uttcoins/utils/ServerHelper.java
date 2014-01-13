@@ -106,6 +106,7 @@ public class ServerHelper implements CustomBasicBSONCallback{
 			request.putParam(SERVER_TOKEN_KEY, user.getToken());
 			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
 			request.execute();
+			user = null;
 		}
 		if(request_tag == JSON_REQUEST){
 			JsonHttpRequest request = 

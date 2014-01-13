@@ -11,6 +11,8 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class PaymentConfirmationDialogFragment extends DialogFragment{
@@ -20,6 +22,7 @@ public class PaymentConfirmationDialogFragment extends DialogFragment{
 	private TextView receiverNameText, 
 					transactionAmountText,
 					accountBalanceText;
+	
 	private int transactionAmount;
 	private String transactionReceiver;
 	
@@ -67,6 +70,7 @@ public class PaymentConfirmationDialogFragment extends DialogFragment{
     	this.receiverNameText = (TextView) contentView.findViewById(R.id.receiver_name_text);
     	this.transactionAmountText = (TextView) contentView.findViewById(R.id.transaction_amount_text);
     	this.accountBalanceText = (TextView) contentView.findViewById(R.id.account_balance_value);
+    	
     	Bundle arguments = (getArguments() != null)? getArguments() : new Bundle();
     	this.transactionAmount = arguments.getInt(ServerHelper.TRANSACTION_AMOUNT_KEY, 0);
 		this.transactionReceiver = (arguments.getString(ServerHelper.TRANSACTION_RECEIVER_KEY) != null && arguments.getString(ServerHelper.TRANSACTION_RECEIVER_KEY) != "") ? 

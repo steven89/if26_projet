@@ -63,6 +63,7 @@ public class Transaction {
 	}
 	
 	public void setReceiver(String receiver) throws CustomIllegalParametter{
+		Log.i("Transaction", "set receiver ("+receiver+") with session = "+ServerHelper.getSession().toString());
 		if(receiver.matches(User.TAG_PATTERN) 
 				&& !receiver.equals(ServerHelper.getSession().getString(ServerHelper.SERVER_TAG_KEY)) ){
 			this.receiver = receiver;
