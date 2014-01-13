@@ -3,7 +3,9 @@ package fr.utt.if26.uttcoins.server.bson;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
@@ -13,7 +15,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
+import org.bson.BasicBSONCallback;
 import org.bson.BasicBSONObject;
+
 import fr.utt.if26.uttcoins.io.BsonHandler;
 import fr.utt.if26.uttcoins.server.CustomHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
@@ -30,7 +34,7 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 	private BasicHttpParams httpParams;
 	//params for enclonsing entity request (POST, PUT)
 	private BasicBSONObject bsonParams;
-	private CustomBasicBSONCallback bsonCallback;
+	private ArrayList<CustomBasicBSONCallback> bsonCallbacks;
 	private String method, url, request_tag;
 	private HttpRequestBase request;
 	private HttpResponse response;
@@ -45,14 +49,17 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 		this.method = method;
 		this.url = url;
 		this.request_tag = request_tag;
-		this.bsonCallback = callback;
+		this.bsonCallbacks = new ArrayList<CustomBasicBSONCallback>();
+		this.bsonCallbacks.add(callback);
 		this.error = false;
 	}
 	
 	@Override
 	protected void onPreExecute (){
-		if(this.bsonCallback != null){
-			this.bsonCallback.beforeCall();
+		if(this.bsonCallbacks != null){
+			for(CustomBasicBSONCallback callback : this.bsonCallbacks){
+				callback.beforeCall();
+			}
 		}
 	}
 	
@@ -79,14 +86,18 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 	
 	@Override
 	protected void onPostExecute(BasicBSONObject result){
-		if(this.bsonCallback != null){
+		if(this.bsonCallbacks != null){
 			this.clearParams();
 			if(!this.error){
 				result.put(ServerHelper.RESQUEST_TAG, this.request_tag);
-				this.bsonCallback.call(result);
+				for(CustomBasicBSONCallback callback : this.bsonCallbacks){
+					callback.call(result);
+				}
 			}else{
 				this.errorObject.putString(ServerHelper.RESQUEST_TAG, this.request_tag);
-				this.bsonCallback.onError(this.errorObject);
+				for(CustomBasicBSONCallback callback : this.bsonCallbacks){
+					callback.onError(this.errorObject);
+				}
 			}
 		}
 	}
@@ -171,5 +182,9 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 	@Deprecated
 	protected void setHttpParams(HttpParams httpParams){
 		this.httpParams = (BasicHttpParams) httpParams;
+	}
+	
+	public void addCallback(CustomBasicBSONCallback callback){
+		this.bsonCallbacks.add(callback);
 	}
 }

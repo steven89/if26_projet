@@ -36,7 +36,7 @@ public class FormEmailFragment extends Fragment implements FormInputFragment{
 	public static final String TAG = "FormEmailFragment";
 
 	private static final String ARG_PARAM2 = "param2";
-	private static final String emailPattern = "^[a-zA-Z0-9_\\.\\-]*@([a-zA-Z0-9_]*\\.[a-z]{1,3})+$";
+	private static final String emailPattern = "^[a-zA-Z0-9_\\.\\-]+@([a-zA-Z0-9_]+\\.[a-z]{1,3})+$";
 	
 	// TODO: Rename and change types of parameters
 	private boolean needConfirmation;

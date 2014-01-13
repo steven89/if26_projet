@@ -1,5 +1,7 @@
 package fr.utt.if26.uttcoins.fragment;
 
+import org.bson.BasicBSONObject;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -25,6 +27,7 @@ import fr.utt.if26.uttcoins.R.layout;
 import fr.utt.if26.uttcoins.adapter.TransactionListAdapter;
 import fr.utt.if26.uttcoins.model.Transaction;
 import fr.utt.if26.uttcoins.model.TransactionList;
+import fr.utt.if26.uttcoins.server.bson.CustomBasicBSONCallback;
 
 /**
  * A fragment representing a list of Items.
@@ -35,7 +38,8 @@ import fr.utt.if26.uttcoins.model.TransactionList;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class TransactionListFragment extends Fragment implements AbsListView.OnItemClickListener {
+public class TransactionListFragment extends Fragment implements AbsListView.OnItemClickListener,
+CustomBasicBSONCallback{
 	public static final String TAG = "TransactionFragment";
 	public static final String UriPath = "application/TransactionFragment";
 	
@@ -98,7 +102,7 @@ public class TransactionListFragment extends Fragment implements AbsListView.OnI
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if(v.getId() == TRANSACTION_LIST_ID){
 		    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-		    menu.setHeaderTitle("Transaction avec : "+TransactionList.ITEMS.get(info.position).getOtherUser());
+		    menu.setHeaderTitle("Transaction avec : "+TransactionList.ITEMS.get(info.position).getReceiver());
 		    String[] menuItems = getResources().getStringArray(R.array.ctx_menu_transaction);
 		    menu.add(TRANSACTION_LIST_FRAGMENT_GROUP_ID, R.id.new_transaction_action, 0, menuItems[0]);
 		}
@@ -112,7 +116,7 @@ public class TransactionListFragment extends Fragment implements AbsListView.OnI
 			switch(item.getItemId()){
 				case R.id.new_transaction_action:
 					Bundle args = new Bundle();
-					args.putString(Transaction.TRANSACTION_RECEIVER_KEY, selectedTransaction.getOtherUser());
+					args.putString(Transaction.TRANSACTION_RECEIVER_KEY, selectedTransaction.getReceiver());
 					args.putInt(Transaction.TRANSACTION_AMOUNT_KEY, selectedTransaction.getAmount());
 					this.goToPaymentActivity(args);
 					break;
@@ -171,5 +175,23 @@ public class TransactionListFragment extends Fragment implements AbsListView.OnI
 	
 	public interface OnTransactionListFragmentInteractionListener{
 		public void onTransactionListFragmentInteraction(Transaction selected_transaction);
+	}
+
+	@Override
+	public Object call(BasicBSONObject bsonResponse) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void onError(Bundle errorObject) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void beforeCall() {
+		// TODO Auto-generated method stub
+		
 	}
 }

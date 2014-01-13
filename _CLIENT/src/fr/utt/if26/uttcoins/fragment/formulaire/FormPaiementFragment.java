@@ -181,7 +181,7 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 	
 	public boolean isTransactionAmountValide(){
 		int transactionAmountValue = this.getTransactionAmount();
-		int UserAccountBalance = 100; //ServerHelper.getUserSolde(request_tag, callback);
+		int UserAccountBalance = ServerHelper.getSession().getInt(ServerHelper.SERVER_BALANCE_KEY); //ServerHelper.getUserSolde(request_tag, callback);
 		boolean amountValue = transactionAmountValue > 0;
 		boolean enougth_uttCoins = transactionAmountValue <= UserAccountBalance;
 		if(amountValue){

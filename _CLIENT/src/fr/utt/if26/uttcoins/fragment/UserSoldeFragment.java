@@ -1,8 +1,12 @@
 package fr.utt.if26.uttcoins.fragment;
 
 import org.bson.BasicBSONObject;
+
+import com.mongodb.ServerError;
+
 import fr.utt.if26.uttcoins.R;
 import fr.utt.if26.uttcoins.error.CustomErrorListener;
+import fr.utt.if26.uttcoins.model.User;
 import fr.utt.if26.uttcoins.server.bson.CustomBasicBSONCallback;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
 import fr.utt.if26.uttcoins.utils.ServerHelper;
@@ -10,6 +14,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +90,8 @@ public class UserSoldeFragment extends CustomFragment implements CustomBasicBSON
 	public Object call(BasicBSONObject bsonResponse) {
 		if(bsonResponse.containsField(ServerHelper.SERVER_BALANCE_KEY)){
 			this.userAccountBalance.setText(bsonResponse.getString(ServerHelper.SERVER_BALANCE_KEY));
+		}else{
+			Log.e("ERROR", "no balance in : " + bsonResponse.toString());
 		}
 		return null;
 	}
