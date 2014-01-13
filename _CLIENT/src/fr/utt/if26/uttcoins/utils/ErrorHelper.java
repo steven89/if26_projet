@@ -7,6 +7,7 @@ import org.apache.http.NoHttpResponseException;
 
 import fr.utt.if26.uttcoins.error.CustomAuthException;
 import fr.utt.if26.uttcoins.error.CustomFieldMissingInRequestException;
+import fr.utt.if26.uttcoins.error.CustomInvalidCreditorException;
 import fr.utt.if26.uttcoins.error.CustomServerException;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -45,17 +46,21 @@ public class ErrorHelper {
 		String networkUnknowErrorTitle = "Erreur réseaux";
 		String networkUnknowErrorMsg = "Vérifiez votre connexion internet. "
 				+ "\n Si le problème persiste, le problème vient peut être du serveur. ";
+		//A faire dans une boucle, avec de la reflexivite
 		putError(NoHttpResponseException.class, networkUnknowErrorTitle, networkUnknowErrorMsg);
 		putError(CustomServerException.class, CustomServerException.getErrorTitle(), CustomServerException.getErrorMessage());
 		putError(CustomAuthException.class, CustomAuthException.getErrorTitle(), CustomAuthException.getErrorMessage());
 		putError(CustomFieldMissingInRequestException.class, CustomFieldMissingInRequestException.getErrorTitle(), CustomFieldMissingInRequestException.getErrorMessage());
+		putError(CustomInvalidCreditorException.class, CustomInvalidCreditorException.getErrorTitle(), CustomInvalidCreditorException.getErrorMessage());
 	}
 	
 	private static void initCustomErrorMap(){
 		CUSTOM_ERROR_MAP.put("auth_error", CustomAuthException.class);
 		CUSTOM_ERROR_MAP.put("auth_unknow", CustomAuthException.class);
 		CUSTOM_ERROR_MAP.put("field_missing", CustomFieldMissingInRequestException.class);
+		CUSTOM_ERROR_MAP.put("invalid creditor", CustomInvalidCreditorException.class);
 	}
+
 	
 	public static <T extends Exception> void putError(Class<T> exceptionCls, String title, String msg){
 		ERROR_TITLE_MAP.put(exceptionCls, title);

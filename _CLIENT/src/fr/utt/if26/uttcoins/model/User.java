@@ -10,9 +10,9 @@ import android.util.Log;
 public class User {
 
 	public static final String EMAIL_PATTERN = "^[a-zA-Z0-9_\\.\\-]*@([a-zA-Z0-9_]*\\.[a-z]{1,3})+$";
-	public static final String TAG_PATTERN = "[a-zA-Z0-9_\\.\\-]*";
-	public static final String TOKEN_PATTERN = "[a-zA-Z0-9]{30}";
-	private static final String NAME_PATTERN = "[a-zA-Z]{2,26}";
+	public static final String TAG_PATTERN = "^[a-zA-Z0-9]{3,}$";
+	public static final String TOKEN_PATTERN = "^[a-zA-Z0-9]{30}$";
+	private static final String NAME_PATTERN = "^[a-zA-Z]{2,26}$";
 	private static User currentUser = null;
 	
 	private String email, tag, token;

@@ -49,22 +49,22 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 		savedInstanceState = (savedInstanceState != null) ? savedInstanceState : new Bundle();
 		Log.i("ACTIVITY", "got PaiementActivity's Bundle");
 		Bundle preSetData = new Bundle();
-		String transactionReceiver = savedInstanceState.getString(Transaction.TRANSACTION_RECEIVER_KEY);
+		String transactionReceiver = savedInstanceState.getString(ServerHelper.TRANSACTION_RECEIVER_KEY);
 		transactionReceiver = (transactionReceiver != null) ? 
-				transactionReceiver : extra.getString(Transaction.TRANSACTION_RECEIVER_KEY);
-		int transactionAmount = savedInstanceState.getInt(Transaction.TRANSACTION_AMOUNT_KEY);
+				transactionReceiver : extra.getString(ServerHelper.TRANSACTION_RECEIVER_KEY);
+		int transactionAmount = savedInstanceState.getInt(ServerHelper.TRANSACTION_AMOUNT_KEY);
 		transactionAmount = (transactionAmount != 0) ?
-				transactionAmount : extra.getInt(Transaction.TRANSACTION_AMOUNT_KEY);
-		preSetData.putString(Transaction.TRANSACTION_RECEIVER_KEY, transactionReceiver);
-		preSetData.putInt(Transaction.TRANSACTION_AMOUNT_KEY, transactionAmount);
+				transactionAmount : extra.getInt(ServerHelper.TRANSACTION_AMOUNT_KEY);
+		preSetData.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, transactionReceiver);
+		preSetData.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, transactionAmount);
 		return preSetData;
 	}
 	
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
       super.onSaveInstanceState(savedInstanceState);
-      savedInstanceState.putInt(Transaction.TRANSACTION_AMOUNT_KEY, this.formPaymentFragment.getTransactionAmount());
-      savedInstanceState.putString(Transaction.TRANSACTION_RECEIVER_KEY, this.formPaymentFragment.getTransactionReceiver());
+      savedInstanceState.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, this.formPaymentFragment.getTransactionAmount());
+      savedInstanceState.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, this.formPaymentFragment.getTransactionReceiver());
     }
 
 	@Override
@@ -121,8 +121,8 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	private void showConfirmPaymentDialog() {
 		PaymentConfirmationDialogFragment confirmDialogFragment = new PaymentConfirmationDialogFragment();
 		Bundle initialState = new Bundle();
-		initialState.putInt(Transaction.TRANSACTION_AMOUNT_KEY, this.formPaymentFragment.getTransactionAmount());
-		initialState.putString(Transaction.TRANSACTION_RECEIVER_KEY, this.formPaymentFragment.getTransactionReceiver());
+		initialState.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, this.formPaymentFragment.getTransactionAmount());
+		initialState.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, this.formPaymentFragment.getTransactionReceiver());
 		confirmDialogFragment.setArguments(initialState);
 		confirmDialogFragment.show(getSupportFragmentManager(), "confirmation");
 	}

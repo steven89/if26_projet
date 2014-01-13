@@ -28,6 +28,7 @@ import fr.utt.if26.uttcoins.adapter.TransactionListAdapter;
 import fr.utt.if26.uttcoins.model.Transaction;
 import fr.utt.if26.uttcoins.model.TransactionList;
 import fr.utt.if26.uttcoins.server.bson.CustomBasicBSONCallback;
+import fr.utt.if26.uttcoins.utils.ServerHelper;
 
 /**
  * A fragment representing a list of Items.
@@ -80,7 +81,7 @@ CustomBasicBSONCallback{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mAdapter = new TransactionListAdapter(getActivity(), TransactionList.ITEMS);
+		mAdapter = new TransactionListAdapter(getActivity());
 	}
 
 	@Override
@@ -116,8 +117,8 @@ CustomBasicBSONCallback{
 			switch(item.getItemId()){
 				case R.id.new_transaction_action:
 					Bundle args = new Bundle();
-					args.putString(Transaction.TRANSACTION_RECEIVER_KEY, selectedTransaction.getReceiver());
-					args.putInt(Transaction.TRANSACTION_AMOUNT_KEY, selectedTransaction.getAmount());
+					args.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, selectedTransaction.getReceiver());
+					args.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, selectedTransaction.getAmount());
 					this.goToPaymentActivity(args);
 					break;
 			}

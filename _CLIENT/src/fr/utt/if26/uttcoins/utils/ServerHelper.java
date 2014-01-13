@@ -36,15 +36,20 @@ public class ServerHelper implements CustomBasicBSONCallback{
 	public static final String BSON_REQUEST = "BSON";
 	@Deprecated
 	public static final String JSON_REQUEST = "JSON";
+	public static final String SERVER_ID_KEY = "_id";
 	public static final String SERVER_TOKEN_KEY = "token";
 	public static final String SERVER_EMAIL_KEY = "email";
 	public static final String SERVER_PASS_KEY = "pass";
 	public static final String SERVER_TAG_KEY = "tag";
 	public static final String SERVER_BALANCE_KEY = "balance";
+	public static final String SERVER_TRANSACTIONS_KEY = "transactions";
+	public static final String SERVER_RECEIVER_KEY = "to";
 	public static final String SERVER_TRANSACTION_RECEIVER_TAG = "to";
+	public static final String SERVER_SENDER_KEY = "from";
 	public static final String SERVEUR_TRANSACTION_AMOUNT_TAG = "amount";
 	public static final String SERVER_NAME_KEY = "nom";
 	public static final String SERVER_FIRST_NAME_KEY = "prenom";
+	public static final String SERVER_TRANSACTION_AMOUNT_KEY = "amount";
 
 	public static final String GET = "GET";
 	public static final String POST = "POST";
@@ -57,6 +62,7 @@ public class ServerHelper implements CustomBasicBSONCallback{
 	public static final String LOGOUT_TAG = "logout_tag";
 	public static final String GET_WALLET_TAG = "get_wallet_tag";
 	public static final String SIGN_UP_TAG = "sign_up";
+	public static final String SYSTEM_USER_TAG = "admin@system";
 	
 	//TODO encapsuler les params de l'utilisateur dans un singleton user
 	private static User user = null;
@@ -159,6 +165,7 @@ public class ServerHelper implements CustomBasicBSONCallback{
 			Log.i("REQUEST", "get balance with params = "+user.toBundle().toString());
 			request.putParam(SERVER_TOKEN_KEY, user.getToken());
 			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
+			request.addCallback(server_bson_request_callback);
 			request.execute();
 		}
 		if(request_tag == JSON_REQUEST){
@@ -197,6 +204,9 @@ public class ServerHelper implements CustomBasicBSONCallback{
 		request.putParam(SERVER_TAG_KEY, userData.getString(SERVER_TAG_KEY));
 		request.execute();
 	}
+
+	public static String TRANSACTION_AMOUNT_KEY = "transaction_amount";
+	public static String TRANSACTION_RECEIVER_KEY = "transaction_receiver";
 	
 	private ServerHelper(){
 	}

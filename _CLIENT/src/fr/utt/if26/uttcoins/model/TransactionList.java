@@ -3,6 +3,8 @@ package fr.utt.if26.uttcoins.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bson.BasicBSONCallback;
+
 import fr.utt.if26.uttcoins.server.bson.CustomBasicBSONCallback;
 import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.util.SparseArray;
@@ -16,11 +18,6 @@ public class TransactionList {
 		addTransaction(new Transaction("0", "julien@test.com", "Steven", 30));
 		addTransaction(new Transaction("0", "steven@test.com", "Thibault", 15));
 		addTransaction(new Transaction("0", "Kevin", "julien@test.com", 15));
-	}
-	
-	public static void loadTransaction(CustomBasicBSONCallback callback){
-		//TODO LOAD TRANSACTION FROM REMOTE DB
-		ServerHelper.getUserTransactions(ServerHelper.BSON_REQUEST, callback);
 	}
 	
 	public static void addTransaction(Transaction item){
