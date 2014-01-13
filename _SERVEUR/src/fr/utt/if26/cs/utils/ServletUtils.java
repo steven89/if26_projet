@@ -24,7 +24,7 @@ public class ServletUtils {
 	
 	public static boolean checkRequiredFields(String[] args, BSONObject datas){
 		for(String field : args){
-			if(!datas.containsField(field))
+			if(!datas.containsField(field) || datas.get(field)==null)
 				return false;
 		}
 		return true;
