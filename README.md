@@ -81,3 +81,12 @@ RQ : l'utilisateur doit intervenir dans la transaction pour y avoir accès
   "amount" : 10
 }
 ```
+
+#####GET /UserWallet?{...}
+Montant sur le compte de l'utilisateur :
+```json
+{
+  "email" : "test@test.fr",
+  "token" : "Afsdfh1356sfdEDZQS54sdADS15aa"
+}
+```
