@@ -30,41 +30,31 @@ import android.os.Bundle;
 import android.util.Log;
 import fr.utt.if26.uttcoins.io.BsonHandler;
 import fr.utt.if26.uttcoins.io.JSONHandler;
+import fr.utt.if26.uttcoins.server.CustomHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
+import fr.utt.if26.uttcoins.utils.ServerHelper;
 
 @Deprecated
-public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
+public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> implements CustomHttpRequest{
 	//params for non enclosing entity request (GET, DELETE)
 		private BasicHttpParams httpParams;
 		//params for enclonsing entity request (POST, PUT)
 		private JSONObject jsonParams;
-		private JSONCallback jsonCallback;
-		private String method, url;
+		private CustomJSONCallback jsonCallback;
+		private String method, url, request_tag;
 		private HttpRequestBase request;
 		private HttpResponse response;
 		private HttpClient client;
 		private boolean error;
 		private Bundle errorObject;
-		
-		// wildcard utilisé : map vérouillée en lecture seule
-		protected static HashMap<String, Class<? extends HttpRequestBase>> methodClasses; 
-		
-		static{
-			if(methodClasses == null){
-				methodClasses = new HashMap<String, Class<? extends HttpRequestBase>>();
-				methodClasses.put("GET", HttpGet.class);
-				methodClasses.put("POST", HttpPost.class);
-				methodClasses.put("PUT", HttpPut.class);
-				methodClasses.put("DELETE", HttpDelete.class);
-			}
-		}
-		
-		public JsonHttpRequest(String method, String url, JSONCallback callback){
+			
+		public JsonHttpRequest(String method, String url, String request_tag, CustomJSONCallback callback){
 			this.httpParams = new BasicHttpParams();
 			this.jsonParams = new JSONObject();
 			this.client = new DefaultHttpClient();
 			this.method = method;
 			this.url = url;
+			this.request_tag = request_tag;
 			this.jsonCallback = callback;
 			this.error = false;
 		}
@@ -79,13 +69,12 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 		@Override
 		protected JSONObject doInBackground(String... args){
 			Log.i("REQUEST", "PREPARING with method = " + method+" and url = "+url);
-			Log.i("REQUEST",  "MedthodClass : " + methodClasses.get(method).toString());
+			Log.i("REQUEST",  "MedthodClass : " + ServerHelper.REQUEST_MAP.get(method).toString());
 			try {
-				this.request = methodClasses.get(this.method).getConstructor(String.class).newInstance(url);
-				Log.i("REQUEST", "email = "+this.jsonParams.getString("email")
-						+" pass = "+this.jsonParams.getString("pass"));
+				this.request = ServerHelper.REQUEST_MAP.get(this.method).getConstructor(String.class).newInstance(url);
+				Log.i("REQUEST", "params = "+this.jsonParams.toString());
 				//this.loadJSONParams();
-				this.loadJSONParams();
+				this.loadParams();
 				Log.i("REQUEST", "EXECUTING");
 				this.response = client.execute(request);
 				Log.i("REQUEST", "READING");
@@ -102,21 +91,27 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 		@Override
 		protected void onPostExecute(JSONObject result){
 			if(this.jsonCallback != null){
-				this.clearJsonParams();
+				this.clearParams();
 				if(!this.error){
-					this.jsonCallback.call(result);
+					try {
+						result.put(ServerHelper.RESQUEST_TAG, this.request_tag);
+						this.jsonCallback.call(result);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
 				}else{
+					this.errorObject.putString(ServerHelper.RESQUEST_TAG, this.request_tag);
 					this.jsonCallback.onError(this.errorObject);
 				}
 			}
 		}
 		
-		
-		protected void loadJSONParams() {
+		@Override
+		public void loadParams() {
 			//if the request is set
 			if(this.request!=null){
 				//if body request can be set
-				if(this.method == "PUT" || this.method == "POST"){
+				if(this.method == ServerHelper.PUT || this.method == ServerHelper.POST){
 					//set the body as json
 					HttpEntityEnclosingRequest entityEnclosingRequest = (HttpEntityEnclosingRequest) this.request;
 					try {
@@ -134,17 +129,19 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 			}
 		}
 		
+		@Override
 		public void setParams(Map<String, Object> paramMap){
-			this.clearJsonParams();
-			if(this.method=="PUT" || this.method=="POST"){
+			this.clearParams();
+			if(this.method==ServerHelper.PUT || this.method==ServerHelper.POST){
 				this.setJSONParams(paramMap);
 			}else{
 				this.setHttpParams(paramMap);
 			}
 		}
 		
+		@Override
 		public void putParam(String key, Object value){
-			if(this.method=="PUT" || this.method=="POST"){
+			if(this.method==ServerHelper.PUT || this.method==ServerHelper.POST){
 				this.putJSONParam(key, value);
 			}else{
 				this.putHttpParam(key, value);
@@ -187,8 +184,8 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> {
 			this.httpParams = (BasicHttpParams) httpParams;
 		}
 		
-		
-		protected void clearJsonParams(){
+		@Override
+		public void clearParams(){
 			this.httpParams.clear();
 			//thx garbage collector <3 (screw you memory)
 			this.httpParams = new BasicHttpParams();

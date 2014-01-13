@@ -35,7 +35,9 @@ import org.json.JSONObject;
 
 import fr.utt.if26.uttcoins.error.CustomServerException;
 import fr.utt.if26.uttcoins.io.BsonHandler;
+import fr.utt.if26.uttcoins.server.CustomHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
+import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -43,39 +45,28 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
-public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONObject> {
+public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONObject>
+	implements CustomHttpRequest{
 
 	//params for non enclosing entity request (GET, DELETE)
 	private BasicHttpParams httpParams;
 	//params for enclonsing entity request (POST, PUT)
 	private BasicBSONObject bsonParams;
-	private BasicBSONCallback bsonCallback;
-	private String method, url;
+	private CustomBasicBSONCallback bsonCallback;
+	private String method, url, request_tag;
 	private HttpRequestBase request;
 	private HttpResponse response;
 	private HttpClient client;
 	private boolean error;
 	private Bundle errorObject;
 	
-	// wildcard utilisé : map vérouillée en lecture seule
-	protected static HashMap<String, Class<? extends HttpRequestBase>> methodClasses; 
-	
-	static{
-		if(methodClasses == null){
-			methodClasses = new HashMap<String, Class<? extends HttpRequestBase>>();
-			methodClasses.put("GET", HttpGet.class);
-			methodClasses.put("POST", HttpPost.class);
-			methodClasses.put("PUT", HttpPut.class);
-			methodClasses.put("DELETE", HttpDelete.class);
-		}
-	}
-	
-	public BasicBSONHttpRequest(String method, String url, BasicBSONCallback callback){
+	public BasicBSONHttpRequest(String method, String url, String request_tag, CustomBasicBSONCallback callback){
 		this.httpParams = new BasicHttpParams();
 		this.bsonParams = new BasicBSONObject();
 		this.client = new DefaultHttpClient();
 		this.method = method;
 		this.url = url;
+		this.request_tag = request_tag;
 		this.bsonCallback = callback;
 		this.error = false;
 	}
@@ -90,13 +81,13 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 	@Override
 	protected BasicBSONObject doInBackground(String... args){
 		Log.i("REQUEST", "PREPARING with method = " + method+" and url = "+url);
-		Log.i("REQUEST",  "MedthodClass : " + methodClasses.get(method).toString());
+		Log.i("REQUEST",  "MedthodClass : " + ServerHelper.REQUEST_MAP.get(method).toString());
 		try {
-			this.request = methodClasses.get(this.method).getConstructor(String.class).newInstance(url);
+			this.request = ServerHelper.REQUEST_MAP.get(this.method).getConstructor(String.class).newInstance(url);
 			Log.i("REQUEST", "email = "+this.bsonParams.getString("email")
 					+" pass = "+this.bsonParams.getString("pass"));
 			//this.loadJSONParams();
-			this.loadBSONParams();
+			this.loadParams();
 			Log.i("REQUEST", "EXECUTING");
 			this.response = client.execute(request);
 			Log.i("REQUEST", "READING");
@@ -112,16 +103,19 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 	@Override
 	protected void onPostExecute(BasicBSONObject result){
 		if(this.bsonCallback != null){
-			this.clearBsonParams();
+			this.clearParams();
 			if(!this.error){
+				result.put(ServerHelper.RESQUEST_TAG, this.request_tag);
 				this.bsonCallback.call(result);
 			}else{
+				this.errorObject.putString(ServerHelper.RESQUEST_TAG, this.request_tag);
 				this.bsonCallback.onError(this.errorObject);
 			}
 		}
 	}
 	
-	protected void loadBSONParams() throws UnsupportedEncodingException{
+	@Override
+	public void loadParams() throws UnsupportedEncodingException{
 		//if the request is set
 		if(this.request!=null){
 			//if body request can be set
@@ -143,9 +137,10 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 			}
 		}
 	}
-
+	
+	@Override
 	public void setParams(Map<String, Object> paramMap){
-		this.clearBsonParams();
+		this.clearParams();
 		if(this.method=="PUT" || this.method=="POST"){
 			this.setBSONParams(paramMap);
 		}else{
@@ -153,12 +148,21 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 		}
 	}
 	
+	@Override
 	public void putParam(String key, Object value){
 		if(this.method=="PUT" || this.method=="POST"){
 			this.putBSONParam(key, value);
 		}else{
 			this.putHttpParam(key, value);
 		}
+	}
+	
+	@Override
+	public void clearParams(){
+		this.httpParams.clear();
+		//thx garbage collector <3 (screw you memory)
+		this.httpParams = new BasicHttpParams();
+		this.bsonParams = new BasicBSONObject();
 	}
 		
 	protected void putBSONParam(String key, Object value){
@@ -187,12 +191,5 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 	
 	protected void setHttpParams(HttpParams httpParams){
 		this.httpParams = (BasicHttpParams) httpParams;
-	}
-		
-	protected void clearBsonParams(){
-		this.httpParams.clear();
-		//thx garbage collector <3 (screw you memory)
-		this.httpParams = new BasicHttpParams();
-		this.bsonParams = new BasicBSONObject();
 	}
 }

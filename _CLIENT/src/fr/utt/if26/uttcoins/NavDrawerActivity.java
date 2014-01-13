@@ -3,11 +3,16 @@ package fr.utt.if26.uttcoins;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import fr.utt.if26.uttcoins.adapter.NavDrawerContentListAdapter;
+import fr.utt.if26.uttcoins.error.CustomErrorListener;
 import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
-import fr.utt.if26.uttcoins.utils.UserHelper;
+import fr.utt.if26.uttcoins.server.json.CustomJSONCallback;
+import fr.utt.if26.uttcoins.utils.ErrorHelper;
+import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -36,7 +41,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-public abstract class NavDrawerActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, OnFragmentInteractionListener{
+public abstract class NavDrawerActivity extends ActionBarActivity 
+implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, CustomJSONCallback, CustomErrorListener{
 	
 	protected ArrayList<JSONObject> drawerListItem;
 	protected DrawerLayout drawerLayout;
@@ -66,10 +72,12 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 		super.onCreate(savedInstanceState);
 		Bundle extras = getIntent().getExtras();
 		//si recoit des params (depuis le login notamment)
-		String userToken = (extras!=null) ? extras.getString("token") : null;
-		if(userToken != null && userToken.length() > 0)
-			//on set le token de session
-			UserHelper.setSession(userToken, null);
+		Bundle session = (extras!=null) ? extras.getBundle("session") : null;
+		if(session != null && session.containsKey(ServerHelper.SERVER_EMAIL_KEY) 
+				&& session.containsKey(ServerHelper.SERVER_TAG_KEY) 
+				&& session.containsKey(ServerHelper.SERVER_TOKEN_KEY))
+			//on set la session
+			ServerHelper.startSession(session);
 		setContentView(R.layout.activity_default_nav_drawer);
 		this.onCreateNavigationDrawer();
 		this.initInnerContentLayout((ViewGroup) findViewById(R.id.content_layout));
@@ -160,7 +168,7 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
     @Override
     protected void onPostResume(){
     	super.onPostResume();
-    	if(UserHelper.getToken() == null){
+    	if(ServerHelper.getSession() == null){
     		this.logout();
     	}
     		
@@ -271,15 +279,50 @@ public abstract class NavDrawerActivity extends ActionBarActivity implements Ada
 	
 	protected void exitApplication(){
 		this.logout();
-		//autres trucs ?
 	}
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	protected void logout(){
-		UserHelper.logout();
-		Intent loadLogin = new Intent(getApplicationContext(), LoginActivity.class);
-		loadLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		this.startActivity(loadLogin);
+		ServerHelper.logout(ServerHelper.JSON_REQUEST, this);
+	}
+	
+	@Override
+	public Object call(JSONObject jsonResponse){
+		try {
+			if(jsonResponse.getString(ServerHelper.RESQUEST_TAG) == ServerHelper.LOGOUT_TAG){
+				Intent loadLogin = new Intent(getApplicationContext(), LoginActivity.class);
+				loadLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				this.startActivity(loadLogin);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	public void onError(Bundle errorObject) {
+		this.showCustomErrorMessage(errorObject.getString(ErrorHelper.ERROR_TITLE_KEY), 
+				errorObject.getString(ErrorHelper.ERROR_MSG_KEY));
+	}
+
+	@Override
+	public void beforeCall() {	
+		
+	}
+	
+	public void showCustomErrorMessage(String title, String message){
+		new AlertDialog.Builder(this)
+		.setTitle(title)
+		.setMessage(message)
+		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		})
+		.show();
 	}
 	
 	protected int showFragment(int containerID, final Fragment fragment){
