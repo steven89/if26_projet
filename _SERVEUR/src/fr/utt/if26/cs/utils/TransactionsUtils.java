@@ -96,14 +96,18 @@ public class TransactionsUtils {
 		obj.put("balance", TransactionsUtils.computeTransactions(transactions));
 		ArrayList<BSONObject> objFrom = new ArrayList<>();
 		ArrayList<BSONObject> objTo = new ArrayList<>();
+		ArrayList<BSONObject> objAll = new ArrayList<>();
 		for(DataBean t : transactions[0]){
+			objAll.add((BSONObject) JSON.parse(t.toString()));
 			objFrom.add((BSONObject) JSON.parse(t.toString()));
 		}
 		for(DataBean t : transactions[1]){
+			objAll.add((BSONObject) JSON.parse(t.toString()));
 			objTo.add((BSONObject) JSON.parse(t.toString()));
 		}
-		obj.put("from", objFrom);
-		obj.put("to", objTo);
+		//obj.put("from", objFrom);
+		//obj.put("to", objTo);
+		obj.put("transactions", objAll);
 		return obj;
 	}
 }
