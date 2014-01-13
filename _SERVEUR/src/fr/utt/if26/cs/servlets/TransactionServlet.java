@@ -90,10 +90,12 @@ public class TransactionServlet extends HttpServlet {
 		if(LoginManager.checkAuth(params)){
 			if(ServletUtils.checkRequiredFields(new String[] {"email", "to", "amount"}, params)){
 				Transaction transaction=null;
+				
 				try {
+					User user = UserUtils.getUserFromEmail(params.getString("email"));
 					transaction = new Transaction(
 						params.getInt("amount"), 
-						params.getString("email"),
+						user.getTag(),
 						params.getString("to")
 					);
 					TransactionsUtils.doTransaction(transaction);

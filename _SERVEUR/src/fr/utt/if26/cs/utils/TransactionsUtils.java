@@ -37,7 +37,7 @@ public class TransactionsUtils {
 		ArrayList<DataBean>[] transactions = new ArrayList[2];
 		Database dbTransactions = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);
 		BSONObject datas = new BasicBSONObject();
-		datas.put("from", user.getEmail());
+		datas.put("from", user.getTag());
 		ArrayList<DataBean> transactionsFrom = dbTransactions.findBeans(datas);
 		datas = new BasicBSONObject();
 		datas.put("to", user.getTag());
@@ -66,7 +66,7 @@ public class TransactionsUtils {
 		// CHECK user from
 		boolean userFromOk = (t.getFrom().equals(User.SYS_USER))?true:false;
 		if(!userFromOk){
-			DataBean userFrom = dbUsers.getBean("email", t.getFrom());
+			DataBean userFrom = dbUsers.getBean("tag", t.getFrom());
 			if(userFrom==null)
 				throw new BeanException("invalid debitor");
 			applyTransactionsOnUser(userFrom);

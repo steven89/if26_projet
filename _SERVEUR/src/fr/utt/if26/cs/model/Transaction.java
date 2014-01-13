@@ -12,7 +12,7 @@ import fr.utt.if26.cs.exceptions.BeanException;
 public class Transaction extends DataBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	protected int amount;
-	protected String from; // User.SYS_USER or email
+	protected String from; // User.SYS_USER or tag
 	protected String to; // user tag
 	protected String date;
 	protected String id;
@@ -20,6 +20,7 @@ public class Transaction extends DataBean implements Serializable {
 	
 	
 	public Transaction(int somme, String crediteurPseudo, String destinatairePseudo) throws BeanException{
+		System.out.println(crediteurPseudo);
 		this.setAmount(somme);
 		this.setFrom(crediteurPseudo);
 		this.setTo(destinatairePseudo);
@@ -72,7 +73,7 @@ public class Transaction extends DataBean implements Serializable {
 	}
 	
 	public void setFrom(String from) throws BeanException{
-		if(from.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$") || from.equals(User.SYS_USER))
+		if(from.matches("^[a-zA-Z0-9_-]{3,}$") || from.equals(User.SYS_USER))
 			this.from = from;
 		else
 			throw new BeanException("invalid from");
