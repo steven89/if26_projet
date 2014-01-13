@@ -87,7 +87,8 @@ public class ServletUtils {
             array[i] = Byte.valueOf(tab[i]);
         }
         BSONDecoder decoder = new BasicBSONDecoder();
-        BasicBSONObject obje = (BasicBSONObject) decoder.readObject(array);
-        return obje.toString();
+        BasicBSONObject obj = (BasicBSONObject) decoder.readObject(array);
+        System.out.println(obj);
+        return obj.toString();
 	}
 }
