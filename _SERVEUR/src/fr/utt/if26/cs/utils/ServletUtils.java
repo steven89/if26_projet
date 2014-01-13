@@ -14,7 +14,7 @@ import com.mongodb.util.JSONParseException;
 
 public class ServletUtils {
 	
-	public static final boolean useBSON = false;
+	public static final boolean useBSON = true;
 	
 	public final static int GET = 0;
 	public final static int POST = 1;
