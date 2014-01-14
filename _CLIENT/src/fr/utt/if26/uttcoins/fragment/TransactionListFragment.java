@@ -207,4 +207,8 @@ CustomBasicBSONCallback{
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void refreshData() {
+		this.mAdapter.loadData();
+	}
 }

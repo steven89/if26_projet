@@ -196,10 +196,16 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 			case R.id.logout_action :
 				this.logout();
 				return true;
+			case R.id.refresh_action : 
+				this.refresh();
+				return true;
     	}
         return super.onOptionsItemSelected(item);
     }
 
+	protected void refresh() {		
+	}
+	
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		//TODO que faire au click sur une categorie ? nouveau fragment ? nouvelle activity ?

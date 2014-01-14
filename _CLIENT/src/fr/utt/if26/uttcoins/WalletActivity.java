@@ -89,5 +89,12 @@ public class WalletActivity extends NavDrawerActivity implements OnTransactionLi
 	public void onTransactionListFragmentInteraction(Transaction selected_transaction) {
 		
 	}
+	
+	@Override
+	protected void refresh(){
+		super.refresh();
+		this.userSoldeFragment.refreshData();
+		this.transactionsListFragment.refreshData();
+	}
 
 }
