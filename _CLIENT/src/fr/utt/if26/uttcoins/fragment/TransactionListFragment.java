@@ -122,9 +122,18 @@ CustomBasicBSONCallback{
 			Transaction selectedTransaction = TransactionList.ITEMS.get(info.position);
 			switch(item.getItemId()){
 				case R.id.new_transaction_action:
-					if(!selectedTransaction.getReceiver().equals(ServerHelper.getSession().getString(ServerHelper.SERVER_TAG_KEY))){
+					String receiverName = null;
+					//si le destinataire de la transaction == compte courrant
+					if(selectedTransaction.getReceiver().equals(ServerHelper.getSession().getString(ServerHelper.SERVER_TAG_KEY))){
+						//on propose une nouvelle transaction, dans l'autre sens
+						receiverName = selectedTransaction.getSender();
+					}else{
+						//sinon on propose une nouvelle transaction identique
+						receiverName = selectedTransaction.getReceiver();
+					}
+					if(receiverName != null){
 						Bundle args = new Bundle();
-						args.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, selectedTransaction.getReceiver());
+						args.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, receiverName);
 						args.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, selectedTransaction.getAmount());
 						this.goToPaymentActivity(args);
 					}
