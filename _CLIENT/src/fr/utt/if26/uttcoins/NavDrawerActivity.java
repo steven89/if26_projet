@@ -230,17 +230,17 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 		//Log.v("POSITION", Integer.toString(position));
 		switch(position){
 			case 0:
-				newActivity = new Intent(getApplicationContext(), ActivitiesActivity.class);
-				break;
-			case 1:
 				newActivity = new Intent(getApplicationContext(), WalletActivity.class);
 				break;
-			case 2:
-				newActivity = new Intent(getApplicationContext(), TransactionsActivity.class);
-				break;
-			case 3:
+			case 1:
 				newActivity = new Intent(getApplicationContext(), PaiementActivity.class);
 				break;
+//			case 2:
+//				newActivity = new Intent(getApplicationContext(), TransactionsActivity.class);
+//				break;
+//			case 3:
+//				newActivity = new Intent(getApplicationContext(), ActivitiesActivity.class);
+//				break;
 			default :
 				//cas imprévu ? screw you
 				newActivity = null;
@@ -294,6 +294,7 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 			Intent loadLogin = new Intent(getApplicationContext(), LoginActivity.class);
 			loadLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			this.startActivity(loadLogin);
+			this.finish();
 		}
 		return null;
 	}

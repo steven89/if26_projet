@@ -110,6 +110,7 @@ public class ServerHelper implements CustomBasicBSONCallback{
 	public static void getUserTransactions(CustomHttpRequestCallback callback){
 			BasicBSONHttpRequest request = 
 					new BasicBSONHttpRequest(GET, TRANSACTION_URL, GET_TRANSACTION_TAG, (CustomBasicBSONCallback) callback);
+			Log.i("SERVER_HELPER", callback.getClass().getCanonicalName());
 			request.putParam(SERVER_TOKEN_KEY, user.getToken());
 			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
 			request.execute();
