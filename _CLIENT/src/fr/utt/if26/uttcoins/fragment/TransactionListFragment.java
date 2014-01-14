@@ -122,10 +122,12 @@ CustomBasicBSONCallback{
 			Transaction selectedTransaction = TransactionList.ITEMS.get(info.position);
 			switch(item.getItemId()){
 				case R.id.new_transaction_action:
-					Bundle args = new Bundle();
-					args.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, selectedTransaction.getReceiver());
-					args.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, selectedTransaction.getAmount());
-					this.goToPaymentActivity(args);
+					if(!selectedTransaction.getReceiver().equals(ServerHelper.getSession().getString(ServerHelper.SERVER_TAG_KEY))){
+						Bundle args = new Bundle();
+						args.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, selectedTransaction.getReceiver());
+						args.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, selectedTransaction.getAmount());
+						this.goToPaymentActivity(args);
+					}
 					break;
 			}
 		}

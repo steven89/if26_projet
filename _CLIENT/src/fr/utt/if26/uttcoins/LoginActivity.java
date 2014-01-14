@@ -96,7 +96,7 @@ CustomBasicBSONCallback, CustomErrorListener{
 		boolean isInputsValide = (this.loginInputFragment.isInputValide() && this.passwordInputFragment.isInputValide());
 		if(isInputsValide){
 			//Log.i("ACTION","CLICKED");
-			ServerHelper.logUser(loginInputFragment.getValue(), passwordInputFragment.getValue(), ServerHelper.BSON_REQUEST, this);
+			ServerHelper.logUser(loginInputFragment.getValue(), passwordInputFragment.getValue(), this);
 		}
 	}
 	

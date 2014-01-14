@@ -65,14 +65,14 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 	
 	@Override
 	protected BasicBSONObject doInBackground(String... args){
-		//Log.i("REQUEST", "PREPARING with method = " + method+" and url = "+url);
+		Log.i("REQUEST", "PREPARING with method = " + method+" and url = "+url);
 		//Log.i("REQUEST",  "MedthodClass : " + ServerHelper.REQUEST_MAP.get(method).toString());
 		try {
 			this.request = ServerHelper.REQUEST_MAP.get(this.method).getConstructor(String.class).newInstance(url);
 			this.loadParams();
-			//Log.i("REQUEST", "bsonParams = "+this.bsonParams.toString());
-			//Log.i("REQUEST", "httpParams = "+this.request.getParams());
-			//Log.i("REQUEST", "EXECUTING");
+			Log.i("REQUEST", "bsonParams = "+this.bsonParams.toString());
+			Log.i("REQUEST", "httpParams = "+this.request.getParams());
+			Log.i("REQUEST", "EXECUTING");
 			this.response = client.execute(request);
 			//Log.i("REQUEST", "READING");
 			return BsonHandler.readResponse(this.response.getEntity().getContent());

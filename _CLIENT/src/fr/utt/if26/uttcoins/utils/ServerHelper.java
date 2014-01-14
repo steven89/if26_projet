@@ -9,10 +9,10 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.bson.BasicBSONObject;
 
+import fr.utt.if26.uttcoins.error.CustomIllegalParametter;
 import fr.utt.if26.uttcoins.model.Transaction;
 import fr.utt.if26.uttcoins.model.TransactionList;
 import fr.utt.if26.uttcoins.model.User;
-import fr.utt.if26.uttcoins.server.CustomHttpRequestCallback;
 import fr.utt.if26.uttcoins.server.bson.BasicBSONHttpRequest;
 import fr.utt.if26.uttcoins.server.bson.CustomBasicBSONCallback;
 import android.os.Bundle;
@@ -74,14 +74,12 @@ public class ServerHelper implements CustomBasicBSONCallback{
 		}
 	}
 	
-	public static void logUser(String email, String password, String request_tag, CustomHttpRequestCallback callback){
-		if(request_tag == BSON_REQUEST){
+	public static void logUser(String email, String password, CustomBasicBSONCallback callback){
 			BasicBSONHttpRequest request = 
 					new BasicBSONHttpRequest(PUT, LOGIN_URL, LOGIN_TAG, (CustomBasicBSONCallback) callback);
 			request.putParam(SERVER_EMAIL_KEY, email);
 			request.putParam(SERVER_PASS_KEY, password);
 			request.execute();
-		}
 // 		Historiquement : support de requetes JSON
 //		if(request_tag == JSON_REQUEST){
 //			JsonHttpRequest request = 
@@ -92,7 +90,7 @@ public class ServerHelper implements CustomBasicBSONCallback{
 //		}	
 	}
 	
-	public static void logout(CustomHttpRequestCallback callback) {
+	public static void logout(CustomBasicBSONCallback callback) {
 		//Log.i("USER", "USER SENDING LOGOUT");
 		BasicBSONHttpRequest request = 
 				new BasicBSONHttpRequest(PUT, LOGOUT_URL, LOGOUT_TAG, (CustomBasicBSONCallback) callback);
@@ -107,7 +105,7 @@ public class ServerHelper implements CustomBasicBSONCallback{
 		getUserTransactions(server_bson_request_callback);
 	}
 	
-	public static void getUserTransactions(CustomHttpRequestCallback callback){
+	public static void getUserTransactions(CustomBasicBSONCallback callback){
 			BasicBSONHttpRequest request = 
 					new BasicBSONHttpRequest(GET, TRANSACTION_URL, GET_TRANSACTION_TAG, (CustomBasicBSONCallback) callback);
 			Log.i("SERVER_HELPER", callback.getClass().getCanonicalName());
@@ -119,22 +117,26 @@ public class ServerHelper implements CustomBasicBSONCallback{
 	public static void postNewTransactions(Transaction newTransaction){
 		postNewTransactions(newTransaction, server_bson_request_callback);
 	}
-	public static void postNewTransactions(Transaction newTransaction, CustomHttpRequestCallback callback){
-		BasicBSONHttpRequest request = 
-				new BasicBSONHttpRequest(POST, TRANSACTION_URL, POST_TRANSACTION_TAG, (CustomBasicBSONCallback) callback);
-		request.putParam(SERVER_TOKEN_KEY, user.getToken());
-		request.putParam(SERVER_EMAIL_KEY, user.getEmail());
-		Log.i("REQUEST", "posting new transaction : "+newTransaction.toString());
-		request.putParam(SERVEUR_TRANSACTION_AMOUNT_TAG, newTransaction.getAmount());
-		request.putParam(SERVER_TRANSACTION_RECEIVER_TAG, newTransaction.getReceiver());
-		request.execute();
+	public static void postNewTransactions(Transaction newTransaction, CustomBasicBSONCallback callback){
+		if(newTransaction.getAmount() > 0 && newTransaction.getReceiver() != null){
+			BasicBSONHttpRequest request = 
+					new BasicBSONHttpRequest(POST, TRANSACTION_URL, POST_TRANSACTION_TAG, (CustomBasicBSONCallback) callback);
+			request.putParam(SERVER_TOKEN_KEY, user.getToken());
+			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
+			Log.i("REQUEST", "posting new transaction : "+newTransaction.toString());
+			request.putParam(SERVEUR_TRANSACTION_AMOUNT_TAG, newTransaction.getAmount());
+			request.putParam(SERVER_TRANSACTION_RECEIVER_TAG, newTransaction.getReceiver());
+			request.execute();
+		}else{
+			callback.onError(ErrorHelper.getErrorObject(new CustomIllegalParametter()));
+		}
 	}
 	
 	
 	public static void getUserSolde(){
 		getUserSolde(server_bson_request_callback);
 	}
-	public static void getUserSolde(CustomHttpRequestCallback callback){
+	public static void getUserSolde(CustomBasicBSONCallback callback){
 		BasicBSONHttpRequest request = 
 				new BasicBSONHttpRequest(GET, USER_WALLET_URL, GET_WALLET_TAG, (CustomBasicBSONCallback) callback);
 		//Log.i("REQUEST", "get balance with params = "+user.toBundle().toString());
@@ -156,14 +158,18 @@ public class ServerHelper implements CustomBasicBSONCallback{
 		}
 	}
 
-	public static Bundle getSession() {		
-		return user.getCurrentSession();
+	public static Bundle getSession() {
+		if(user !=null){
+			return user.getCurrentSession();
+		}else{
+			return null;
+		}
 	}
 
 	public static void signUp(Bundle userData) {
 		signUp(userData, server_bson_request_callback);
 	}
-	public static void signUp(Bundle userData, CustomHttpRequestCallback callback) {
+	public static void signUp(Bundle userData, CustomBasicBSONCallback callback) {
 		BasicBSONHttpRequest request = 
 				new BasicBSONHttpRequest(POST, SIGN_UP_URL, SIGN_UP_TAG, (CustomBasicBSONCallback) callback);
 		//Log.i("REQUEST", "sign up balance with params = "+userData.toString());
