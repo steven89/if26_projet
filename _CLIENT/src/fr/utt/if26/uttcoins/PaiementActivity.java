@@ -145,7 +145,10 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	public Object call(BasicBSONObject bsonResponse){
 		super.call(bsonResponse);
 		if(bsonResponse.getString(ServerHelper.RESQUEST_TAG) == ServerHelper.POST_TRANSACTION_TAG){
-			this.userSoldeFragment.refreshData();
+			Intent walletActivity = new Intent(getApplicationContext(), WalletActivity.class);
+			walletActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			this.startActivity(walletActivity);	
+			this.finish();
 		}
 		this.formPaymentFragment.hideLoader();
 		return null;
@@ -153,6 +156,18 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	
 	@Override
 	public void beforeCall(){
+		super.beforeCall();
 		this.formPaymentFragment.showLoader();
+	}
+	
+	@Override
+	public void onError(Bundle errorObject){
+		super.onError(errorObject);
+		this.formPaymentFragment.hideLoader();
+	}
+	
+	@Override
+	protected void refresh(){
+		this.userSoldeFragment.refreshData();
 	}
 }

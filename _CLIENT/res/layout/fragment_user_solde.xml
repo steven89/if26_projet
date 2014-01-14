@@ -10,17 +10,17 @@
         android:padding="10dp">
 
         <TextView
-            android:id="@+id/solde_main_title"
+            android:id="@+id/user_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/solde_main_title_text"
+            android:text="@string/userNotFound"
             android:textAppearance="?android:attr/textAppearanceLarge" />
         
          <TextView
             android:id="@+id/solde_sub_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/solde_main_title"
+            android:layout_below="@+id/user_tag"
             android:text="@string/solde_sub_title_text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
          

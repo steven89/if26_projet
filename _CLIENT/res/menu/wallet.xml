@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:compat="http://schemas.android.com/apk/res-auto" >
-
+    
+    <item
+        android:id="@+id/refresh_action"
+        android:orderInCategory="90"
+        android:showAsAction="ifRoom"
+        compat:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_refresh"
+        android:title="@string/refresh_action_title">
+	</item>
+	
     <item
         android:id="@id/setting_action"
         android:orderInCategory="100"
@@ -19,5 +28,5 @@
 			         android:title="@string/logout_action_title">
     		</item>
 		</menu>
-    </item>    
+    </item> 
 </menu>
