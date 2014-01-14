@@ -36,23 +36,24 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> implements
 	private TextView debit;
 	
 	
-	public TransactionListAdapter(Context context) {
-		super(context, R.layout.transaction_row);
+	public TransactionListAdapter(Context context, ArrayList<Transaction> items) {
+		super(context, R.layout.transaction_row, items);
 		this.context = context;
-		this.items = new ArrayList<Transaction>();
+		this.items = items;
 		this.loadData();
 	}
 	
 	public void loadData(){
-		ServerHelper.getUserTransactions(ServerHelper.BSON_REQUEST, this);
+		ServerHelper.getUserTransactions(this);
 	}
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent){
+	    
 		LayoutInflater inflater = (LayoutInflater) this.context.
 				getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.transaction_row, parent, false);
-		Transaction transaction = items.get(position);
+		Transaction transaction = this.getItem(position);
 		this.personIco = (ImageView) rowView.findViewById(R.id.person_icon);
 		this.personName = (TextView) rowView.findViewById(R.id.person_name);
 		this.credit = (TextView) rowView.findViewById(R.id.solde_credit);
@@ -61,10 +62,10 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> implements
 		//si le destinataire de la transaction == l'utilisateur
 		if(transaction.getReceiver().equals(ServerHelper.getSession().getString(ServerHelper.SERVER_TAG_KEY))){
 			nameToDisplay = transaction.getSender();
-			this.credit.setText(Integer.toString(transaction.getAmount()));		
+			this.credit.setText("+"+Integer.toString(transaction.getAmount()));		
 		}else{
 			nameToDisplay = transaction.getReceiver();
-			this.debit.setText(Integer.toString(transaction.getAmount()));		
+			this.debit.setText("-"+Integer.toString(transaction.getAmount()));		
 		}
 		//TODO : un affichage intelligent
 		this.personName.setText(nameToDisplay);
@@ -74,7 +75,7 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> implements
 	@Override
 	public Object call(BasicBSONObject bsonResponse) {
 		if(bsonResponse.getString(ServerHelper.RESQUEST_TAG) == ServerHelper.GET_TRANSACTION_TAG){
-			Log.i("ADAPTER", "getting result : "+bsonResponse.get(ServerHelper.SERVER_TRANSACTIONS_KEY).toString());
+			//Log.i("ADAPTER", "getting result : "+bsonResponse.get(ServerHelper.SERVER_TRANSACTIONS_KEY).toString());
 			BasicBSONList bsonList = (BasicBSONList) bsonResponse.get(ServerHelper.SERVER_TRANSACTIONS_KEY);
 			this.items.clear();
 			for(int i = 0; i < bsonList.size(); i++){
@@ -86,11 +87,12 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> implements
 							bsonData.getString(ServerHelper.SERVER_RECEIVER_KEY), 
 							bsonData.getString(ServerHelper.SERVER_SENDER_KEY), 
 							transactionAmount);
-					this.items.add(tmpTransaction); 
+					this.add(tmpTransaction); 
 				}
 			}			
-			this.notifyDataSetChanged();
 		}
+		//Log.i("TransactionListAdapter", this.items.toString());
+		this.notifyDataSetChanged();
 		return null;
 	}
 

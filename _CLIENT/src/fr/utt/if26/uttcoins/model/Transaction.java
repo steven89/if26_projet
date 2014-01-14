@@ -63,12 +63,12 @@ public class Transaction {
 	}
 	
 	public void setReceiver(String receiver) throws CustomIllegalParametter{
-		Log.i("Transaction", "set receiver ("+receiver+") with session = "+ServerHelper.getSession().toString());
+		//Log.i("Transaction", "set receiver ("+receiver+") with session = "+ServerHelper.getSession().toString());
 		if(receiver.matches(User.TAG_PATTERN) 
 				&& !receiver.equals(ServerHelper.getSession().getString(ServerHelper.SERVER_TAG_KEY)) ){
 			this.receiver = receiver;
 		}else{
-			Log.e("Transaction", "illegal receiverName ("+receiver+")");
+			//Log.e("Transaction", "illegal receiverName ("+receiver+")");
 			throw new CustomIllegalParametter();
 		}
 	}
@@ -82,7 +82,7 @@ public class Transaction {
 				&& sender.equals(ServerHelper.getSession().getString(ServerHelper.SERVER_TAG_KEY)) ){
 			this.sender = sender;
 		}else{
-			Log.e("Transaction", "illegal senderrName ("+sender+")");
+			//Log.e("Transaction", "illegal senderrName ("+sender+")");
 			throw new CustomIllegalParametter();
 		}
 	}
@@ -96,7 +96,7 @@ public class Transaction {
 		if(amount >= 0){
 			this.amount = amount;
 		}else{
-			Log.e("TRANSACTION", "amount ("+Integer.toString(amount)+") > 0 ");
+			//Log.e("TRANSACTION", "amount ("+Integer.toString(amount)+") > 0 ");
 			throw new CustomIllegalParametter();
 		}
 	}

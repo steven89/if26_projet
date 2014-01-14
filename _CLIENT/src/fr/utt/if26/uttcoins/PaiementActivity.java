@@ -33,7 +33,7 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	private static final int INNER_LIST_VIEW_CONTAINER_ID = R.id.formPaymentFragContainer;
 	private static final int INNER_HEADER_FRAG_CONTAINER_ID = R.id.user_solde_container;
 
-	public final static int positionInDrawer = 3;
+	public final static int positionInDrawer = 1;
 	
 	private FormPaiementFragment formPaymentFragment;
 	private UserSoldeFragment userSoldeFragment;
@@ -43,14 +43,14 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.i("NAV", "PaiementActivity has started");
+		//Log.i("NAV", "PaiementActivity has started");
 		this.formPaymentFragment.setArguments(this.getPresetData(savedInstanceState));
 	}
 
 	private Bundle getPresetData(Bundle savedInstanceState) {
 		Bundle extra = (this.getIntent().getExtras() != null) ? this.getIntent().getExtras() : new Bundle();
 		savedInstanceState = (savedInstanceState != null) ? savedInstanceState : new Bundle();
-		Log.i("ACTIVITY", "got PaiementActivity's Bundle");
+		//Log.i("ACTIVITY", "got PaiementActivity's Bundle");
 		Bundle preSetData = new Bundle();
 		String transactionReceiver = savedInstanceState.getString(ServerHelper.TRANSACTION_RECEIVER_KEY);
 		transactionReceiver = (transactionReceiver != null) ? 
@@ -82,7 +82,7 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 		this.formPaymentFragment = (FormPaiementFragment) fm.findFragmentByTag(FORM_PAYMENT_FRAGMENT_TAG);
 		if(this.formPaymentFragment == null)
 			this.formPaymentFragment = FormPaiementFragment.newInstance(FORM_PAYMENT_FRAGMENT_TAG);
-		Log.i("ACTIVITY", "formPaymentFragment initialized !");
+		//Log.i("ACTIVITY", "formPaymentFragment initialized !");
 		this.userSoldeFragment = (UserSoldeFragment) fm.findFragmentByTag(USER_BALANCE_FRAGMENT_TAG);
 		if(this.userSoldeFragment == null)
 			this.userSoldeFragment = UserSoldeFragment.newInstance();
@@ -133,7 +133,7 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	@Override
 	public void onPaymentConfirmationDialogPositiveClick(PaymentConfirmationDialogFragment dialog) {
 		Transaction transactionToPost = new Transaction(dialog.getTransactionReceiver(), dialog.getTransactionAmount());
-		ServerHelper.postNewTransactions(transactionToPost, ServerHelper.BSON_REQUEST, this);
+		ServerHelper.postNewTransactions(transactionToPost, this);
 	}
 
 	@Override

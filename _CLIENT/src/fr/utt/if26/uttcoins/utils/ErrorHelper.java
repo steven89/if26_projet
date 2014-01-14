@@ -71,7 +71,7 @@ public class ErrorHelper {
 		//lazy implementation
 		CustomServerException serveur_exception = null;
 		try {
-			Log.i("ERROR", error_tag);
+			//Log.i("ERROR", error_tag);
 			serveur_exception = CUSTOM_ERROR_MAP.get(error_tag).getConstructor().newInstance();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

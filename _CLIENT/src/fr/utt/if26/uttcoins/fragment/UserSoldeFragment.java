@@ -91,7 +91,7 @@ public class UserSoldeFragment extends CustomFragment implements CustomBasicBSON
 		if(bsonResponse.getString(ServerHelper.RESQUEST_TAG) == ServerHelper.GET_WALLET_TAG){
 			this.userAccountBalance.setText(bsonResponse.getString(ServerHelper.SERVER_BALANCE_KEY));
 		}else{
-			Log.e("ERROR", "no balance in : " + bsonResponse.toString());
+			//Log.e("ERROR", "no balance in : " + bsonResponse.toString());
 		}
 		return null;
 	}
@@ -122,6 +122,6 @@ public class UserSoldeFragment extends CustomFragment implements CustomBasicBSON
 	}
 	
 	public void refreshData(){
-		ServerHelper.getUserSolde(ServerHelper.BSON_REQUEST, this);
+		ServerHelper.getUserSolde(this);
 	}
 }

@@ -40,7 +40,7 @@ public class JSONHandler {
 		} catch (IOException e) {
 			throw e;
 		}
-		Log.i("STRING RESPONSE", stringResponse.toString());
+		//Log.i("STRING RESPONSE", stringResponse.toString());
 		JsonResponse = JSONParse(stringResponse.toString());
 		if(JsonResponse.has("error")){
 			throw ErrorHelper.getCustomServerException(JsonResponse.getString("error"));

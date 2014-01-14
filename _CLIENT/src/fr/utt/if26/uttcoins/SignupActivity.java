@@ -123,8 +123,8 @@ CustomBasicBSONCallback, CustomErrorListener{
 	}
 	
 	protected boolean isFormValide(){
-		Log.i("VALIDE", "email is valide ? "+this.emailInput.isInputValide());
-		Log.i("VALIDE", "email is valide ? "+this.passwordInput.isInputValide());
+		//Log.i("VALIDE", "email is valide ? "+this.emailInput.isInputValide());
+		//Log.i("VALIDE", "email is valide ? "+this.passwordInput.isInputValide());
 		return (this.emailInput.isInputValide() && this.passwordInput.isInputValide());
 	}
 	

@@ -81,7 +81,7 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_form_paiement, container,
 				false);
-		Log.i("STATE", "(FormPaiementFragment) OnCreateView");
+		//Log.i("STATE", "(FormPaiementFragment) OnCreateView");
 		this.transactionReceiverInput = (EditText) view.findViewById(R.id.payment_receiver);
 		this.transactionAmountInput = (EditText) view.findViewById(R.id.payment_amount);
 		this.payment_confirmation_button = (Button) view.findViewById(R.id.payment_confirmation_button);

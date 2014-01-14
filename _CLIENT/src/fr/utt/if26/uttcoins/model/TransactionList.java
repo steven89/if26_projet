@@ -24,4 +24,13 @@ public class TransactionList {
 		ITEMS.add(item);
 		ITEMS_MAP.put(item.getId(), item);
 	}
+
+	public static void loadData() {
+		ServerHelper.getUserTransactions();
+	}
+	
+	public static void clear(){
+		ITEMS.clear();
+		ITEMS_MAP.clear();
+	}
 }

@@ -1,7 +1,5 @@
 package fr.utt.if26.uttcoins.utils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.http.client.methods.HttpDelete;
@@ -9,25 +7,20 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.bson.BasicBSONCallback;
 import org.bson.BasicBSONObject;
 
 import fr.utt.if26.uttcoins.model.Transaction;
 import fr.utt.if26.uttcoins.model.TransactionList;
 import fr.utt.if26.uttcoins.model.User;
-import fr.utt.if26.uttcoins.server.CustomHttpRequest;
 import fr.utt.if26.uttcoins.server.CustomHttpRequestCallback;
 import fr.utt.if26.uttcoins.server.bson.BasicBSONHttpRequest;
 import fr.utt.if26.uttcoins.server.bson.CustomBasicBSONCallback;
-import fr.utt.if26.uttcoins.server.json.CustomJSONCallback;
-import fr.utt.if26.uttcoins.server.json.JsonHttpRequest;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
 public class ServerHelper implements CustomBasicBSONCallback{
 	
-	private static final String SERVER_URL = "http://10.0.2.2:8080/_SERVEUR"; //"http://88.186.76.236/_SERVEUR";
+	private static final String SERVER_URL = "http://88.186.76.236/_SERVEUR"; //"http://10.0.2.2:8080/_SERVEUR";
 	private static final String TRANSACTION_URL = SERVER_URL + "/Transaction";
 	private static final String USER_WALLET_URL = SERVER_URL + "/UserWallet";
 	private static final String LOGOUT_URL = SERVER_URL + "/Logout";
@@ -89,94 +82,67 @@ public class ServerHelper implements CustomBasicBSONCallback{
 			request.putParam(SERVER_PASS_KEY, password);
 			request.execute();
 		}
-		if(request_tag == JSON_REQUEST){
-			JsonHttpRequest request = 
-					new JsonHttpRequest(PUT, LOGIN_URL, LOGIN_TAG,(CustomJSONCallback) callback);
-			request.putParam(SERVER_EMAIL_KEY, email);
-			request.putParam(SERVER_PASS_KEY, password);
-			request.execute();
-		}	
+// 		Historiquement : support de requetes JSON
+//		if(request_tag == JSON_REQUEST){
+//			JsonHttpRequest request = 
+//					new JsonHttpRequest(PUT, LOGIN_URL, LOGIN_TAG,(CustomJSONCallback) callback);
+//			request.putParam(SERVER_EMAIL_KEY, email);
+//			request.putParam(SERVER_PASS_KEY, password);
+//			request.execute();
+//		}	
 	}
 	
-	public static void logout(String request_tag, CustomHttpRequestCallback callback) {
-		Log.i("USER", "USER SENDING LOGOUT");
-		if(request_tag == BSON_REQUEST){
-			BasicBSONHttpRequest request = 
-					new BasicBSONHttpRequest(PUT, LOGOUT_URL, LOGOUT_TAG, (CustomBasicBSONCallback) callback);
-			request.putParam(SERVER_TOKEN_KEY, user.getToken());
-			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
-			request.execute();
-			user = null;
-		}
-		if(request_tag == JSON_REQUEST){
-			JsonHttpRequest request = 
-					new JsonHttpRequest(PUT, LOGOUT_URL, LOGOUT_TAG, (CustomJSONCallback) callback);
-			request.putParam(SERVER_TOKEN_KEY, user.getToken());
-			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
-			request.execute();
-		}
+	public static void logout(CustomHttpRequestCallback callback) {
+		//Log.i("USER", "USER SENDING LOGOUT");
+		BasicBSONHttpRequest request = 
+				new BasicBSONHttpRequest(PUT, LOGOUT_URL, LOGOUT_TAG, (CustomBasicBSONCallback) callback);
+		request.putParam(SERVER_TOKEN_KEY, user.getToken());
+		request.putParam(SERVER_EMAIL_KEY, user.getEmail());
+		request.execute();
+		TransactionList.clear();
+		user = null;
 	}
 	
-	public static void getUserTransactions(String request_tag, CustomHttpRequestCallback callback){
-		//TODO améliorer ça avec un combo héritage/générécité entre AsyncTask et les classes custom qui en hérite dans l'application
-		if(request_tag == BSON_REQUEST){
+	public static void getUserTransactions(){
+		getUserTransactions(server_bson_request_callback);
+	}
+	
+	public static void getUserTransactions(CustomHttpRequestCallback callback){
 			BasicBSONHttpRequest request = 
 					new BasicBSONHttpRequest(GET, TRANSACTION_URL, GET_TRANSACTION_TAG, (CustomBasicBSONCallback) callback);
 			request.putParam(SERVER_TOKEN_KEY, user.getToken());
 			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
 			request.execute();
-		}
-		if(request_tag == JSON_REQUEST){
-			JsonHttpRequest request = 
-					new JsonHttpRequest(GET, TRANSACTION_URL, GET_TRANSACTION_TAG, (CustomJSONCallback) callback);
-			request.putParam(SERVER_TOKEN_KEY, user.getToken());
-			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
-			request.execute();
-		}		
 	}
 	
-	public static void postNewTransactions(Transaction newTransaction, String request_tag, CustomHttpRequestCallback callback){
-		//TODO améliorer ça avec un combo héritage/générécité entre AsyncTask et les classes custom qui en hérite dans l'application
-		if(request_tag == BSON_REQUEST){
-			BasicBSONHttpRequest request = 
-					new BasicBSONHttpRequest(POST, TRANSACTION_URL, POST_TRANSACTION_TAG, (CustomBasicBSONCallback) callback);
-			request.putParam(SERVER_TOKEN_KEY, user.getToken());
-			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
-			Log.i("REQUEST", "posting new transaction : "+newTransaction.toString());
-			request.putParam(SERVEUR_TRANSACTION_AMOUNT_TAG, newTransaction.getAmount());
-			request.putParam(SERVER_TRANSACTION_RECEIVER_TAG, newTransaction.getReceiver());
-			request.execute();
-		}
-		if(request_tag == JSON_REQUEST){
-			JsonHttpRequest request = 
-					new JsonHttpRequest(POST, TRANSACTION_URL, POST_TRANSACTION_TAG, (CustomJSONCallback) callback);
-			request.putParam(SERVER_TOKEN_KEY, user.getToken());
-			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
-			request.putParam(SERVEUR_TRANSACTION_AMOUNT_TAG, newTransaction.getAmount());
-			request.putParam(SERVER_TRANSACTION_RECEIVER_TAG, newTransaction.getReceiver());
-			request.execute();
-		}		
+	public static void postNewTransactions(Transaction newTransaction){
+		postNewTransactions(newTransaction, server_bson_request_callback);
+	}
+	public static void postNewTransactions(Transaction newTransaction, CustomHttpRequestCallback callback){
+		BasicBSONHttpRequest request = 
+				new BasicBSONHttpRequest(POST, TRANSACTION_URL, POST_TRANSACTION_TAG, (CustomBasicBSONCallback) callback);
+		request.putParam(SERVER_TOKEN_KEY, user.getToken());
+		request.putParam(SERVER_EMAIL_KEY, user.getEmail());
+		//Log.i("REQUEST", "posting new transaction : "+newTransaction.toString());
+		request.putParam(SERVEUR_TRANSACTION_AMOUNT_TAG, newTransaction.getAmount());
+		request.putParam(SERVER_TRANSACTION_RECEIVER_TAG, newTransaction.getReceiver());
+		request.execute();
 	}
 	
-	public static void getUserSolde(String request_tag, CustomHttpRequestCallback callback){
-		//TODO améliorer ça avec un combo héritage/générécité entre AsyncTask et les classes custom qui en hérite dans l'application
-		if(request_tag == BSON_REQUEST){
-			BasicBSONHttpRequest request = 
-					new BasicBSONHttpRequest(GET, USER_WALLET_URL, GET_WALLET_TAG, (CustomBasicBSONCallback) callback);
-			Log.i("REQUEST", "get balance with params = "+user.toBundle().toString());
-			request.putParam(SERVER_TOKEN_KEY, user.getToken());
-			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
+	
+	public static void getUserSolde(){
+		getUserSolde(server_bson_request_callback);
+	}
+	public static void getUserSolde(CustomHttpRequestCallback callback){
+		BasicBSONHttpRequest request = 
+				new BasicBSONHttpRequest(GET, USER_WALLET_URL, GET_WALLET_TAG, (CustomBasicBSONCallback) callback);
+		//Log.i("REQUEST", "get balance with params = "+user.toBundle().toString());
+		request.putParam(SERVER_TOKEN_KEY, user.getToken());
+		request.putParam(SERVER_EMAIL_KEY, user.getEmail());
+		if(callback!=server_bson_request_callback){
 			request.addCallback(server_bson_request_callback);
-			request.execute();
 		}
-		if(request_tag == JSON_REQUEST){
-			JsonHttpRequest request = 
-					new JsonHttpRequest(GET, USER_WALLET_URL, GET_WALLET_TAG, (CustomJSONCallback) callback);
-			Log.i("REQUEST", "get balance with params = "+user.toBundle().toString());
-			request.putParam(SERVER_TOKEN_KEY, user.getToken());
-			request.putParam(SERVER_EMAIL_KEY, user.getEmail());
-			request.execute();
-		}	
+		request.execute();
 	}
 	
 	public static void startSession(Bundle session) {
@@ -193,10 +159,13 @@ public class ServerHelper implements CustomBasicBSONCallback{
 		return user.getCurrentSession();
 	}
 
+	public static void signUp(Bundle userData) {
+		signUp(userData, server_bson_request_callback);
+	}
 	public static void signUp(Bundle userData, CustomHttpRequestCallback callback) {
 		BasicBSONHttpRequest request = 
 				new BasicBSONHttpRequest(POST, SIGN_UP_URL, SIGN_UP_TAG, (CustomBasicBSONCallback) callback);
-		Log.i("REQUEST", "sign up balance with params = "+userData.toString());
+		//Log.i("REQUEST", "sign up balance with params = "+userData.toString());
 		//{"email", "pass", "prenom", "nom", "tag"}
 		request.putParam(SERVER_EMAIL_KEY, userData.getString(SERVER_EMAIL_KEY));
 		request.putParam(SERVER_PASS_KEY, userData.getString(SERVER_PASS_KEY));

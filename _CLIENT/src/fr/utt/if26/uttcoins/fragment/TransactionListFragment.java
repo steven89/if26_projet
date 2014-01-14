@@ -3,6 +3,9 @@ package fr.utt.if26.uttcoins.fragment;
 import org.bson.BasicBSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -19,8 +22,10 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 import fr.utt.if26.uttcoins.PaiementActivity;
 import fr.utt.if26.uttcoins.R;
 import fr.utt.if26.uttcoins.R.layout;
@@ -61,13 +66,14 @@ CustomBasicBSONCallback{
 	 * The Adapter which will be used to populate the ListView/GridView with
 	 * Views.
 	 */
-	private ListAdapter mAdapter;
+	private TransactionListAdapter mAdapter;
 
 	// TODO: Rename and change types of parameters
 	public static TransactionListFragment newInstance() {
 		TransactionListFragment fragment = new TransactionListFragment();
 		Bundle args = new Bundle();
 		fragment.setArguments(args);
+		TransactionList.loadData();
 		return fragment;
 	}
 
@@ -81,7 +87,7 @@ CustomBasicBSONCallback{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mAdapter = new TransactionListAdapter(getActivity());
+		mAdapter = new TransactionListAdapter(getActivity(), TransactionList.ITEMS);
 	}
 
 	@Override
@@ -151,14 +157,18 @@ CustomBasicBSONCallback{
 			// Notify the active callbacks interface (the activity, if the
 			// fragment is attached to one) that an item has been selected.
 			mListener.onTransactionListFragmentInteraction(TransactionList.ITEMS.get(position));
+			this.showTransactionDetail(this.mAdapter.getItem(position));
 			//Uri.parse("click://"+UriPath+"/transaction#"+TransactionList.ITEMS.get(position).id));
 		}
+	}
+	
+	private void showTransactionDetail(Transaction item) {
 	}
 
 	public void goToPaymentActivity(Bundle data){
 		Intent loadPaymentActivity = new Intent(this.getActivity(), PaiementActivity.class);
 		loadPaymentActivity.putExtras(data);
-		Log.i("NAV", "Starting PaiementActivity");
+		//Log.i("NAV", "Starting PaiementActivity");
 		startActivity(loadPaymentActivity);
 	}
 	/**
@@ -180,7 +190,9 @@ CustomBasicBSONCallback{
 
 	@Override
 	public Object call(BasicBSONObject bsonResponse) {
-		// TODO Auto-generated method stub
+		if(bsonResponse.get(ServerHelper.RESQUEST_TAG) == ServerHelper.GET_TRANSACTION_TAG){
+			this.mAdapter.notifyDataSetChanged();
+		}
 		return null;
 	}
 

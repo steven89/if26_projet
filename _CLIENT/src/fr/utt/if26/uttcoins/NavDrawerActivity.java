@@ -52,15 +52,15 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 	protected ActionBarDrawerToggle drawerToggler;
 	protected CharSequence title;
 	protected static final String[] categories = {
-			"Activités", 
+			//"Activités", 
 			"Mon argent", 
-			"Mes transactions", 
+			//"Mes transactions", 
 			"Nouveau paiement"
 			};
 	protected static final int[] icons = {
-			R.drawable.test_icon, // icone de test pour "Activités"
+			//R.drawable.test_icon, // icone de test pour "Activités"
 			R.drawable.test_icon, // icone de test pour "Mon argent"
-			R.drawable.test_icon, // icone de test pour "Mes transactions"
+			//R.drawable.test_icon, // icone de test pour "Mes transactions"
 			R.drawable.test_icon, // icone de test pour "Nouveau paiement"
 	};
 	
@@ -219,7 +219,7 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 			e.printStackTrace();
 		}
 		if(this.drawerList.getCheckedItemPosition()!=refPositionInDrawer){
-			Log.v("positionInDrawer", Integer.toString(refPositionInDrawer));
+			//Log.v("positionInDrawer", Integer.toString(refPositionInDrawer));
 			this.loadActivity(position);
 		}
 	}
@@ -227,7 +227,7 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 	private void loadActivity(int position){
 		//Traitement quelconque sur la BD ?
 		Intent newActivity;
-		Log.v("POSITION", Integer.toString(position));
+		//Log.v("POSITION", Integer.toString(position));
 		switch(position){
 			case 0:
 				newActivity = new Intent(getApplicationContext(), ActivitiesActivity.class);
@@ -271,7 +271,7 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Log.i("Class", callee);
+				//Log.i("Class", callee);
 				logout();
 			}
 		})
@@ -285,7 +285,7 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	protected void logout(){
-		ServerHelper.logout(ServerHelper.BSON_REQUEST, this);
+		ServerHelper.logout(this);
 	}
 	
 	@Override
@@ -360,7 +360,7 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 	@Override
 	protected void onResume(){
 		super.onResume();
-		Log.i("DATA", "REFRESH");
+		//Log.i("DATA", "REFRESH");
 	}
 	
 	@Override
