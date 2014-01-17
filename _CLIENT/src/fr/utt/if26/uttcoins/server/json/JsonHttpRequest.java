@@ -70,17 +70,17 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> impl
 		
 		@Override
 		protected JSONObject doInBackground(String... args){
-			Log.i("REQUEST", "PREPARING with method = " + method+" and url = "+url);
-			Log.i("REQUEST",  "MedthodClass : " + ServerHelper.REQUEST_MAP.get(method).toString());
+			//Log.i("REQUEST", "PREPARING with method = " + method+" and url = "+url);
+			//Log.i("REQUEST",  "MedthodClass : " + ServerHelper.REQUEST_MAP.get(method).toString());
 			try {
 				this.request = ServerHelper.REQUEST_MAP.get(this.method).getConstructor(String.class).newInstance(url);
 				this.loadParams();
 				//this.loadJSONParams();
-				Log.i("REQUEST", "JsonParams = "+this.jsonParams.toString());
-				Log.i("REQUEST", "httpParams = "+this.request.getParams());
-				Log.i("REQUEST", "EXECUTING");
+				//Log.i("REQUEST", "JsonParams = "+this.jsonParams.toString());
+				//Log.i("REQUEST", "httpParams = "+this.request.getParams());
+				//Log.i("REQUEST", "EXECUTING");
 				this.response = client.execute(request);
-				Log.i("REQUEST", "READING");
+				//Log.i("REQUEST", "READING");
 				return new JSONObject(BsonHandler.readResponse(this.response.getEntity().getContent()).toString());
 				//return JSONHandler.readResponse(this.response.getEntity().getContent());
 			}catch (Exception e) {
@@ -169,7 +169,7 @@ public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> impl
 		}
 
 		protected void putHttpParam(String key, Object value){
-			Log.i("PARAMS", "{'"+key+"' : '"+value+"'} inserted in httpparams");
+			//Log.i("PARAMS", "{'"+key+"' : '"+value+"'} inserted in httpparams");
 			this.httpParams.setParameter(key, value);
 		}
 		

@@ -1,5 +1,7 @@
 package fr.utt.if26.uttcoins;
 
+import org.bson.BasicBSONObject;
+
 import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment;
 import fr.utt.if26.uttcoins.fragment.TransactionListFragment;
 import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment.PaymentConfirmationDialogListener;
@@ -10,6 +12,7 @@ import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -30,7 +33,7 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	private static final int INNER_LIST_VIEW_CONTAINER_ID = R.id.formPaymentFragContainer;
 	private static final int INNER_HEADER_FRAG_CONTAINER_ID = R.id.user_solde_container;
 
-	public final static int positionInDrawer = 3;
+	public final static int positionInDrawer = 1;
 	
 	private FormPaiementFragment formPaymentFragment;
 	private UserSoldeFragment userSoldeFragment;
@@ -40,31 +43,31 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.i("NAV", "PaiementActivity has started");
+		//Log.i("NAV", "PaiementActivity has started");
 		this.formPaymentFragment.setArguments(this.getPresetData(savedInstanceState));
 	}
 
 	private Bundle getPresetData(Bundle savedInstanceState) {
 		Bundle extra = (this.getIntent().getExtras() != null) ? this.getIntent().getExtras() : new Bundle();
 		savedInstanceState = (savedInstanceState != null) ? savedInstanceState : new Bundle();
-		Log.i("ACTIVITY", "got PaiementActivity's Bundle");
+		//Log.i("ACTIVITY", "got PaiementActivity's Bundle");
 		Bundle preSetData = new Bundle();
-		String transactionReceiver = savedInstanceState.getString(Transaction.TRANSACTION_RECEIVER_KEY);
+		String transactionReceiver = savedInstanceState.getString(ServerHelper.TRANSACTION_RECEIVER_KEY);
 		transactionReceiver = (transactionReceiver != null) ? 
-				transactionReceiver : extra.getString(Transaction.TRANSACTION_RECEIVER_KEY);
-		int transactionAmount = savedInstanceState.getInt(Transaction.TRANSACTION_AMOUNT_KEY);
+				transactionReceiver : extra.getString(ServerHelper.TRANSACTION_RECEIVER_KEY);
+		int transactionAmount = savedInstanceState.getInt(ServerHelper.TRANSACTION_AMOUNT_KEY);
 		transactionAmount = (transactionAmount != 0) ?
-				transactionAmount : extra.getInt(Transaction.TRANSACTION_AMOUNT_KEY);
-		preSetData.putString(Transaction.TRANSACTION_RECEIVER_KEY, transactionReceiver);
-		preSetData.putInt(Transaction.TRANSACTION_AMOUNT_KEY, transactionAmount);
+				transactionAmount : extra.getInt(ServerHelper.TRANSACTION_AMOUNT_KEY);
+		preSetData.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, transactionReceiver);
+		preSetData.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, transactionAmount);
 		return preSetData;
 	}
 	
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
       super.onSaveInstanceState(savedInstanceState);
-      savedInstanceState.putInt(Transaction.TRANSACTION_AMOUNT_KEY, this.formPaymentFragment.getTransactionAmount());
-      savedInstanceState.putString(Transaction.TRANSACTION_RECEIVER_KEY, this.formPaymentFragment.getTransactionReceiver());
+      savedInstanceState.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, this.formPaymentFragment.getTransactionAmount());
+      savedInstanceState.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, this.formPaymentFragment.getTransactionReceiver());
     }
 
 	@Override
@@ -79,7 +82,7 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 		this.formPaymentFragment = (FormPaiementFragment) fm.findFragmentByTag(FORM_PAYMENT_FRAGMENT_TAG);
 		if(this.formPaymentFragment == null)
 			this.formPaymentFragment = FormPaiementFragment.newInstance(FORM_PAYMENT_FRAGMENT_TAG);
-		Log.i("ACTIVITY", "formPaymentFragment initialized !");
+		//Log.i("ACTIVITY", "formPaymentFragment initialized !");
 		this.userSoldeFragment = (UserSoldeFragment) fm.findFragmentByTag(USER_BALANCE_FRAGMENT_TAG);
 		if(this.userSoldeFragment == null)
 			this.userSoldeFragment = UserSoldeFragment.newInstance();
@@ -121,8 +124,8 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	private void showConfirmPaymentDialog() {
 		PaymentConfirmationDialogFragment confirmDialogFragment = new PaymentConfirmationDialogFragment();
 		Bundle initialState = new Bundle();
-		initialState.putInt(Transaction.TRANSACTION_AMOUNT_KEY, this.formPaymentFragment.getTransactionAmount());
-		initialState.putString(Transaction.TRANSACTION_RECEIVER_KEY, this.formPaymentFragment.getTransactionReceiver());
+		initialState.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, this.formPaymentFragment.getTransactionAmount());
+		initialState.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, this.formPaymentFragment.getTransactionReceiver());
 		confirmDialogFragment.setArguments(initialState);
 		confirmDialogFragment.show(getSupportFragmentManager(), "confirmation");
 	}
@@ -130,11 +133,41 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 	@Override
 	public void onPaymentConfirmationDialogPositiveClick(PaymentConfirmationDialogFragment dialog) {
 		Transaction transactionToPost = new Transaction(dialog.getTransactionReceiver(), dialog.getTransactionAmount());
-		ServerHelper.postNewTransactions(transactionToPost, ServerHelper.BSON_REQUEST, this);
+		ServerHelper.postNewTransactions(transactionToPost, this);
 	}
 
 	@Override
 	public void onPaymentConfirmationDialogNegativeClick(PaymentConfirmationDialogFragment dialog) {
 		dialog.dismiss();
+	}
+	
+	@Override
+	public Object call(BasicBSONObject bsonResponse){
+		super.call(bsonResponse);
+		if(bsonResponse.getString(ServerHelper.RESQUEST_TAG) == ServerHelper.POST_TRANSACTION_TAG){
+			Intent walletActivity = new Intent(getApplicationContext(), WalletActivity.class);
+			walletActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			this.startActivity(walletActivity);	
+			this.finish();
+		}
+		this.formPaymentFragment.hideLoader();
+		return null;
+	}
+	
+	@Override
+	public void beforeCall(){
+		super.beforeCall();
+		this.formPaymentFragment.showLoader();
+	}
+	
+	@Override
+	public void onError(Bundle errorObject){
+		super.onError(errorObject);
+		this.formPaymentFragment.hideLoader();
+	}
+	
+	@Override
+	protected void refresh(){
+		this.userSoldeFragment.refreshData();
 	}
 }

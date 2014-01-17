@@ -56,4 +56,5 @@
 	<string name="payment_receiver_error_text" >Destinataire de la transaction requis</string>
 	<string name="payment_amount_required_error" >Montant de la transaction requis</string>
 	<string name="not_enougth_uttCoins_error" >Solde insufisant</string>
+	<string name="refresh_action_title" >Refresh</string>
 </resources>

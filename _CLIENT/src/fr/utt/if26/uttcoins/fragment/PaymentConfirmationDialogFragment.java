@@ -1,7 +1,6 @@
 package fr.utt.if26.uttcoins.fragment;
 
 import fr.utt.if26.uttcoins.R;
-import fr.utt.if26.uttcoins.model.Transaction;
 import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +11,8 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class PaymentConfirmationDialogFragment extends DialogFragment{
@@ -21,6 +22,7 @@ public class PaymentConfirmationDialogFragment extends DialogFragment{
 	private TextView receiverNameText, 
 					transactionAmountText,
 					accountBalanceText;
+	
 	private int transactionAmount;
 	private String transactionReceiver;
 	
@@ -68,19 +70,20 @@ public class PaymentConfirmationDialogFragment extends DialogFragment{
     	this.receiverNameText = (TextView) contentView.findViewById(R.id.receiver_name_text);
     	this.transactionAmountText = (TextView) contentView.findViewById(R.id.transaction_amount_text);
     	this.accountBalanceText = (TextView) contentView.findViewById(R.id.account_balance_value);
+    	
     	Bundle arguments = (getArguments() != null)? getArguments() : new Bundle();
-    	this.transactionAmount = arguments.getInt(Transaction.TRANSACTION_AMOUNT_KEY, 0);
-		this.transactionReceiver = (arguments.getString(Transaction.TRANSACTION_RECEIVER_KEY) != null && arguments.getString(Transaction.TRANSACTION_RECEIVER_KEY) != "") ? 
-				arguments.getString(Transaction.TRANSACTION_RECEIVER_KEY) : getResources().getString(R.string.userNotFound);
+    	this.transactionAmount = arguments.getInt(ServerHelper.TRANSACTION_AMOUNT_KEY, 0);
+		this.transactionReceiver = (arguments.getString(ServerHelper.TRANSACTION_RECEIVER_KEY) != null && arguments.getString(ServerHelper.TRANSACTION_RECEIVER_KEY) != "") ? 
+				arguments.getString(ServerHelper.TRANSACTION_RECEIVER_KEY) : getResources().getString(R.string.userNotFound);
     	savedInstanceState = (savedInstanceState != null)? savedInstanceState : new Bundle();
-    	this.transactionAmount = savedInstanceState.getInt(Transaction.TRANSACTION_AMOUNT_KEY, this.transactionAmount);
-		this.transactionReceiver = (savedInstanceState.getString(Transaction.TRANSACTION_RECEIVER_KEY) != null && savedInstanceState.getString(Transaction.TRANSACTION_RECEIVER_KEY) != "") ?
-				savedInstanceState.getString(Transaction.TRANSACTION_RECEIVER_KEY): this.transactionReceiver;
+    	this.transactionAmount = savedInstanceState.getInt(ServerHelper.TRANSACTION_AMOUNT_KEY, this.transactionAmount);
+		this.transactionReceiver = (savedInstanceState.getString(ServerHelper.TRANSACTION_RECEIVER_KEY) != null && savedInstanceState.getString(ServerHelper.TRANSACTION_RECEIVER_KEY) != "") ?
+				savedInstanceState.getString(ServerHelper.TRANSACTION_RECEIVER_KEY): this.transactionReceiver;
 		this.transactionAmountText.setText(Integer.toString(transactionAmount));
 		//if(this.transactionReceiver != null)
 		this.receiverNameText.setText(transactionReceiver);
-		int UserAccountBalance = ServerHelper.getSession().getInt(ServerHelper.SERVER_BALANCE_KEY);
-    	this.accountBalanceText.setText(UserAccountBalance);
+		int UserAccountBalance = ServerHelper.getSession().getInt(ServerHelper.SERVER_BALANCE_KEY) - this.transactionAmount;
+    	this.accountBalanceText.setText(Integer.toString(UserAccountBalance));
     }
     
     @Override
@@ -93,8 +96,8 @@ public class PaymentConfirmationDialogFragment extends DialogFragment{
 		}catch(NumberFormatException e){
 			transactionAmountValue = 0;
 		}
-		savedInstanceState.putInt(Transaction.TRANSACTION_AMOUNT_KEY, transactionAmountValue);
-		savedInstanceState.putString(Transaction.TRANSACTION_RECEIVER_KEY, this.receiverNameText.getText().toString());
+		savedInstanceState.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, transactionAmountValue);
+		savedInstanceState.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, this.receiverNameText.getText().toString());
     }
 
 	public String getTransactionReceiver() {

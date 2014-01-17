@@ -58,7 +58,7 @@ public class BsonHandler {
 
 	protected static BasicBSONObject decodeResponseBody(String encodedResponseBody){
 		BasicBSONObject bsonResponseBody;
-		Log.i("DECODE BSON", "encodedresponse = "+encodedResponseBody);
+		//Log.i("DECODE BSON", "encodedresponse = "+encodedResponseBody);
 		String[] chunks = encodedResponseBody.split("[a-zA-Z]");
 		byte[] byteDecodedResponseBody = new byte[chunks.length];
 		for(int i = 0; i < chunks.length; i++){

@@ -79,7 +79,7 @@ CustomBasicBSONCallback, CustomErrorListener{
 	@Override
 	public void onFragmentInteraction(Uri uri) {
 		// TODO Auto-generated method stub
-		Log.v("CLICK", "click on : "+uri.toString());
+		//Log.v("CLICK", "click on : "+uri.toString());
 		switch((Integer.parseInt(uri.getFragment()))){
 			case R.id.form_submit_btn :
 				this.sendLogin();
@@ -95,8 +95,8 @@ CustomBasicBSONCallback, CustomErrorListener{
 	private void sendLogin(){
 		boolean isInputsValide = (this.loginInputFragment.isInputValide() && this.passwordInputFragment.isInputValide());
 		if(isInputsValide){
-			Log.i("ACTION","CLICKED");
-			ServerHelper.logUser(loginInputFragment.getValue(), passwordInputFragment.getValue(), ServerHelper.BSON_REQUEST, this);
+			//Log.i("ACTION","CLICKED");
+			ServerHelper.logUser(loginInputFragment.getValue(), passwordInputFragment.getValue(), this);
 		}
 	}
 	
@@ -117,7 +117,7 @@ CustomBasicBSONCallback, CustomErrorListener{
 	@Override
 	public Object call(BasicBSONObject bsonResponse) {
 		this.connexionBtnFragment.hideLoader();
-		Log.i("REQUEST", bsonResponse.toString());
+		//Log.i("REQUEST", bsonResponse.toString());
 		if(bsonResponse.containsField(ServerHelper.SERVER_TOKEN_KEY)
 				&& bsonResponse.containsField(ServerHelper.SERVER_EMAIL_KEY)){
 			Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
@@ -135,7 +135,7 @@ CustomBasicBSONCallback, CustomErrorListener{
 //	@Override
 //	public Object call(JSONObject jsonResponse) {
 //		this.connexionBtnFragment.hideLoader();
-//		Log.i("REQUEST", jsonResponse.toString());
+//		//Log.i("REQUEST", jsonResponse.toString());
 //		if(jsonResponse.has(ServerHelper.SERVER_TOKEN_KEY) 
 //				&& jsonResponse.has(ServerHelper.SERVER_EMAIL_KEY)){
 //			Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);

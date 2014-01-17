@@ -66,7 +66,7 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 	@Override
 	protected BasicBSONObject doInBackground(String... args){
 		Log.i("REQUEST", "PREPARING with method = " + method+" and url = "+url);
-		Log.i("REQUEST",  "MedthodClass : " + ServerHelper.REQUEST_MAP.get(method).toString());
+		//Log.i("REQUEST",  "MedthodClass : " + ServerHelper.REQUEST_MAP.get(method).toString());
 		try {
 			this.request = ServerHelper.REQUEST_MAP.get(this.method).getConstructor(String.class).newInstance(url);
 			this.loadParams();
@@ -74,7 +74,7 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 			Log.i("REQUEST", "httpParams = "+this.request.getParams());
 			Log.i("REQUEST", "EXECUTING");
 			this.response = client.execute(request);
-			Log.i("REQUEST", "READING");
+			//Log.i("REQUEST", "READING");
 			return BsonHandler.readResponse(this.response.getEntity().getContent());
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -112,7 +112,7 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 				HttpEntityEnclosingRequest entityEnclosingRequest = (HttpEntityEnclosingRequest) this.request;
 				try {
 					String stringBson = BsonHandler.encodeRequestBody(this.bsonParams);
-					Log.i("REQEST", "BSON body = "+stringBson);
+					//Log.i("REQEST", "BSON body = "+stringBson);
 					entityEnclosingRequest.setEntity(new StringEntity(stringBson, "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
 					throw e;
@@ -122,9 +122,9 @@ public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONOb
 			}else{
 				//send basic http request
 				//this.request.setParams(this.httpParams);
-				Log.i("REQUEST", "params = "+this.bsonParams.toString());
+				//Log.i("REQUEST", "params = "+this.bsonParams.toString());
 				this.url = this.url + "?" + BsonHandler.encodeRequestBody(this.bsonParams);
-				Log.i("REQUEST", "url set : "+this.url);
+				//Log.i("REQUEST", "url set : "+this.url);
 				try {
 					this.request.setURI(new URI(this.url));
 				} catch (URISyntaxException e) {

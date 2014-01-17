@@ -7,8 +7,8 @@ import fr.utt.if26.uttcoins.fragment.OnFragmentInteractionListener;
 import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment;
 import fr.utt.if26.uttcoins.fragment.UserSoldeFragment;
 import fr.utt.if26.uttcoins.fragment.PaymentConfirmationDialogFragment.PaymentConfirmationDialogListener;
-import fr.utt.if26.uttcoins.model.Transaction;
 import fr.utt.if26.uttcoins.model.TransactionList;
+import fr.utt.if26.uttcoins.model.User;
 import fr.utt.if26.uttcoins.utils.ServerHelper;
 import android.app.Activity;
 import android.content.DialogInterface.OnClickListener;
@@ -26,6 +26,7 @@ import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
@@ -44,6 +45,8 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 
 	private EditText transactionAmountInput, transactionReceiverInput;
 	private Button payment_confirmation_button;
+	private ProgressBar loader;
+	
 	
 	private TextView transactionAmountError, transactionReceiverError;
 	
@@ -68,8 +71,8 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 		if (getArguments() != null) {
 			Bundle args = getArguments();
 			this.tag = args.getString(TAG);
-			this.transactionAmount = args.getInt(Transaction.TRANSACTION_AMOUNT_KEY, 0);
-			this.transactionReceiver = args.getString(Transaction.TRANSACTION_RECEIVER_KEY);
+			this.transactionAmount = args.getInt(ServerHelper.TRANSACTION_AMOUNT_KEY, 0);
+			this.transactionReceiver = args.getString(ServerHelper.TRANSACTION_RECEIVER_KEY);
 		}
 	}
 
@@ -78,12 +81,13 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_form_paiement, container,
 				false);
-		Log.i("STATE", "(FormPaiementFragment) OnCreateView");
+		//Log.i("STATE", "(FormPaiementFragment) OnCreateView");
 		this.transactionReceiverInput = (EditText) view.findViewById(R.id.payment_receiver);
 		this.transactionAmountInput = (EditText) view.findViewById(R.id.payment_amount);
 		this.payment_confirmation_button = (Button) view.findViewById(R.id.payment_confirmation_button);
 		this.transactionAmountError = (TextView) view.findViewById(R.id.payment_amount_error);
 		this.transactionReceiverError = (TextView) view.findViewById(R.id.payment_receiver_error);
+		this.loader = (ProgressBar) view.findViewById(R.id.payment_inprogress_loader);
 		this.initListener();
 		this.initContent(container, savedInstanceState);
 		return view;
@@ -110,9 +114,9 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 	
 	protected void initContent(View v, Bundle savedInstanceState){
     	savedInstanceState = (savedInstanceState != null)? savedInstanceState : new Bundle();
-    	this.transactionAmount = savedInstanceState.getInt(Transaction.TRANSACTION_AMOUNT_KEY, this.transactionAmount);
-		this.transactionReceiver = (savedInstanceState.getString(Transaction.TRANSACTION_RECEIVER_KEY) != null) ?
-				savedInstanceState.getString(Transaction.TRANSACTION_RECEIVER_KEY): this.transactionReceiver;
+    	this.transactionAmount = savedInstanceState.getInt(ServerHelper.TRANSACTION_AMOUNT_KEY, this.transactionAmount);
+		this.transactionReceiver = (savedInstanceState.getString(ServerHelper.TRANSACTION_RECEIVER_KEY) != null) ?
+				savedInstanceState.getString(ServerHelper.TRANSACTION_RECEIVER_KEY): this.transactionReceiver;
 		if(this.transactionAmount != 0)
 			this.transactionAmountInput.setText(Integer.toString(transactionAmount), BufferType.EDITABLE);
 		if(this.transactionReceiver != null)
@@ -135,8 +139,8 @@ public class FormPaiementFragment extends CustomFragment implements android.view
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
       super.onSaveInstanceState(savedInstanceState);
-      savedInstanceState.putInt(Transaction.TRANSACTION_AMOUNT_KEY, this.getTransactionAmount());
-      savedInstanceState.putString(Transaction.TRANSACTION_RECEIVER_KEY, this.getTransactionReceiver());
+      savedInstanceState.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, this.getTransactionAmount());
+      savedInstanceState.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, this.getTransactionReceiver());
     }
     
 	@Override
@@ -170,7 +174,7 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 	
 	public boolean isTransactionReceiverValide(){
 		String transactionReceiverText = this.getTransactionReceiver();
-		Boolean valide = (transactionReceiverText != null && transactionReceiverText.length() > 0);
+		Boolean valide = transactionReceiverText.matches(User.TAG_PATTERN);
 		if(valide){
 			this.transactionReceiverError.setVisibility(View.GONE);
 		}else{
@@ -209,5 +213,16 @@ public class FormPaiementFragment extends CustomFragment implements android.view
 			this.payment_confirmation_button.setEnabled(false);
 		}
 		return valide;
+	}
+	
+	
+	public void showLoader(){
+		this.payment_confirmation_button.setVisibility(View.GONE);
+		this.loader.setVisibility(View.VISIBLE);
+	}
+	
+	public void hideLoader(){
+		this.loader.setVisibility(View.GONE);
+		this.payment_confirmation_button.setVisibility(View.VISIBLE);
 	}
 }

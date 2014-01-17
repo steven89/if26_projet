@@ -3,6 +3,9 @@ package fr.utt.if26.uttcoins.fragment;
 import org.bson.BasicBSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -19,8 +22,10 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 import fr.utt.if26.uttcoins.PaiementActivity;
 import fr.utt.if26.uttcoins.R;
 import fr.utt.if26.uttcoins.R.layout;
@@ -28,6 +33,7 @@ import fr.utt.if26.uttcoins.adapter.TransactionListAdapter;
 import fr.utt.if26.uttcoins.model.Transaction;
 import fr.utt.if26.uttcoins.model.TransactionList;
 import fr.utt.if26.uttcoins.server.bson.CustomBasicBSONCallback;
+import fr.utt.if26.uttcoins.utils.ServerHelper;
 
 /**
  * A fragment representing a list of Items.
@@ -60,13 +66,14 @@ CustomBasicBSONCallback{
 	 * The Adapter which will be used to populate the ListView/GridView with
 	 * Views.
 	 */
-	private ListAdapter mAdapter;
+	private TransactionListAdapter mAdapter;
 
 	// TODO: Rename and change types of parameters
 	public static TransactionListFragment newInstance() {
 		TransactionListFragment fragment = new TransactionListFragment();
 		Bundle args = new Bundle();
 		fragment.setArguments(args);
+		TransactionList.loadData();
 		return fragment;
 	}
 
@@ -115,10 +122,21 @@ CustomBasicBSONCallback{
 			Transaction selectedTransaction = TransactionList.ITEMS.get(info.position);
 			switch(item.getItemId()){
 				case R.id.new_transaction_action:
-					Bundle args = new Bundle();
-					args.putString(Transaction.TRANSACTION_RECEIVER_KEY, selectedTransaction.getReceiver());
-					args.putInt(Transaction.TRANSACTION_AMOUNT_KEY, selectedTransaction.getAmount());
-					this.goToPaymentActivity(args);
+					String receiverName = null;
+					//si le destinataire de la transaction == compte courrant
+					if(selectedTransaction.getReceiver().equals(ServerHelper.getSession().getString(ServerHelper.SERVER_TAG_KEY))){
+						//on propose une nouvelle transaction, dans l'autre sens
+						receiverName = selectedTransaction.getSender();
+					}else{
+						//sinon on propose une nouvelle transaction identique
+						receiverName = selectedTransaction.getReceiver();
+					}
+					if(receiverName != null){
+						Bundle args = new Bundle();
+						args.putString(ServerHelper.TRANSACTION_RECEIVER_KEY, receiverName);
+						args.putInt(ServerHelper.TRANSACTION_AMOUNT_KEY, selectedTransaction.getAmount());
+						this.goToPaymentActivity(args);
+					}
 					break;
 			}
 		}
@@ -150,14 +168,18 @@ CustomBasicBSONCallback{
 			// Notify the active callbacks interface (the activity, if the
 			// fragment is attached to one) that an item has been selected.
 			mListener.onTransactionListFragmentInteraction(TransactionList.ITEMS.get(position));
+			this.showTransactionDetail(this.mAdapter.getItem(position));
 			//Uri.parse("click://"+UriPath+"/transaction#"+TransactionList.ITEMS.get(position).id));
 		}
+	}
+	
+	private void showTransactionDetail(Transaction item) {
 	}
 
 	public void goToPaymentActivity(Bundle data){
 		Intent loadPaymentActivity = new Intent(this.getActivity(), PaiementActivity.class);
 		loadPaymentActivity.putExtras(data);
-		Log.i("NAV", "Starting PaiementActivity");
+		//Log.i("NAV", "Starting PaiementActivity");
 		startActivity(loadPaymentActivity);
 	}
 	/**
@@ -179,7 +201,9 @@ CustomBasicBSONCallback{
 
 	@Override
 	public Object call(BasicBSONObject bsonResponse) {
-		// TODO Auto-generated method stub
+		if(bsonResponse.get(ServerHelper.RESQUEST_TAG) == ServerHelper.GET_TRANSACTION_TAG){
+			this.mAdapter.notifyDataSetChanged();
+		}
 		return null;
 	}
 
@@ -193,5 +217,9 @@ CustomBasicBSONCallback{
 	public void beforeCall() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void refreshData() {
+		this.mAdapter.loadData();
 	}
 }

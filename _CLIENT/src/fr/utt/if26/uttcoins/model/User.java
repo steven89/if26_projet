@@ -10,9 +10,9 @@ import android.util.Log;
 public class User {
 
 	public static final String EMAIL_PATTERN = "^[a-zA-Z0-9_\\.\\-]*@([a-zA-Z0-9_]*\\.[a-z]{1,3})+$";
-	public static final String TAG_PATTERN = "[a-zA-Z0-9_\\.\\-]*";
-	public static final String TOKEN_PATTERN = "[a-zA-Z0-9]{30}";
-	private static final String NAME_PATTERN = "[a-zA-Z]{2,26}";
+	public static final String TAG_PATTERN = "^[a-zA-Z0-9]{3,}$";
+	public static final String TOKEN_PATTERN = "^[a-zA-Z0-9]{30}$";
+	private static final String NAME_PATTERN = "^[a-zA-Z]{2,26}$";
 	private static User currentUser = null;
 	
 	private String email, tag, token;
@@ -28,9 +28,10 @@ public class User {
 	}
 	
 	public static User newSession(String email, String tag, String token){
+		//Log.i("User", "newSession with email = "+email+", tag = "+tag+" , token ="+token);
 		if(currentUser != null){
 			currentUser.setEmail(email);
-			currentUser.setEmail(email);
+			currentUser.setTag(tag);
 			currentUser.setToken(token);
 		}else{
 			currentUser = new User(email, tag, token);
@@ -40,40 +41,46 @@ public class User {
 	
 	public static Bundle getFormatedData(String name, String firstName, String tag, String email, String password){
 		Bundle data = new Bundle();
+		Boolean error = false;
 		if(name.matches(NAME_PATTERN)){
 			data.putString(ServerHelper.SERVER_NAME_KEY, name);
 		}else{
 			//TODO : créer des classes d'exception
-			Log.e("USER", "invalid name : "+name);
+			//Log.e("USER", "invalid name : "+name);
+			error = true;
 		}
 		if(firstName.matches(NAME_PATTERN)){
 			data.putString(ServerHelper.SERVER_FIRST_NAME_KEY, firstName);
 		}else{
-			Log.e("USER", "invalid first_name : "+name);
+			//Log.e("USER", "invalid first_name : "+name);
+			error = true;
 		}
 		if(tag.matches(TAG_PATTERN)){
 			data.putString(ServerHelper.SERVER_TAG_KEY, tag);
 		}else{
-			Log.e("USER", "invalid tag : "+tag);
+			//Log.e("USER", "invalid tag : "+tag);
+			error = true;
 		}
 		if(email.matches(EMAIL_PATTERN)){
 			data.putString(ServerHelper.SERVER_EMAIL_KEY, email);
 		}else{
-			Log.e("USER", "invalid email : "+email);
+			//Log.e("USER", "invalid email : "+email);
+			error = true;
 		}
 		if(password.length() > 0){
 			data.putString(ServerHelper.SERVER_PASS_KEY, password);
 		}else{
-			Log.e("USER", "invalid password : "+password);
+			//Log.e("USER", "invalid password : "+password);
+			error = true;
 		}
-		return data;
+		return (error) ? null : data;
 	}
 	
 	public Bundle getCurrentSession(){
 		int currentTime = (int) (new Date().getTime() / 1000);
 		Bundle session = null;
 		if(currentUser != null){
-			Log.i("USER", "currentUser = " + currentUser.toBundle().toString());
+			//Log.i("USER", "currentUser = " + currentUser.toBundle().toString());
 			if(currentTime - currentUser.getLoginTime() < 1800){
 				currentUser.setLoginTime(currentTime);
 				session = currentUser.toBundle();
@@ -112,7 +119,7 @@ public class User {
 		if(email.matches(EMAIL_PATTERN)){
 			this.email = email;
 		}else{
-			Log.e("ERROR", "email ("+email+") not matching pattern");
+			//Log.e("ERROR", "email ("+email+") not matching pattern");
 		}
 	}
 
@@ -124,7 +131,7 @@ public class User {
 		if(tag.matches(TAG_PATTERN)){
 			this.tag = tag;
 		}else{
-			Log.e("ERROR", "tag ("+tag+") not matching pattern");
+			//Log.e("ERROR", "tag ("+tag+") not matching pattern");
 		}
 	}
 
@@ -136,7 +143,7 @@ public class User {
 		if(token.matches(TOKEN_PATTERN)){
 			this.token = token;
 		}else{
-			Log.e("ERROR", "token ("+token+") not matching pattern");
+			//Log.e("ERROR", "token ("+token+") not matching pattern");
 		}
 	}
 

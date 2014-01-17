@@ -52,15 +52,15 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 	protected ActionBarDrawerToggle drawerToggler;
 	protected CharSequence title;
 	protected static final String[] categories = {
-			"Activités", 
+			//"Activités", 
 			"Mon argent", 
-			"Mes transactions", 
+			//"Mes transactions", 
 			"Nouveau paiement"
 			};
 	protected static final int[] icons = {
-			R.drawable.test_icon, // icone de test pour "Activités"
+			//R.drawable.test_icon, // icone de test pour "Activités"
 			R.drawable.test_icon, // icone de test pour "Mon argent"
-			R.drawable.test_icon, // icone de test pour "Mes transactions"
+			//R.drawable.test_icon, // icone de test pour "Mes transactions"
 			R.drawable.test_icon, // icone de test pour "Nouveau paiement"
 	};
 	
@@ -196,10 +196,16 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 			case R.id.logout_action :
 				this.logout();
 				return true;
+			case R.id.refresh_action : 
+				this.refresh();
+				return true;
     	}
         return super.onOptionsItemSelected(item);
     }
 
+	protected void refresh() {		
+	}
+	
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		//TODO que faire au click sur une categorie ? nouveau fragment ? nouvelle activity ?
@@ -219,7 +225,7 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 			e.printStackTrace();
 		}
 		if(this.drawerList.getCheckedItemPosition()!=refPositionInDrawer){
-			Log.v("positionInDrawer", Integer.toString(refPositionInDrawer));
+			//Log.v("positionInDrawer", Integer.toString(refPositionInDrawer));
 			this.loadActivity(position);
 		}
 	}
@@ -227,20 +233,20 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 	private void loadActivity(int position){
 		//Traitement quelconque sur la BD ?
 		Intent newActivity;
-		Log.v("POSITION", Integer.toString(position));
+		//Log.v("POSITION", Integer.toString(position));
 		switch(position){
 			case 0:
-				newActivity = new Intent(getApplicationContext(), ActivitiesActivity.class);
-				break;
-			case 1:
 				newActivity = new Intent(getApplicationContext(), WalletActivity.class);
 				break;
-			case 2:
-				newActivity = new Intent(getApplicationContext(), TransactionsActivity.class);
-				break;
-			case 3:
+			case 1:
 				newActivity = new Intent(getApplicationContext(), PaiementActivity.class);
 				break;
+//			case 2:
+//				newActivity = new Intent(getApplicationContext(), TransactionsActivity.class);
+//				break;
+//			case 3:
+//				newActivity = new Intent(getApplicationContext(), ActivitiesActivity.class);
+//				break;
 			default :
 				//cas imprévu ? screw you
 				newActivity = null;
@@ -271,7 +277,7 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Log.i("Class", callee);
+				//Log.i("Class", callee);
 				logout();
 			}
 		})
@@ -285,7 +291,7 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	protected void logout(){
-		ServerHelper.logout(ServerHelper.BSON_REQUEST, this);
+		ServerHelper.logout(this);
 	}
 	
 	@Override
@@ -294,6 +300,7 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 			Intent loadLogin = new Intent(getApplicationContext(), LoginActivity.class);
 			loadLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			this.startActivity(loadLogin);
+			this.finish();
 		}
 		return null;
 	}
@@ -360,7 +367,7 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 	@Override
 	protected void onResume(){
 		super.onResume();
-		Log.i("DATA", "REFRESH");
+		//Log.i("DATA", "REFRESH");
 	}
 	
 	@Override

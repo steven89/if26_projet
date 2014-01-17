@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 public class WalletActivity extends NavDrawerActivity implements OnTransactionListFragmentInteractionListener{
 
-	public final static int positionInDrawer = 1;
+	public final static int positionInDrawer = 0;
 	
 	private TransactionListFragment transactionsListFragment;
 	private UserSoldeFragment userSoldeFragment;
@@ -37,7 +37,7 @@ public class WalletActivity extends NavDrawerActivity implements OnTransactionLi
 
 	@Override
 	protected void initInnerContentLayout(ViewGroup container) {
-		Log.i("CONTENT", "Initializing wallet content layout !");
+		//Log.i("CONTENT", "Initializing wallet content layout !");
 		
 		RelativeLayout.LayoutParams lp_userSoldeContainer = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -82,13 +82,19 @@ public class WalletActivity extends NavDrawerActivity implements OnTransactionLi
 	@Override
 	public void onFragmentInteraction(Uri uri) {
 		switch(Integer.parseInt(uri.getFragment())){
-			
 		}
 	}
 
 	@Override
 	public void onTransactionListFragmentInteraction(Transaction selected_transaction) {
 		
+	}
+	
+	@Override
+	protected void refresh(){
+		super.refresh();
+		this.userSoldeFragment.refreshData();
+		this.transactionsListFragment.refreshData();
 	}
 
 }
