@@ -47,11 +47,6 @@ public class MongoDatabase extends Database {
 		if(index>=0 && index<collections.length)
 			this.currentSet = index;
 	}
-	
-	public BSONObject getItemById(String id){
-		
-		return null;
-	}
 
 	@Override
 	public void open() {
@@ -74,12 +69,6 @@ public class MongoDatabase extends Database {
 		this.mongoClient.close();
 		this.mongoCollections = new DBCollection[collections.length];
 		this.helpers = new DatabaseHelper[collections.length];
-	}
-
-	@Override
-	public DataBean getBean(BSONObject datas) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

@@ -7,6 +7,10 @@ import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.utils.Crypt;
 
+/**
+ * Manage user login/logout
+ * @author steven
+ */
 public class LoginManager {
 	
 	private final static String dico = "abcdefghijklmnopqrstwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -20,6 +24,10 @@ public class LoginManager {
 	private static final int LOGOUT = 1;
 	private static final int AUTH = 2;
 	
+	/**
+	 * generate a new connection token
+	 * @return the new token
+	 */
 	public static String generateToken(){
 		String token="";
 		int max = dico.length()-1;
@@ -30,6 +38,12 @@ public class LoginManager {
 		return token;
 	}
 	
+	/**
+	 * check whether or not all the params needed are set
+	 * @param datas : datas to check
+	 * @param type : type of check to do {@value LoginManager#LOGIN}, {@value LoginManager#LOGOUT}, {@value LoginManager#AUTH}
+	 * @return true if all params are set
+	 */
 	private static boolean hasRequiredFields(BSONObject datas, int type){
 		String[] requiredFields;
 		switch (type) {
@@ -53,6 +67,12 @@ public class LoginManager {
 		return true;
 	}
 	
+	/**
+	 * try to login an user
+	 * @param params : request parameters {@value LoginManager#requiredLogin}
+	 * @return login status
+	 * @throws BeanException
+	 */
 	public static String logIn(BSONObject params) throws BeanException{
 		if(LoginManager.hasRequiredFields(params, LOGIN)){
 			User user = new User((String) params.get("email"), (String) params.get("pass"));
@@ -81,6 +101,12 @@ public class LoginManager {
 			return "field_missing";
 	}
 	
+	/**
+	 * try to logout an user
+	 * @param params : request parameters {@value LoginManager#requiredLogout}
+	 * @return logout status
+	 * @throws BeanException
+	 */
 	public static String logOut(BSONObject params) throws BeanException{
 		if(LoginManager.hasRequiredFields(params, LOGOUT)){
 			DataBean bean = null;
@@ -102,6 +128,11 @@ public class LoginManager {
 			return "field_missing";
 	}
 	
+	/**
+	 * check the authentication of an user 
+	 * @param params : request parameters {@value LoginManager#requiredAuth}
+	 * @return true if user is authenticated
+	 */
 	public static boolean checkAuth(BSONObject params){
 		if(LoginManager.hasRequiredFields(params, AUTH)){
 			Database db = DatabaseManager.getInstance().getBase(DatabaseManager.USERS);

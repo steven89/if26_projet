@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bson.BSONObject;
 
-
 import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.io.BsonEcho;
 import fr.utt.if26.cs.io.Echo;
@@ -40,6 +39,7 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("PUT /Login");
 		Echo out = new BsonEcho(response.getWriter());
 		BSONObject params = ServletUtils.extractRequestData(request);
 		try {

@@ -8,8 +8,11 @@ import org.bson.types.ObjectId;
 
 import fr.utt.if26.cs.exceptions.BeanException;
 
-
-public class Transaction extends DataBean implements Serializable {
+/**
+ * bean used for a transaction
+ * @author steven
+ */
+public class Transaction extends DataBean {
 	private static final long serialVersionUID = 1L;
 	protected int amount;
 	protected String from; // User.SYS_USER or tag
@@ -20,7 +23,6 @@ public class Transaction extends DataBean implements Serializable {
 	
 	
 	public Transaction(int somme, String crediteurPseudo, String destinatairePseudo) throws BeanException{
-		System.out.println(crediteurPseudo);
 		this.setAmount(somme);
 		this.setFrom(crediteurPseudo);
 		this.setTo(destinatairePseudo);

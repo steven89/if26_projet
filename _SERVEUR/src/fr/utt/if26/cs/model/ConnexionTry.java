@@ -5,6 +5,10 @@ import java.util.Date;
 
 import fr.utt.if26.cs.exceptions.BeanException;
 
+/**
+ * bean used for a connexion try
+ * @author steven
+ */
 public class ConnexionTry extends DataBean {
 	
 	

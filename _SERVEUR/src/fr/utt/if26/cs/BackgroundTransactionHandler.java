@@ -8,6 +8,7 @@ import fr.utt.if26.cs.database.DatabaseManager;
 
 /**
  * Application Lifecycle Listener implementation class BackgroundTransactionHandler
+ * Lancement des services en tache de fond
  *
  */
 @WebListener

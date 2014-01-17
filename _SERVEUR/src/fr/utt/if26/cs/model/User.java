@@ -5,7 +5,10 @@ import java.util.HashMap;
 import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.utils.Crypt;
 
-
+/**
+ * bean used for an user
+ * @author steven
+ */
 public class User extends DataBean {
 	
 	public final static String SYS_USER = "admin@system";

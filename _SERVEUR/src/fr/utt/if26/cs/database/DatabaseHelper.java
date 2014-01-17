@@ -13,18 +13,18 @@ import org.bson.BSONObject;
 public interface DatabaseHelper {
 	/*** 
 	 * Save objects in a database
-	 * @param obj TODO
+	 * @param obj datas to insert
 	 */
 	public String insert(BSONObject datas);
 	
 	/*** 
 	 * Save objects in a database
-	 * @param query TODO
+	 * @param query datas to insert
 	 */
 	public void insert(String query);
 	
 	/***
-	 * 
+	 * find entries in DB
 	 * @param query
 	 * 				An object which represent a query to perform against the database
 	 * @return an implementation of Iterator to fetch results
@@ -39,13 +39,21 @@ public interface DatabaseHelper {
 	 */
 	public BSONObject findByKey(String key, String value);
 	
-	/***
-	 * 
+	/**
+	 * get the DB index name
 	 * @return The name of the key that uses the database the current DBManager represent (ie : "_id")
 	 */
 	public String getObjectIDKey();
 	
+	/**
+	 * Update entries from DB
+	 * @param datas : selector (using 'id') + datas to update
+	 */
 	public void update(BSONObject datas);
 	
+	/**
+	 * remove entries from DB
+	 * @param datas : selector
+	 */
 	public void remove(BSONObject datas);
 }

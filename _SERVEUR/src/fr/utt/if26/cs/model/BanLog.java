@@ -4,6 +4,10 @@ import java.util.Calendar;
 
 import fr.utt.if26.cs.exceptions.BeanException;
 
+/**
+ * Bean used for a ban log
+ * @author steven
+ */
 public class BanLog extends DataBean {
 	
 	private String email;

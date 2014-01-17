@@ -39,6 +39,7 @@ public class UserWallet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("GET /UserWallet");
 		Echo out = new BsonEcho(response.getWriter());
 		BasicBSONObject params = ServletUtils.extractRequestData(request);
 		if(LoginManager.checkAuth(params)){

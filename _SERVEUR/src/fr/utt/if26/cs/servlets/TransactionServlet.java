@@ -38,6 +38,7 @@ public class TransactionServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("GET /Transaction");
 		Echo out = new BsonEcho(response.getWriter());
 		Database dbTransactions = DatabaseManager.getInstance().getBase(DatabaseManager.TRANSACTIONS);
 		BasicBSONObject params = ServletUtils.extractRequestData(request);
@@ -85,6 +86,7 @@ public class TransactionServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("POST /Transaction");
 		Echo out = new BsonEcho(response.getWriter());
 		BasicBSONObject params = ServletUtils.extractRequestData(request);
 		if(LoginManager.checkAuth(params)){

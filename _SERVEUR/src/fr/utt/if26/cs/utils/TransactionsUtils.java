@@ -14,11 +14,20 @@ import fr.utt.if26.cs.model.DataBean;
 import fr.utt.if26.cs.model.Transaction;
 import fr.utt.if26.cs.model.User;
 
+/**
+ * Utils used to simplify transaction handling
+ * @author steven
+ */
 public class TransactionsUtils {
 	
 	private static final int DEFAULT_WALLET = 50;
 	
-	
+	/**
+	 * make the balance between transactions from the user and transactions to the user
+	 * @param from : list of transactions from the user
+	 * @param to : list of transactions to the user
+	 * @return balance
+	 */
 	private static int computeTransactions(ArrayList<DataBean> from, ArrayList<DataBean> to){
 		int totalFrom=0, totalTo=0;
 		for(DataBean t : from)
@@ -28,10 +37,22 @@ public class TransactionsUtils {
 		return totalTo-totalFrom;
 	}
 	
+	/**
+	 * make the balance of all transactions
+	 * @param datas list of user's transactions
+	 * @return balance
+	 * @see TransactionsUtils#computeTransactions(ArrayList, ArrayList)
+	 */
 	public static int computeTransactions(ArrayList<DataBean>[] datas){
 		return computeTransactions(datas[0], datas[1]);
 	}
 	
+	/**
+	 * get the list of all user's transactions
+	 * @param user
+	 * @return list of transactions
+	 * @throws BeanException
+	 */
 	@SuppressWarnings("unchecked")
 	public static ArrayList<DataBean>[] getUserTransactions(User user) throws BeanException{
 		ArrayList<DataBean>[] transactions = new ArrayList[2];
@@ -47,6 +68,11 @@ public class TransactionsUtils {
 		return transactions;
 	}
 	
+	/**
+	 * apply transactions on user's wallet
+	 * @param user
+	 * @throws BeanException
+	 */
 	public static void applyTransactionsOnUser(DataBean user) throws BeanException{
 		((User) user).setWallet(
 			TransactionsUtils.computeTransactions(
@@ -83,6 +109,10 @@ public class TransactionsUtils {
 			throw new BeanException("invalid creditor");
 	}
 	
+	/**
+	 * create a transaction for a new user, to set its first wallet balance
+	 * @param userTag : user who will recieve the transaction
+	 */
 	public static void doBaseTransaction(String userTag){
 		try {
 			TransactionsUtils.doTransaction(new Transaction(TransactionsUtils.DEFAULT_WALLET, User.SYS_USER, userTag));
@@ -91,6 +121,11 @@ public class TransactionsUtils {
 		}
 	}
 	
+	/**
+	 * make a BSON representation of an user transactions list
+	 * @param transactions list of transactions
+	 * @return BSON representation of transactions list
+	 */
 	public static BSONObject toBSON(ArrayList<DataBean>[] transactions){
 		BSONObject obj = new BasicBSONObject();
 		obj.put("balance", TransactionsUtils.computeTransactions(transactions));

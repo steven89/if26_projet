@@ -5,7 +5,10 @@ import java.util.HashMap;
 import fr.utt.if26.cs.database.mongo.MongoDatabase;
 import fr.utt.if26.cs.database.sql.SQLDatabase;
 
-
+/**
+ * Manage webservice's databases
+ * @author steven
+ */
 public class DatabaseManager {
 	
 	private static DatabaseManager db = null;
@@ -21,10 +24,17 @@ public class DatabaseManager {
 		this.initBases();
 	}
 	
+	/**
+	 * Singleton
+	 * @return global DBManger instance
+	 */
 	public static DatabaseManager getInstance(){
 		return (DatabaseManager.db!=null)?DatabaseManager.db:new DatabaseManager();
 	}
 	
+	/**
+	 * init the webservice's databases
+	 */
 	private void initBases(){
 		this.sqlDb = SQLDatabase.getInstance();
 		this.mongoDb = MongoDatabase.getInstance();
@@ -33,14 +43,27 @@ public class DatabaseManager {
 		this.bases.put("transactions", this.mongoDb);
 	}
 	
+	/**
+	 * get instance of NoSQL DB : MongoDB
+	 * @return global instance of MongoDB
+	 */
 	public Database getMongoDatabase(){
 		return this.mongoDb;
 	}
 	
+	/**
+	 * get instance of SQL DB : MySQL
+	 * @return global instance of MySQL DB
+	 */
 	public Database getSqlDatabase(){
 		return this.sqlDb;
 	}
 	
+	/**
+	 * get instance of one of the DB
+	 * @param base : index of the DB {@link DatabaseManager#USERS} or {@link DatabaseManager#TRANSACTIONS}
+	 * @return global instance of DB
+	 */
 	public Database getBase(int base){
 		switch(base){
 		case DatabaseManager.USERS:

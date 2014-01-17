@@ -12,6 +12,10 @@ import org.bson.BasicBSONObject;
 import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;
 
+/**
+ * Utils used to extract datas from servlets requests
+ * @author steven
+ */
 public class ServletUtils {
 	
 	public static final boolean useBSON = true;
@@ -22,6 +26,12 @@ public class ServletUtils {
 	public final static int DELETE = 3;
 	public final static int HEAD = 4;
 	
+	/**
+	 * check if request datas have all required fields
+	 * @param args : required fields
+	 * @param datas : request datas
+	 * @return true if all required fields are set
+	 */
 	public static boolean checkRequiredFields(String[] args, BSONObject datas){
 		for(String field : args){
 			if(!datas.containsField(field) || datas.get(field)==null)
@@ -30,6 +40,13 @@ public class ServletUtils {
 		return true;
 	}
 	
+	/**
+	 * extract datas from resuest
+	 * @param request : http request
+	 * @return request datas as a BSONObject
+	 * @see ServletUtils#extractGetRequestData(HttpServletRequest)
+	 * @see ServletUtils#extractPostRequestData(HttpServletRequest)
+	 */
 	public static BasicBSONObject extractRequestData(HttpServletRequest request){
 		if(request.getMethod().equals("PUT") || request.getMethod().equals("POST") || request.getMethod().equals("DELETE"))
 			return extractPostRequestData(request);
@@ -39,7 +56,11 @@ public class ServletUtils {
 			return new BasicBSONObject();
 	}
 	
-	
+	/**
+	 * extract datas from a GET REQUEST (query string params)
+	 * @param request
+	 * @return request datas as a BSONObject
+	 */
 	private static BasicBSONObject extractGetRequestData(HttpServletRequest request){
 		try{
 			String query;
@@ -60,6 +81,11 @@ public class ServletUtils {
 		}
 	}
 	
+	 /**
+	  * extract datas from a POST/PUT/DELETE request (using request body)
+	  * @param request
+	  * @return request datas as a BSONObject
+	  */
 	private static BasicBSONObject extractPostRequestData(HttpServletRequest request){
 		String params = "";
 		String line = "";
@@ -80,6 +106,11 @@ public class ServletUtils {
 		}
 	}
 	
+	/**
+	 * decrypt a BSON string
+	 * @param datas : BSON formated String
+	 * @return JSON formated String
+	 */
 	private static String decryptBSON(String datas){
 		String[] tab = datas.split("[a-zA-Z]");
         byte[] array = new byte[tab.length];

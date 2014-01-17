@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bson.BSONObject;
 
-
 import fr.utt.if26.cs.exceptions.BeanException;
 import fr.utt.if26.cs.io.BsonEcho;
 import fr.utt.if26.cs.io.Echo;
@@ -43,6 +42,7 @@ public class LogoutServlet extends HttpServlet {
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("PUT /Logout");
 		Echo out = new BsonEcho(response.getWriter());
 		BSONObject params = ServletUtils.extractRequestData(request);
 		try {

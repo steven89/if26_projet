@@ -14,6 +14,7 @@ import org.bson.BasicBSONObject;
 
 
 
+
 import fr.utt.if26.cs.database.Database;
 import fr.utt.if26.cs.database.DatabaseManager;
 import fr.utt.if26.cs.exceptions.BeanException;
@@ -72,6 +73,7 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("POST /USer");
 		Echo out = new BsonEcho(response.getWriter());
 		BasicBSONObject params = ServletUtils.extractRequestData(request);
 		if(ServletUtils.checkRequiredFields(new String[] {"email", "pass", "prenom", "nom", "tag"}, params)){

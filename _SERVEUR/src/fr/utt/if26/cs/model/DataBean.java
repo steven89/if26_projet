@@ -9,11 +9,17 @@ import org.bson.BasicBSONObject;
 import com.mongodb.util.JSON;
 
 
-
+/**
+ * Generic bean
+ * @author steven
+ */
 public abstract class DataBean {
 	
 	/**
-	 * List of fields to export in Database
+	 * pramas to list when using a bean representation
+	 * @see DataBean#toString()
+	 * @see DataBean#toBSON()
+	 * @see DataBean#toJSONString()
 	 */
 	protected String[] export;
 	
@@ -21,10 +27,20 @@ public abstract class DataBean {
 		
 	}
 	
+	/**
+	 * Utilis : Upper case the first char of a String
+	 * @param str : string to use
+	 * @return string with first char upper
+	 */
 	private static String ucfirst(String str){
 		return str.substring(0, 1).toUpperCase()+ str.substring(1).toLowerCase();
 	}
 	
+	/**
+	 * get a bean parameter by name (using a 'get' function)
+	 * @param param : param to get
+	 * @return param value
+	 */
 	private String getParam(String param){
 		Method method = null;
 		try {
@@ -57,10 +73,19 @@ public abstract class DataBean {
 		}
 	}
 	
+	/**
+	 * return a BSON representation of the bean
+	 * @return BSON object
+	 */
 	public BSONObject toBSON(){
 		return toBSON(null);
 	}
 	
+	/**
+	 * return a BSON representation of the bean using filters
+	 * @param filters : whitelist of fields to get into the representation
+	 * @return BSON object
+	 */
 	public BSONObject toBSON(String[] filters){
 		BasicBSONObject BSONData = new BasicBSONObject();
 		for(String f : this.export){
@@ -76,23 +101,36 @@ public abstract class DataBean {
 		return BSONData;
 	}
 	
+	/**
+	 * return a JSON representation of the bean
+	 * @return JSON formated string
+	 */
 	public String toJSONString(){
 		return JSON.serialize(this.toBSON());
 	}
 	
+	/**
+	 * return a JSON representation of the bean using filters
+	 * @param filters : whitelist of fields to get into the representation
+	 * @return JSON formated string
+	 */
 	public String toJSONString(String[] filters){
 		return JSON.serialize(this.toBSON(filters));
 	}
 	
+	/**
+	 * get a string version of the bean
+	 * @see DataBean#toJSONString()
+	 */
 	public String toString(){
 		return this.toJSONString();
 	}
 	
 	/***
-	 * Teste si un �l�ment est contenu dans un tableau
-	 * @param needle : l'�l�ment � rechercher
-	 * @param haystack : le tableau
-	 * @return true si pr�sent, sinon false
+	 * test whether or not a value is in an array
+	 * @param needle : value to look for
+	 * @param array : array to look in
+	 * @return true if needle found in array
 	 */
 	private static boolean inArray(String needle, String[] array) {
 		for(String s : array)
