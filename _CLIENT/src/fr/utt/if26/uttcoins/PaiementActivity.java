@@ -47,6 +47,7 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 		this.formPaymentFragment.setArguments(this.getPresetData(savedInstanceState));
 	}
 
+	//on récupère les éventuelles données pré-remplies d'une transaction
 	private Bundle getPresetData(Bundle savedInstanceState) {
 		Bundle extra = (this.getIntent().getExtras() != null) ? this.getIntent().getExtras() : new Bundle();
 		savedInstanceState = (savedInstanceState != null) ? savedInstanceState : new Bundle();
@@ -141,10 +142,13 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 		dialog.dismiss();
 	}
 	
+	//callback du paiement
 	@Override
 	public Object call(BasicBSONObject bsonResponse){
 		super.call(bsonResponse);
+		//si la requête envoyée correspond à la création d'une nouvelle transaction (un post de transaction)
 		if(bsonResponse.getString(ServerHelper.RESQUEST_TAG) == ServerHelper.POST_TRANSACTION_TAG){
+			//on retourne sur la page "wallet"
 			Intent walletActivity = new Intent(getApplicationContext(), WalletActivity.class);
 			walletActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			this.startActivity(walletActivity);	
@@ -154,12 +158,14 @@ public class PaiementActivity extends NavDrawerActivity implements PaymentConfir
 		return null;
 	}
 	
+	//avant d'envoyer les reqêtes
 	@Override
 	public void beforeCall(){
 		super.beforeCall();
 		this.formPaymentFragment.showLoader();
 	}
 	
+	//lorsqu'une erreur est survenue dans une requête
 	@Override
 	public void onError(Bundle errorObject){
 		super.onError(errorObject);

@@ -12,6 +12,8 @@ import android.util.Log;
 import fr.utt.if26.uttcoins.error.CustomServerException;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
 
+//classe permettant d'encoder et de décoder du JSON
+//le JSON n'est plus supporté par l'application
 @Deprecated
 public class JSONHandler {
 	

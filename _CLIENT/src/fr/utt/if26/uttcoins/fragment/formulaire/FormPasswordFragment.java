@@ -29,6 +29,7 @@ import android.widget.TextView;
  * factory method to create an instance of this fragment.
  * 
  */
+//fragment encapsulant les mécanismes de base d'un champ password dans un formulaire
 public class FormPasswordFragment extends Fragment implements FormInputFragment{
 	
 	public static final String NEED_CONFIRMATION = "needConfirmation"; 

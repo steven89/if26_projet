@@ -18,8 +18,10 @@ import fr.utt.if26.uttcoins.server.bson.CustomBasicBSONCallback;
 import android.os.Bundle;
 import android.util.Log;
 
+//une classe simplifiant le dialogue avec le serveur
 public class ServerHelper implements CustomBasicBSONCallback{
 	
+	//les constantes
 	private static final String SERVER_URL = "http://88.186.76.236/_SERVEUR"; //"http://10.0.2.2:8080/_SERVEUR";
 	private static final String TRANSACTION_URL = SERVER_URL + "/Transaction";
 	private static final String USER_WALLET_URL = SERVER_URL + "/UserWallet";
@@ -43,6 +45,8 @@ public class ServerHelper implements CustomBasicBSONCallback{
 	public static final String SERVER_NAME_KEY = "nom";
 	public static final String SERVER_FIRST_NAME_KEY = "prenom";
 	public static final String SERVER_TRANSACTION_AMOUNT_KEY = "amount";
+	public static String TRANSACTION_AMOUNT_KEY = "transaction_amount";
+	public static String TRANSACTION_RECEIVER_KEY = "transaction_receiver";
 
 	public static final String GET = "GET";
 	public static final String POST = "POST";
@@ -57,11 +61,11 @@ public class ServerHelper implements CustomBasicBSONCallback{
 	public static final String SIGN_UP_TAG = "sign_up";
 	public static final String SYSTEM_USER_TAG = "admin@system";
 	
-	//TODO encapsuler les params de l'utilisateur dans un singleton user
+	//l'utilisateur est un singleton
 	private static User user = null;
 	public static CustomBasicBSONCallback server_bson_request_callback = getBSONRequestListener();
 	
-	// wildcard utilisé : map vérouillée en lecture seule
+	//Les classes de reqêtes à utiliser, mappées par méthode
 	public static HashMap<String, Class<? extends HttpRequestBase>> REQUEST_MAP; 
 	
 	static{
@@ -182,9 +186,6 @@ public class ServerHelper implements CustomBasicBSONCallback{
 		request.execute();
 	}
 
-	public static String TRANSACTION_AMOUNT_KEY = "transaction_amount";
-	public static String TRANSACTION_RECEIVER_KEY = "transaction_receiver";
-	
 	private ServerHelper(){
 	}
 
@@ -192,15 +193,23 @@ public class ServerHelper implements CustomBasicBSONCallback{
 		return (CustomBasicBSONCallback)  new ServerHelper();
 	}
 	
+	//le callback des requêtes
 	@Override
 	public Object call(BasicBSONObject bsonResponse) {
+		//si on vient de créer une transaction
 		if(bsonResponse.getString(RESQUEST_TAG) == POST_TRANSACTION_TAG){
+			//on met à jour le solde de l'utilisateur dans la session en cours
 			User.setAccountBalance(Integer.parseInt(bsonResponse.getString(ServerHelper.SERVER_BALANCE_KEY)));
 		}
+		//si on vient de "fetch" le wallet
 		if(bsonResponse.getString(RESQUEST_TAG) == GET_WALLET_TAG){
+			//on met à jour le solde de l'utilisateur dans la session en cours
 			User.setAccountBalance(Integer.parseInt(bsonResponse.getString(ServerHelper.SERVER_BALANCE_KEY)));
 		}
+		//si on vient de "fetch" les transactions
 		if(bsonResponse.getString(RESQUEST_TAG) == GET_TRANSACTION_TAG){
+			//...
+			//la il faudrait mettre les transactions en cache (dans TransactionList.java par exemple)
 		}
 		return null;
 	}

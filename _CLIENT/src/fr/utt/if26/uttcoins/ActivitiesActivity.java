@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.view.Menu;
 import android.view.ViewGroup;
 
+
+//Class vide, pas implémenté par manque de temps
 public class ActivitiesActivity extends NavDrawerActivity {
 
 	public final static int positionInDrawer = 0;

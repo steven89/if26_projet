@@ -43,6 +43,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+//la classe mère de toute activity contenant un menu de navigation latéral
 public abstract class NavDrawerActivity extends ActionBarActivity 
 implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, CustomBasicBSONCallback, CustomErrorListener{
 	
@@ -51,6 +52,8 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 	protected ListView drawerList;
 	protected ActionBarDrawerToggle drawerToggler;
 	protected CharSequence title;
+	//listing des catégories du menu de navigation
+	//après reflexion, un listing des Class aurait été mieu
 	protected static final String[] categories = {
 			//"Activités", 
 			"Mon argent", 
@@ -64,6 +67,8 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 			R.drawable.test_icon, // icone de test pour "Nouveau paiement"
 	};
 	
+	//identifie la classe dans le menu de navigation (par rapport au tableau "categories",
+	//destiné à être override dans les classes filles.
 	public final static int positionInDrawer = 0;
 	
 	protected abstract void initFragments();
@@ -127,9 +132,12 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 		this.drawerList.setItemChecked(this.getPositionInDrawer(), true);
 	}
 	
+	//permet de récupérer la position de la classe dans le menu de navigation 
 	protected int getPositionInDrawer(){
 		int realPositionInDrawer = 0;
 		try {
+			//un correspond à un "this.positionInDrawer", 
+			//mais permet de s'assurer que le champs appelé est bien celui de la classe fille courrante
 			realPositionInDrawer = this.getClass().getField("positionInDrawer").getInt(null);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
@@ -231,7 +239,6 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 	}
 	
 	private void loadActivity(int position){
-		//Traitement quelconque sur la BD ?
 		Intent newActivity;
 		//Log.v("POSITION", Integer.toString(position));
 		switch(position){
@@ -337,10 +344,6 @@ implements AdapterView.OnItemClickListener, OnFragmentInteractionListener, Custo
 		final FragmentManager fragManager = getSupportFragmentManager();
 		final FragmentTransaction fragTransaction = fragManager.beginTransaction();
 		fragTransaction.replace(containerID, fragment);
-		/*if(this.currentFrag!=null)
-			fragTransaction.detach(this.currentFrag);
-		this.currentFrag = fragment;
-		fragTransaction.attach(this.currentFrag);*/
 		return fragTransaction.commit();
 	}
 	

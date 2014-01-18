@@ -40,7 +40,7 @@ CustomBasicBSONCallback, CustomErrorListener{
 	private FormEmailFragment emailInput; 
 	private FormPasswordFragment passwordInput;
 	private FormButtonFragment signUpBtn;
-		
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

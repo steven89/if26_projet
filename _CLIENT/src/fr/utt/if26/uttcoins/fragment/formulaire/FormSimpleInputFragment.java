@@ -18,6 +18,7 @@ import android.widget.TextView;
  * A simple {@link android.support.v4.app.Fragment} subclass.
  * 
  */
+//fragment encapsulant les mécanismes de base d'un champ de saisie dans un formulaire
 public class FormSimpleInputFragment extends Fragment implements FormInputFragment{
 
 	// TODO: Rename parameter arguments, choose names that match

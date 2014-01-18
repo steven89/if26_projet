@@ -13,12 +13,16 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 
+//une classe permettant de gérer les erreur personnalisé dans l'application
 public class ErrorHelper {
 	
 	public static final String ERROR_TITLE_KEY = "error_title";
 	public static final String ERROR_MSG_KEY = "error_msg";
+	//les titres d'erreur, mappés par type d'erreur
 	public static HashMap<Class<? extends Exception>, String> ERROR_TITLE_MAP = new HashMap<Class<? extends Exception>, String>();
+	//les messages d'erreur, mappés par type d'erreur
 	public static HashMap<Class<? extends Exception>, String> ERROR_MSG_MAP = new HashMap<Class<? extends Exception>, String>();
+	//les erreur de l'application, mappées par leur identifiant serveur
 	public static HashMap<String, Class<? extends CustomServerException>> CUSTOM_ERROR_MAP = new HashMap<String, Class<? extends CustomServerException>>(); 
 
 	private static String DEFAULT_TITLE = "Erreur";
@@ -29,6 +33,8 @@ public class ErrorHelper {
 		initCustomErrorMap();
 	}
 	
+	//permet d'obtenir dynamiquement le titre et le message à afficher à l'utilisateur,
+	//pour toute erreur survenant dans l'application
 	public static Bundle getErrorObject(Exception exeptionCls){
 		Bundle errorObject = new Bundle();
 		String error_title = ERROR_TITLE_MAP.get(exeptionCls.getClass());
@@ -67,6 +73,8 @@ public class ErrorHelper {
 		ERROR_MSG_MAP.put(exceptionCls, msg);
 	}
 
+	//permet de lever l'exception adéquat celon le message d'erreur renvoyé depuis le serveur
+	//voir : BsonHandler.readResponse(InputStream is);
 	public static CustomServerException getCustomServerException(String error_tag) {
 		//lazy implementation
 		CustomServerException serveur_exception = null;

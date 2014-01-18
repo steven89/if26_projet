@@ -26,6 +26,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+//une classe permettant l'envoie de requêtes BSON sur le serveur
 public class BasicBSONHttpRequest extends AsyncTask<String, Integer, BasicBSONObject>
 	implements CustomHttpRequest{
 

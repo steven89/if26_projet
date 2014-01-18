@@ -35,6 +35,8 @@ public class WalletActivity extends NavDrawerActivity implements OnTransactionLi
 		super.onCreate(savedInstanceState);
 	}
 
+	//initialisation du contenu, car on réutilise le layout de base pour toute les classes
+	//filles de "NavDrawerActivity"
 	@Override
 	protected void initInnerContentLayout(ViewGroup container) {
 		//Log.i("CONTENT", "Initializing wallet content layout !");

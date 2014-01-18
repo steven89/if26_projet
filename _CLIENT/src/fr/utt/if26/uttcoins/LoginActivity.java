@@ -100,6 +100,9 @@ CustomBasicBSONCallback, CustomErrorListener{
 		}
 	}
 	
+	//méthode destiné à l'affichage de message d'erreur
+	//présente dans la pluspart des classes d'activity,
+	//devrait être Override depuis une classe mère, mais pas eu le temps d'ajouter l'héritage
 	public void showCustomErrorMessage(String title, String message){
 		new AlertDialog.Builder(this)
 		.setTitle(title)
@@ -114,12 +117,15 @@ CustomBasicBSONCallback, CustomErrorListener{
 		.show();
 	}
 	
+	//callback du login
 	@Override
 	public Object call(BasicBSONObject bsonResponse) {
 		this.connexionBtnFragment.hideLoader();
 		//Log.i("REQUEST", bsonResponse.toString());
+		//si la réponse ne contient le token de login
 		if(bsonResponse.containsField(ServerHelper.SERVER_TOKEN_KEY)
 				&& bsonResponse.containsField(ServerHelper.SERVER_EMAIL_KEY)){
+			//on démarre l'activity WalletActivity
 			Intent loadWallet = new Intent(getApplicationContext(), WalletActivity.class);
 			Bundle session = new Bundle();
 			session.putString(ServerHelper.SERVER_TOKEN_KEY, bsonResponse.getString(ServerHelper.SERVER_TOKEN_KEY));

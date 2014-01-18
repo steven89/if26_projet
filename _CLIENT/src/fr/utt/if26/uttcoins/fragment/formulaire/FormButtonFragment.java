@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
  * of this fragment.
  * 
  */
+//fragment encapsulant les mécanismes de base d'un bouton dans un formulaire
 public class FormButtonFragment extends Fragment implements FormInputFragment{
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

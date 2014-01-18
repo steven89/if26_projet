@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.ViewGroup;
 
-
+//Class vide, pas implémenté par manque de temps
 public class TransactionsActivity extends NavDrawerActivity {
 
 	public final static int positionInDrawer = 2;

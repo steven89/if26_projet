@@ -16,6 +16,7 @@ import android.util.Log;
 import fr.utt.if26.uttcoins.error.CustomServerException;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
 
+//une classe permettant de décoder et d'encoder du BSON
 public class BsonHandler {
 	public static char[] DEFAULT_ENCODING_CHAR_TABLE = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 
 		'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',

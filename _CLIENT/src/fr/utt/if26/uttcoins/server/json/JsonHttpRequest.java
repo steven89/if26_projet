@@ -36,6 +36,8 @@ import fr.utt.if26.uttcoins.server.CustomHttpRequest;
 import fr.utt.if26.uttcoins.utils.ErrorHelper;
 import fr.utt.if26.uttcoins.utils.ServerHelper;
 
+//une classe permettant à l'origine l'envoie de reqêtes JSON sur le serveur
+//le JSON n'est plus supporté par l'application
 @Deprecated
 public class JsonHttpRequest extends AsyncTask<String, Integer, JSONObject> implements CustomHttpRequest{
 	//params for non enclosing entity request (GET, DELETE)
